@@ -1,0 +1,237 @@
+* Now talking on #rso
+* cornelius.2600.net sets mode +n #rso
+* cornelius.2600.net sets mode +t #rso
+* ChanServ sets mode +n #rso
+* ChanServ sets mode +t #rso
+* ChanServ (services@2600.net) has joined #rso
+* services.2600.net gives channel operator status to ChanServ
+* ChanServ has changed the topic to: 
+* ChanServ (services@2600.net) has left #rso
+* `2642 (qwebirc@ircaddict.org) has joined #rso
+* `2642 has quit ()
+* `2605 (qwebirc@ircaddict.org) has joined #rso
+* `2605 has quit (Ping timeout: 240 seconds)
+* Pawel_ (qwebirc@ircaddict.org) has joined #rso
+<Pawel_> cześć
+<Pawel_> chyba mi się udało
+* Mateusz (~chatzilla@89-77-207-149.dynamic.chello.pl) has joined #rso
+<Mateusz> :)
+<Pawel_> tylko że innych nie ma za bardzo
+<Mateusz> ale fajno
+<Pawel_> :D
+<GIBBON> czesc
+<Pawel_> to co nam zostało to ta nieszczęsna koncepcja rozwiązania
+<Pawel_> cześć
+<Pawel_> ale zanim o tym, widzieliście harmonogram już?
+<GIBBON> wlasnie ogladam
+<Pawel_> i jak się podoba :P ?
+<Pawel_> straszne lanie wody
+<GIBBON> cool
+<Pawel_> ale też myślę, że na tym etapie nie można od niego więcej wymagać
+* tomekk (qwebirc@ircaddict.org) has joined #rso
+<Mateusz> harmonogram jest na repo:
+<Mateusz> ?
+<Pawel_> tak
+<tomekk> siema
+<GIBBON> siema
+<Pawel_> cześć
+<tomekk> rozumiem ze nie jestem w stanie zobaczyc historii Waszej rozmowy?
+<GIBBON> nope
+<GIBBON> ale nie gadalismy za duzo
+<GIBBON> pawel jak zapomnialem pullowac
+<GIBBON> przed usuwaniem tych wciec
+<GIBBON> to co mam teraz zrobic
+<GIBBON> ?
+<GIBBON> gdzie byla ta literowka
+<GIBBON> ?
+<Pawel_> http://docs.mongodb.org/manual/core/sharded-cluster-internals/
+<GIBBON> i jak zrobic zeby nie pojawily sie jakies branche na repo
+<Pawel_> gdzieś wielka litery nie było
+<Pawel_> żeby zrobić brancha
+<Pawel_> git branch "nazwa brancha"
+<Pawel_> git checkout "nazwa brancha"
+<GIBBON> ale jak wzialem commit zanim sciagnalem najnowsza wersje
+<GIBBON> to jak wysle to co bedzie?
+<Pawel_> i jak zrobisz git push "nazwa repo" "nazwa brancha" to się autoamtycznie utworzy
+<Pawel_> tak to zawsze robiłem
+<Pawel_> co do tego linka którego wkleiłem  to myślałem żeby to opracować
+<Pawel_> żeby nad tym głównie się skupić
+<Mateusz> ale ten git jest słaby, aby wpisywać komendy do obsługi ;_;
+<Mateusz> zapewne na SVN jest za późno, co
+<Pawel_> nie porównuj nawet :)
+<Pawel_> a jak to komende do obsługi ;_; ?
+<Pawel_> a za późno nie jest
+<Pawel_> jak wolicie
+<Pawel_> ja i tak nie będę kodował
+<GIBBON> a mnie sie coraz bardziej podoba
+<tomekk> zdecydowanie git albo ew mercurial
+<GIBBON> lepszy napewno od mercuriala
+<GIBBON> ktorego dotad uzywalem
+<GIBBON> ok, to co z tym shardingiem
+<tomekk> ja wlasnie czytam
+<Pawel_> wiecie ogólnie co to jest?
+<Pawel_> moja koncepcja jest taka, że będziemy próbowali lepiej balansować rozkład danych pomiędzy poszczególne węzły
+<Mateusz> Pawel_: chodzi o to że tego Githuba obsługuje się z shella
+<Mateusz> a ja w sumie jestem przyzwyczajony do SVN gdzie sie wszystko wyklikuje 
+<GIBBON> ok, to cos co mniej wiecej bylo opisane w tym waszym dokumencie MongoDB
+<Pawel_> tak
+<Pawel_> a wiem
+<Pawel_> miałem z tym opory ale się przzwyczaiłem
+<GIBBON> ze jest max 12 węzłów i sie rozrzuca dane
+<tomekk> wlasciwie to z tego co rozumiem poprawilibysmy mongos instances tak?
+<Pawel_> są też i kliencie z GUI
+<Mateusz> te gui jest bleh
+<Pawel_> no to niestety prawda
+<Pawel_> z tego co słyszałem jedyne sensowne jest iOS
+<Pawel_> i zże implementują je teraz na windowsa
+<Pawel_> a raczej jedyne sensowne GUI jest napisane na iOS
+<Mateusz> słabo
+<Pawel_> ale trzeba przyznać, że ja który jestem przyzwyczajony do GUI i właściwie wszystko w nim robiłem nie miałem jakichś większych problemów z GITem w konsoli
+<GIBBON> mi sie wlasnie podoba to ze mi nowego shella zainstalowal w windozie
+<GIBBON> i nawet jakiegos vima dorzucil
+<Pawel_> tak, elegancko to dziala
+<GIBBON> i przed chwila wzialem jeszcze raz commita zrobilem i sam stwierdzil ze jest merge
+<GIBBON> i sie wszystko bez problemu polaczylo i wyslalo
+<Pawel_> bo on elegancko działa
+<Pawel_> w poprzednim semestrze się go nauczyłem
+<Pawel_> robiliśmy projekt 3osobowy
+<Pawel_> mieliśmy ze 4 gałęzie i wszystko się prawie samo elegancko mergowało
+<tomekk> co do shardingu jestem za
+<GIBBON> napisales wczesniej ze z szybkoscia nie mamy szans powalczyc, aczy jest cos w shardingu co daloby sie poprawic?
+<Pawel_> tomekk, tak miałem na myśli właśnei to z mongos
+<Pawel_> ja uważam że z niczym nie mamy szans
+<tomekk> i tez uwazam ze jest szansa poprawic routing
+<Pawel_> masz na myśli poprawienie zapytań przy shardingu?
+<tomekk> jeszcze do konca nie rozumiem tej koncepcji
+<Pawel_> samego shardingu?
+<tomekk> w kazdym razie widze ze te mongos instances
+<tomekk> wykorzystuja round robin do wynierania wlasciwych shardow
+<tomekk> i wladnie o ten routinf mi chodzi
+<tomekk> mam racje?
+<Pawel_> a co to jest round robin?
+<GIBBON> to jest karuzela
+<GIBBON> my musimy w takim razie wykorzystac http://en.wikipedia.org/wiki/Weighted_fair_queuing
+<tomekk> to sa algorytmy wykorzystywane do wybierania najmniej obciazonych serwerow
+<tomekk> mozemy tez napisac wlasny algorytm
+<tomekk> :P
+<Pawel_> no i ok, to są już szczegóły implementacyjne
+<Pawel_> ale widzę, że ta idea chyba się nadaje?
+<tomekk> zdecydowanie
+<Pawel_> ok, to dobrze
+<tomekk> nawiazuje do przedmiotu i jest szansa ze cos poprawimy
+<GIBBON> to bedzie BARDZO coekawy projekt, ale tak jak mowiles
+<GIBBON> szans na poprawnienie czegokolwiek nie mamy
+<tomekk> :P
+<GIBBON> to mongo to bardzo dojrzla baza jest
+<Pawel_> no wiesz, uważam że przy niedojrzałych byłoby tak samo
+<Pawel_> my mamy tylko 2 miesiące na to
+<Pawel_> no dobra, to jak już wiemy z czym będziemy walczyć
+<Pawel_> to teraz najważniejsze pytanie
+<Pawel_> kto to opiszę?
+<tomekk> jesli pozniej bede zwolniony z czesci obowiazkow to moge to zrobic bo mnie zaciekawil temat
+<Pawel_> dobra, niech tak będzie
+<tomekk> ok
+<Pawel_> widziałeś harmonogram?
+<tomekk> zaraz zobacze
+* `2691 (qwebirc@ircaddict.org) has joined #rso
+<Pawel_> tam jest taki podział na tygodnie pracy
+<`2691> Jak by co tu Marcin
+<Pawel_> fajny nick :D
+<GIBBON> sup '2691 !
+<`2691> dzęki :)
+<`2691> co ustalone bo mam ten badziewny net z aero i czesto mam przerwy
+<Pawel_> jest ustalone tak
+<Pawel_> że skupiamy się nad shardingiem
+<Pawel_> tomekk to opiszę i na którymś  z etapów będzie miał mniejsze obciążenie
+<Pawel_> więc właściwie prawie wszystko już jest ustalone
+<GIBBON> jutro mamy byc na 14?
+<`2691> ale co dokładnie shardingiem ?
+<Pawel_> tak
+<GIBBON> moze spotkamy sie 15 min wczesniej?
+<Pawel_> może być
+<Pawel_> kto chce wydrukować dokumenty? Piotrek podejmiesz się?
+<GIBBON> jasne nie ma sprawy
+<`2691> dużu tego mamy ?
+<Pawel_> tych dokumentów?
+<`2691> tak
+<Pawel_> tak samego tekstu
+<Pawel_> to 3 strony w nosql
+<Pawel_> 6 w mongodb
+<Pawel_> około 2 w harmonogramie
+<Pawel_> a właśnie
+<Pawel_> opiszecie jeszcze w nosql kilka rozwiązań?
+<GIBBON> ja chcialem poisac last.fm bo tam jest o gosci , ktory go zalozyl jedno zdanie
+<Pawel_> tak po pare zdań z którkim streszczeniem
+<GIBBON> a to jest wlasciwie najlepszy przyklad na baze nosql
+<GIBBON> wie ktos jak dziala last.fm?
+<Pawel_> nie wiem nawet co to jest
+<GIBBON> to jak napisze to sie dowiesz
+<GIBBON> ale co poza tym?
+<Pawel_> a no dobra - radio :)
+<Pawel_> to znaczy co opisać?
+<GIBBON> jakie projekty czy bazy opisac jeszcze?
+<Pawel_> myślałem o samych silnikach
+<Pawel_> np: nosql-database.org
+<Pawel_> na podstawie tego czy wikipedii, stackoverflow
+<Pawel_> po prostu z 5 najpopulranijeszych
+<Pawel_> o projektach to widziałem, że już cos tam było
+<Pawel_> ale to już niekoniecznie
+<Pawel_> chyba że wam się chce
+<Pawel_> raczej i tamto niekoniecznie
+<Pawel_> ale nie zaszkodziłoby
+<tomekk> co do mojego zadania to na czym głownie mam się skupić?
+<Pawel_> no i ostatnie co chciałem poruszyć, ale dopiero teraz się zorientowałem, że tej osoby nie ma do której chciałem napisać
+<`2691> więc co do jutrzejszego dnia to coś jeszcze nam brakuje oprócz tego shardingu ?
+<Pawel_> ja widzę to tak, opis tego co chcielibyśmy poprawić + przedstawienie API mongos
+<tomekk> ok
+<Pawel_> moim zdaniem jeszcze do tego zadania z maszyna
+<Pawel_> wirtualną
+<tomekk> przegladam terminarz ale dat nie widze
+<Pawel_> krótki opis w krokach jak skonfigurować mongoDB
+<tomekk> ok
+<Pawel_> nie ma w kolumnie po lewej stronie?
+<tomekk> sory nie ten plik otworzylem
+<tomekk> rozumiem ze zalicza sie to pod
+<tomekk> "Szczegółowa koncepcja rozwiązania"
+<Pawel_> nie
+<Pawel_> to raczej pod: 3. Koncepcja rozwiązania własnego
+<Pawel_> z tego co mamy zrobić na jutro
+<Pawel_> szczegółowa to już jak dla mnie będą opisane algorytmy
+<Pawel_> harmonogram przewidziany jest na etapy 2, 3
+<tomekk> czyli mam na jutro to ogarnac?
+<Pawel_> tak
+<Pawel_> ale to będzie taki krótki opis
+<Pawel_> bez szczegółów implementayjnych
+<Pawel_> tylko co byśmy chcieli osiągnąć
+<tomekk> ok, juz zaluje :P
+<Pawel_> i jak wygląda API
+<Pawel_> no to spoko, ja chcesz to może być twoje zadanie w pierwszym etapie :D
+<Pawel_> a jak chcesz to opisz i więcej :)
+<tomekk> no dobra zabieram sie za to w takim razie
+<tomekk> mam to pozniej wydrukowac?
+<Pawel_> dogadaj się z Piotrkiem o której ma zamiar drukować i czy zdążysz do repo wrzucić
+<tomekk> pewnie i tak tego nie bindujemy wiec wydrukuje i przyniose na konsultacje
+<Pawel_> ok
+<Pawel_> tomekk masz kontakt  z Markiem?
+<tomekk> tak
+<tomekk> przekazac mu cos?
+<Pawel_> żeby opisał w krokach jak skonfigurowaliście wirtualkę
+<Pawel_> oczywiście to nic koniecznego
+<Pawel_> ale Kruk o tym wspominał
+<tomekk> ok
+<Pawel_> więc jakby miał czas to fajnie gdyby to zrobił
+<Pawel_> no dobra, to chyba można uznać że to wszystko?
+<tomekk> tak
+<Pawel_> uda Ci się to do jutro do około 12 do repo wrzucić
+<Pawel_> bo dobrze byłoby to przeczytać jeszcze przzed oddaniem projektu
+<GIBBON> to ja mam wydrukowac harmonogram, mongo i nosql?
+<Pawel_> tak
+<GIBBON> ok
+* tomekk has quit (Quit: Page closed)
+<Pawel_> to cześć
+* Pawel_ has quit ()
+* `2691 has quit (Ping timeout: 240 seconds)
+<Mateusz> no to co GIBBON 
+<Mateusz> jutro na 14 czo
+* Mateusz has quit (Quit: ChatZilla 0.9.90 [Firefox 20.0/20130326150557])
+* Disconnected (Connection reset by peer).
