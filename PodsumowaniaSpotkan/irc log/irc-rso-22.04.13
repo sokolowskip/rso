@@ -1,0 +1,375 @@
+* Now talking on #rso
+* bartholomew.2600.net sets mode +n #rso
+* bartholomew.2600.net sets mode +t #rso
+* ChanServ sets mode +n #rso
+* ChanServ sets mode +t #rso
+* ChanServ (services@2600.net) has joined #rso
+* services.2600.net gives channel operator status to ChanServ
+* ChanServ has changed the topic to: 
+* ChanServ (services@2600.net) has left #rso
+* Marek (qwebirc@ircaddict.org) has joined #rso
+* Mateusz (~chatzilla@89-77-207-149.dynamic.chello.pl) has joined #rso
+* Pawel (qwebirc@ircaddict.org) has joined #rso
+<Pawel> Cześć
+<Marek> czesc
+<Mateusz> Hejka :)
+<Pawel> Marcin za moment powinien być
+<Pawel> i chyba możemy zaczynać
+<Pawel> Marek wiesz czy Tomek będzie?
+<Marek> będzie
+<Pawel> ok
+<GIBBON> siema
+<Mateusz> cześć GIBBON 
+<Marek> siema
+* marcin (qwebirc@ircaddict.org) has joined #rso
+<marcin> siema
+<Mateusz> hej
+<marcin> coś już ustalaliście ?
+<Marek> jeszcze nie
+* Tomek (qwebirc@ircaddict.org) has joined #rso
+<Tomek> siema
+<GIBBON> 6/6
+<Pawel> na początek mam pytanie
+<Pawel> czy ten dokument który ja wrzuciłem do repo to jest kopia zapsi w mogodb czy sobie lokalnie tylko coś spierdoliłem?
+<Mateusz> który dokument?
+<Mateusz> jak się nazywa?
+<Pawel> Opis interfejsu.doc
+<Pawel> Opis interfejsu.docx
+<Pawel> dobra, już wiem
+<Pawel> pomieszałem
+<Pawel> dałem nieźle z tym d upy
+<Pawel> będę chyba musiał opowiedzieć o tym co tam było
+<Pawel> bo i tak mniej więcej od tego trzeba zacząć
+<Pawel> no dobra to może zacznijmy od podsumowania
+<Pawel> ja ze swojej strony napisałem coś, ale to straciłem, za moment to od nowa napiszę, nie było tego dużo, ale zawierało ważne rzeczy
+<Pawel> co się komu udało zrobić?
+<Mateusz> ja zacząłem opisywać odczyty
+<marcin> no ja ten zapis opisałem
+<Mateusz> zerknąłem też do kodu źródłowego
+<GIBBON> ja do piatku uczylem sie wdwr, a w weekend prawie mnie nie bylo w domu
+<Mateusz> tyle że to jest ostre gówno ten kod źródłowy, jest tak wielki
+<Mateusz> że mi muli viżuala
+<GIBBON> dopiero dzis zaczalem pisac o tym shardingu
+<marcin> ale jako takiego algorytmu jak to jest dokładnie robione to nie udało mi się znaleźć
+<Mateusz> serio, nawet przewijanie po dokumencie zabiera kilka sekund
+<Mateusz> muszę chyba to robić na mocniejszym kompie :D
+<Tomek> nam sie udalo zalozyc projekt z dodana biblioteka junit
+<Mateusz> btw, brakowało mi trochę info o shardingu i informacji jak zapisane są dokumenty
+<Marek> bałem się, że właśnie tak to będzie wyglądało z tyym kodem
+<Mateusz> tj. struktury danych 
+<Pawel> no kodu jest dużo i ciężko się go czyta
+<Mateusz> w sumie nadal nie wiem jak dokumenty są przechowywane
+<Marek> opis tego co zrobiliśmy (środowisko programistyczne) zaraz napiszę
+<Pawel> trzeba się do tego dokopać 
+<Pawel> nie ma na to siły
+<Mateusz> właściwie kod starałem czytać kilka godzin, jednak nie dowiedziałem się o wiele więcej niż to co z dokumentacji
+<Pawel> i zacząć kodować
+<Mateusz> oprócz tego że wiem że kursor korzysta z stosu :DDD
+<Pawel> to ok, możemy uznać, że opisy te trzeba uzupełnić
+<Mateusz> a właśnie
+<Pawel> ja teraz może opowiem do czego ja sam doszedłem
+<Mateusz> jak długie mogą być
+<Mateusz> muszą*
+<Pawel> one nie muszą być długie
+<Pawel> chodzi o to żeby nam pomogły
+<Pawel> w tym np co ja napisałem i straciłem
+<Pawel> było 1,5 strony
+<Mateusz> aha, one są dla nas a nie dla kruka?
+<Pawel> dwa linki
+<Pawel> i odwołania do źródeł
+<Pawel> na początek są dla nas
+<Pawel> następnie z nich będziemy mogli zrobić dokumentację techniczną która jest wymagana
+<Pawel> no dobra, ja mam zaplanowany mały początek na kodowanie
+<Pawel> trochę dałem dupy że nie mam tego co napisałem
+<Pawel> ale jeszcze dziś to nadrobię
+<Pawel> a teraz powiem o samych podstawach
+<Pawel> na początek, wszyscy macie kod źródłowy mongo?
+<Mateusz> tak.
+<marcin> ja nie mam
+<Tomek> tez jeszcze nie mam
+<Pawel> no dobra
+<Pawel> w skrócie jest tak
+<Pawel> instancja mongod
+<Pawel> zaczyna się w pliku src\mongo\db
+<Pawel> jeżeli korzystacie z Visuala
+<Pawel> to będzie mongod.db.Source Files.a to d.db.cpp
+<Pawel> jest tam metoda: static int mongoDbMain(int argc, char* argv[], char **envp) 
+<Pawel> w której wszystko się zaczyna
+<Pawel> parsuje ona argumenty wywołania mongod
+<Pawel> oraz zaczyna nasłuchiwać domyślnie na porcie 27017
+<Pawel> na ten port przychodzą wiadomości
+<Pawel> sam protokół jest opisany tu: http://docs.mongodb.org/meta-driver/latest/legacy/mongodb-wire-protocol/
+<Pawel> no i  generalnie naszym zadaniem jest parsowanie tych wiadomości
+<Pawel> i a ich podstawie naśladowanie zachowania mongo
+<Pawel> z protokołem moim zdaniem warto się zapoznać
+<Pawel> bo od tego uważam że trzeba zacząć
+<Pawel> to co wpisujemy albo z jakichś driverów albo  z shela
+<Pawel> jest tłumaczone właśnie na te wiadomości
+<Pawel> wszystkie mają wspólny nagłówek
+<Pawel> który jest w linku przeze mnie zamieszczonym opisany
+<Pawel> jest ich około 6 typów
+<Pawel> także wszystkie są tam opisane
+<Pawel> to nasłuchiwanie działa na zasadzie klasycznych socketów
+<Pawel> no i teraz to co uważam, że powinniśmy na początek zrobić to
+<Pawel> 1) odpalenie odpowiednika mongod
+<Pawel> 2) nasłuchiwanie na odpowiednim porcie i odpalanie wątków dla przychodzących wiadomości
+<Pawel> 3) parsowanie wiadomości
+<Pawel> 4) parsowanie BSON
+<Pawel> w tym całym BSON przychodzą wszystkie dokumenty
+<Pawel> tu link to specyfikacji http://bsonspec.org/#/specification
+<Pawel> 5) znalezienie sposobu na otrzymanie prawdziwych komunikatów przychodzących do Mongo z klientów
+<Pawel> pewnie jakieś nasłuchiwanie na porcie czy śledzenie ruchu sieciowego, nie znam się na tym, ale wiem, że się da
+<Pawel> 6) przetestowanie tego co mamy, czy prawidłowo rozumiemy wiadomości które przychodzą
+<Pawel> w między czasie nadrobienie zaległości z odczytów i zapisów, jak już będziemy mieli sparsowane wiadomości to będzie następny etap
+<Pawel> teraz pytanie, czy mniej więcej ogarniacie o co chodzi?
+<Mateusz> ej, to my chcemy pisać cały odpowiednik mongodb?
+<Mateusz> trochę tego bydzie :D
+<Pawel> a co innego?
+<Tomek> 3  to rozumiem wiadomosc -> BSON
+<Tomek> a 4 BSON -> wiadomosc
+<Tomek> ?
+<Pawel> 3 to trochę więcej
+<Mateusz> w sumie parsowanie BSON nie jest jakoś szczególne trudne
+<Mateusz> no ale ok
+<Pawel> bson jest częścią wiadomości
+<Pawel> są tam jeszcze inne dane jak w tym linku który podałęm
+<Pawel> ale w sumie Mateusz zadałeś dobre pytanie
+<Pawel> bo może ja nie rozumiem czegoś
+<Pawel> moim zdaniem mamy napisać bazę danych
+<Pawel> w okrojeonej funkcjonalności , ale jednak bazę danych
+<Pawel> a Wy to jakoś inaczej rozumiecie?
+<Pawel> bo może ja się mylę
+<Mateusz> własnie nie pamiętam czy mamy pisac wszystko od zera
+<Mateusz> czy tylko coś poprawić
+<GIBBON> chyba dobze rozumiesz, w koncu projekt na 6 osob
+<Mateusz> no niby tak
+<Pawel> moim zdaniem roboty jest nie do przerobienia
+<Mateusz> no jakby ktoś chciał poprawić bazę open source robioną przez ileś lat przez ileś tam ludzi
+<Pawel> i dlatego jeżeli ma cokolwiek działa to powinniśmy cały czas coś robić
+<Mateusz> przez kilku studentów w pół semestru
+<Mateusz> to elo 
+<marcin> no nawet jak byśmy to codziennie robili to i tak nie zdążymy
+<Mateusz> rezultat wyjdzie taki że przez większość czasu będziemy robic podstawowe ficzery jakiejś guwnobazy
+<Mateusz> a potem w kilka dni zrobimy ten algorytm poprawiony
+<Tomek> srednio przemyslal te projekty 
+<marcin> ja myślałem ze to ma być na zasadzie takiej że patrzymy który kawałek kodu jest odpowiedzialny za sharding. My go wyciagamy analizujemy algorytm i w to miejsce wsadzamy swój kod
+<Pawel> mam identyczne zdanie na ten temat
+<Pawel> :D nie no, to raczej nie bardzo
+<Marek> ufff
+<Marek> cała wizja tego projektu nei brzmi zachęcająco
+<Pawel> od początku nie brzmiała
+<Marek> no
+<Pawel> chociaż może ja się myle
+<Marek> w ogóle ten semestr (dla SIDu) jest z dupy
+<Pawel> Wy pewnie znacie jakichś innych ludzi, którzy to też robią to możecie się dowiedzieć o co tam chodzi
+<Marek> DWW - bez sensu, AIS - bez sensu, RSO - słaby projekt, SPOP - mał sens
+<Mateusz> no kurwa, mam wrażenie że większość przedmiotów z SIDu jest z dupy Marek
+<Mateusz> Na DWW Woźniaka da się posłuchać
+<Mateusz> a Ty nawet nie byłeś na LI
+<Tomek> prawda DWW jest ok
+<Pawel> w util.net.message,h znajdują się podstawowe definicje
+<Pawel>     struct MSGHEADER {         int messageLength; // total message size, including this         int requestID;     // identifier for this message         int responseTo;    // requestID from the original request         //   (used in responses from db)         int opCode;     };
+<Pawel> jak np to :)
+<Pawel> i od tego warto zacząć
+<Pawel> ja tam wiem, że na DWW żadnym nie będę :)
+<Tomek> zawsze mozna przez siec
+<Pawel> ja teraz na 3 minuty znikam, a jak się pojawię zaczę pisać moją wizję tego co jest do zrobienia z przydzieleniem do poszczególnych osób
+<Pawel> kolejność zadań będzie losowa
+<Pawel> jak przez sieć?
+<Tomek> Mateusz co to LI
+<Mateusz> Logika dla Informatyków
+<Mateusz> jest to robione z jakimś maniakiem
+<Tomek> Pawel - sory nie w tym oknie napisalem :P 
+<Mateusz> który stwierdził że nam wydłuży wykład o jedną godzinę bo tak będzie śmieszniej
+<Pawel> zaczynam
+<Pawel> Tomek:
+<Pawel> Parsowanie komunikatów
+<Tomek> ok
+<Pawel> tzn: 
+<Pawel> stworzenie struktur takich jak w pliku message.h
+<Pawel> który wcześniej zamieściłem
+* Tomek slaps Marek around a bit with a large fishbot
+<Tomek> :P
+<Pawel> bez parsowanie BSON
+<Pawel> po prostu przekazanie go dalej
+* Marek slaps Tomek around a bit with a large fishbot
+<Pawel> Piotrek:
+<Pawel> Stworzenie nasłuchiwania na porcie
+<Pawel> odbieranie komunikatów i przekazywanie ich obsługi do wątków
+<Pawel> Marek i Mateusz
+<Pawel> Parsowanie BSON
+<Pawel> to wydaje się duża sprawa
+<Pawel> nie wiem dokładnie do czego to ma być parsowane
+<Pawel> w mogod jest cały katalog bson
+* marcin has quit (Ping timeout: 240 seconds)
+<Pawel> można z niego korzystać
+<Pawel> ja jeszcze bawiłem się driverem do .NET
+<Pawel> i z niego sporo się nauczyłemn
+<Pawel> jak ktoś woli inny język może korzystać
+<Pawel> no i został Marcin, ale poczekam aż wróci
+<Marek> to może ja z Tomkiem zrobimy BSONa we 2 (łatwiej nam się kontaktować)
+* Marcin (qwebirc@ircaddict.org) has joined #rso
+<Marcin> sry neta mi zerwało
+<Pawel> ok, może być
+<Marek> a Mateusz zamienisz się z Tomkiem jego częścią
+<Marek> czy Ci nie pasuje?
+<Tomek> mi pasuje
+<Mateusz> Tomek co robi?
+* Marek slaps Tomek around a bit with a large fishbot
+<Pawel> parsowanie komunikató
+<Tomek> [20:54] <Pawel> Tomek:
+<Mateusz> eh, okay
+<Marek> dodatkowo Tomek lubi jak się go troche slapuje
+<Mateusz> jak robie slap?
+<Pawel> to wydaje się akurat w miarę łatwe
+<Marek> będzie lepiej pracował
+* Mateusz slaps Tomek around a bit
+<Marek> w menu po prawej sie klika na ludzi
+<Mateusz> xD
+<Pawel> no i Marcin Twoje zadanie:
+<Marcin> słucham
+<Pawel> znalezienie sposobu na zdobycie prawdziwych komunikatów wysyłanych bądź to przez drivery,  bądź przez shela mongo
+<Marcin> prawdziwych tzn ?
+<Pawel> to znaczy, na przykładzie tego co mi się udało zrobić
+<Pawel> tylko daj mi minute muszę solution odpalić
+<Marcin> ok
+<Pawel> ja zainstalowałem sobie drivera do .NET
+<Pawel> podpiąłem się pod niego debuggerem
+<Pawel> i zobaczyłem co jest wysyłane na podstawie API drivera
+<Pawel> generalnie są to po prostu ciągi bajtów :D
+<Marcin> na podstawie tego ciągu mam wyłapac komunikaty
+<Marcin> ?
+<Pawel> var entity = new Entity { Name = "Tom" };
+<Pawel> collection.Insert(entity);
+<Pawel> te dwie linijki w C#
+<Pawel> powodują stworzenie pewnej wiadomości i wysłąnie jej na port 27071
+<Pawel> no i należałoby wiedzieć jaki to jest ciąg bajtów
+<Pawel> tak, żebyśmy mogli zobaczyć,czy to co parsujemy jest ok
+<Pawel> taki kod jak ten powinien zostać mniej więcej przetłumaczony na wiadomość
+<Pawel> typu: OP_INSERT 2002 insert new document
+<Pawel> jednym ze sposobów jest to o czym mówiłem
+<Pawel> mi tak było łatwiej
+<Pawel> drugim jest pewnie nasłuchiwanie ruchu sieciowego
+<Pawel> ja się na tym nie znam, ale chyba takie rzeczy da się zrobić
+<Pawel> żeby gdzieś tam wyświetlać co na jaki port jest wysyłane
+<Marcin> dobra spróbuje to ogarnać jak bedą jakieś problemy to się zgłosze
+<Pawel> chyba, że w ogóle nie wiesz o co chodzi, to ja się tym zajmę
+<Pawel> a Tobie przydziele moje zadanie
+<Marcin> no jeśli czujesz ze wiesz jak to zrobić to ok bo ja bym startował od zera z tym tematem
+<Pawel> no mniej więcej wiem :)
+<Marcin> a jakie ja bym miał zadanie ?
+<Pawel> dobra, to Ty zajmiesz się opracowaniem mongos
+<Pawel> tak jak mniej więcej ja teraz opisałem mongod
+<Pawel> to znaczy gdzie jest plik który to startuje
+<Pawel> jak to mniej więcej działa
+<Pawel> co otrzymuje, gdzie przekazuje
+<Pawel> ok?
+<Marcin> ok
+<Pawel> na początek podrzucę Ci gdzie jest jego metoda main
+<Pawel> bo się już do tego dokopałem
+<Marcin> ok
+<Pawel> używasz visuala, czy jakiegoś linuksowego ide?
+<Marcin> ale my zostajemy przy javie z tego co pamietam ?
+<Pawel> tak, ja mówię o kodzie mongo napisanego w c++
+<Marcin> aaa kod w c++
+<Marcin> visuala
+<Pawel> ok
+<Pawel> bo struktura wirtualnych katalogów w visualu różni się od tego co jest na dysku
+<Pawel> a ja uzywam visuala
+<Marcin> kod zródlowy z githuba ciągneliście ?
+<Pawel> jest to plik: mongos.Source Files.server.cpp
+<Pawel> tak
+<Pawel> czy wszyscy wiedzą co mają robić?
+<GIBBON> tak
+<Pawel> ja ze swojej strony napiszę dzisiaj jeszcze od nowa dokument który napisałem i straciłem
+<Pawel> oraz opiszę zadania
+<Pawel> wraz z odnośnikami do jakichś miejsc w kodzie, jeżeli je będę znał
+<Mateusz> zaraz 
+<Mateusz> parsowanie komunikatów czyli co
+<Mateusz> generalnie BSON to prawie co JSON
+<Mateusz> a JSON jest raczej obcykany
+<Mateusz> zatem moje pytanie brzmi
+<Mateusz> Ty chcesz aby po prostu móc przekształcać BSON w mapę lub coś takiego?
+<Pawel> do czegoś co nam będzie potrzebne
+<Pawel> pewnie mniej więcej coś takiego
+<Pawel> ale przez parsowanie komunikatów rozumiem
+<Pawel> coś takiego:
+<Pawel> przychodzi jakiś komunikat powiedzmy: OP_UPDATE
+<Pawel> nie wiem czy przeglądałeś to co jest w linku który dałem na początku
+<Pawel> struct OP_UPDATE {     MsgHeader header;             // standard message header     int32     ZERO;               // 0 - reserved for future use     cstring   fullCollectionName; // "dbname.collectionname"     int32     flags;              // bit vector. see below     document  selector;           // the query to select the document     document  update;             // specification of the update to perform }
+<Pawel> kurwa :/
+<Pawel> w każdym razie on ma taką strukturę
+<Pawel> ale to co przyjdzie to będzie oczywiście tablica bajtów
+<Pawel> no i powinieneś umieć to sparsować
+<Pawel> BSON to będą:
+<Pawel> document  selector;           // the query to select the document
+<Pawel>  document  update;             // specification of the update to perform
+<Pawel> a reszta to są po porstu kolejno zapisane bajty
+<Pawel> jeszcze nie mam pewności jak to jest ale dzisiaj jeszcze wrzucę przykłąd
+<Pawel> rozumiesz mniej więcej o co chodzi?
+<Marcin> Paweł do kiedy mamy to zrobić co ustalamy ?
+<Pawel> nie chcę rzucać jakichś bezsensownych terminów
+<Pawel> jak stoicie z czase?
+<Pawel> pewnie najlepiej byłoby za tydzień mieć już to gotowe
+<Pawel> ale jak to jest nierealne to nie ma się co napinać
+<Mateusz> nie przeglądałem
+<Mateusz> okay, sprasuję
+<Mateusz> ej, spoko
+<Mateusz> nie tablica bajtów, tylko charów znając życie
+<Mateusz> a może nie? :S
+<Mateusz> o gurwa, to gorzej
+<Pawel> ?
+<Pawel> e to właściwie bez różnicy
+<Mateusz> >ale to co przyjdzie to będzie oczywiście tablica bajtów
+<Mateusz> o, już wiesz
+* GIBBON o gurwa, to korzej
+<Pawel> tak
+<Mateusz> no to gites
+<Marek> to jak
+<Marek> ja z tomkiem rozumiem, że robimy BSONa
+<Pawel> no ja z moim zadaniem jestem w stanie się do niedzieli wyrobić
+<Marek> Mateusz parsowanie wiadomości
+<Pawel> powiedzcie ile wam się zejdzie
+<Marek> Marcin "prawdziwe wiadomosci"
+<Marek> tak?
+<Pawel> to w końcu mi przsypadło
+<Mateusz> hm, jakby tak nad tym zasiąść
+<Pawel> Marcin ma rozpracować jak działą mongos
+<Mateusz> to myślę że koło 3 wieczorów 
+<Mateusz> ale tak naprawdę chuj wie
+<Marek> ok
+<Marek> to może zacznijmy
+<Marek> i zobaczymy jak to będzie szło
+<Marek> jeszcze na piątek jest rso
+<Mateusz> dzisiaj?
+<Marek> chyba pierwszy deadline
+<Marek> nie no nie dzisiaj
+<Marek> ;)
+<Pawel> no i takie parsowania proponuje oczywiście pisać razem z testami jednostkowymi
+<Marek> bez przesady :D
+<Pawel> to znaczy ais?
+<GIBBON> ja rozkminiam balancer, ktory jest czescia mongos jak cos
+<Pawel> ja mam jeszcze w czwartek nei zaczętą prezentację na seminarium LD
+<Pawel> no i masz napiasć socketa
+<Tomek> tez mam prezentacje na czwartek :P
+<GIBBON> mysle ze wrzuce cos o tym na repo i zajme sie tym socketem
+<Pawel> ok
+<Pawel> też nie zaczętą?
+<Pawel> no dobra, to możemy konczyć?
+<Pawel> bo ja jeszcze chciałem dzisiaj opisać to mniej więcej co napisałem tutaj
+<Pawel> w trochę lepszej formie
+<Marek> ok
+* GIBBON agrees
+<Marcin> opiszesz dokładnie nasze zadania i wrzucisz ?
+<Pawel> tak
+<Pawel> dzisiaj koło 12 będą w repo
+<Pawel> tylko Piotrek wrzuć loga, ok?
+<GIBBON> jasne
+<Pawel> no dobra, to cześć
+<Pawel> nie ma co marnować czasu :p
+<Tomek> tez nie zaczeta
+<Marek> to narazie
+<Tomek> czesc
+* Tomek has quit (Quit: Page closed)
+* Marek has quit (Quit: Page closed)
+* Pawel has quit ()
