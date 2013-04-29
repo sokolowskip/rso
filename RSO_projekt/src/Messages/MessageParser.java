@@ -17,7 +17,7 @@ public static class MessageParser {
 
 	public static MessageType getType(byte[] msg)
 	{
-		int opCode = intToByteArray(byteSubarray(msg, 12, 4));
+		int opCode = Int(intToByteArray(byteSubarray(msg, 12, 4)));
 		
 		switch(opCode)
 		{
@@ -55,50 +55,108 @@ public static class MessageParser {
 	
 	public static ReplyMessage ParseReplyMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
+		
 		return ReplyMessage();
 	}
 	
 	public static GenericMessage ParseGenericMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
+		
 		return GenericMessage();
 	}
 	
 	public static UpdateMessage ParseUpdateMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
+		
+		String fullCollectionName = byteArrayToString(msg, 20);
+		int stringLength = fullCollectionName.Length;
+		
+		int i = stringLength + 20 + 1;
+		
+		Int flags = Int(byteArrayToInt(msg, i));
+		
 		return UpdateMessage();
 	}
 	
 	public static InsertMessage ParseInsertMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
 		return InsertMessage();
 	}
 	
 	public static QueryMessage ParseQueryMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
 		return QueryMessage();
 	}
 	
 	public static GetMoreMessage ParseGetMoreMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
 		return GetMoreMessage();
 	}
 	
 	public static DeleteMessage ParseDeleteMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
 		return DeleteMessage();
 	}
 	
 	public static KillCursorsMessage ParseKillCursorsMessage(byte[] msg)
 	{
+		MessageHeader messageHeader = CreateHeader(msg);
 		return KillCursorsMessage();
 	}
 	
 	private static int byteSubarray(byte[] msg, int from, int count)
 	{
-		return Arrays.copyOfRange(Object[] src, int from, int from + count);
+		return Arrays.copyOfRange(msg, from, from + count);
 	}
 	
-	private static int intToByteArray(byte[] b)
+	
+	
+	
+	private static MessageHeader CreateHeader(byte[] msg)
+	{
+		Int messageLength = Int(byteArrayToInt(msg, 0));
+		Int requestID = Int(byteArrayToInt(msg, 4));
+		Int responceTo = Int(byteArrayToInt(msg, 8));
+		Int opCode = Int(byteArrayToInt(msg, 12));	
+		
+		return MessageHeader(messageLength, requestID, responceTo, opCode);
+	}
+
+	private static String byteArrayToString(byte[] b, int from)
+	{
+		int to = from;
+		while(b[to] != 0)
+		{
+			to = to + 1;
+			
+			if(b.length <= to)
+			{
+				break;
+				//b³ont, dodaæ wyj¹tek
+			}
+		}
+		
+		to = to - 1;
+		
+		return new String(copyOfRange(b, from, to), "ANSI");
+	}
+	
+	private static int byteArrayToInt(byte[] b, int from)
+	{
+		return   b[from + 0] & 0xFF |
+				(b[from + 1] & 0xFF) << 8 |
+				(b[from + 2] & 0xFF) << 16 |
+				(b[from + 3] & 0xFF) << 24;
+	}
+
+	private static int Byte(byte[] b)
 	{
 		return   b[0] & 0xFF |
 				(b[1] & 0xFF) << 8 |
