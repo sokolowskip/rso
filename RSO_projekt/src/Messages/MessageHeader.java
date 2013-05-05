@@ -1,35 +1,35 @@
 
 public class MessageHeader {
-	private Int   messageLength; // total message size, including this
-    private Int   requestID;     // identifier for this message
-    private Int   responseTo;    // requestID from the original request
+	private int   messageLength; // total message size, including this
+    private int   requestID;     // identifier for this message
+    private int   responseTo;    // requestID from the original request
                            //   (used in reponses from db)
-    private Int   opCode;        // request type - see table below 
+    private int   opCode;        // request type - see table below 
 	
-	MessageHeader(Int length, Int id, Int to, Int op)
+	MessageHeader(int length, int id, int to, int op)
 	{
 		this.messageLength = length;
 		this.requestID = id;
-		this.responceTo = to;
+		this.responseTo = to;
 		this.opCode = op;
 	}
 	
-	public Int getMessageLength()
+	public int getMessageLength()
 	{
 		return messageLength;
 	}
 	
-	public Int getRequestID()
+	public int getRequestID()
 	{
 		return requestID;
 	}
 	
-	public Int getResponseTo()
+	public int getResponseTo()
 	{
 		return responseTo;
 	}
 	
-	public Int getOpCode()
+	public int getOpCode()
 	{
 		return opCode;
 	}
