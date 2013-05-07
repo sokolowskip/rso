@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import messages.GenericMessage;
+import Messages.MessageParser;
+import Messages.*;
 
 /**
  * Klasa nasluchiwacza. 
@@ -107,8 +108,41 @@ public class Listener {
 			}
 			// TODO Tutaj trzeba pewnie bedzie stworzyc obiekt klasy GenericMessage od Mateusza. 
 			@SuppressWarnings("unused")
-			GenericMessage newMessage = new GenericMessage();
-			// i co dalej ???
+
+			MessageParser.MessageType messageType = MessageParser.getType(messageBuffer);
+			
+			switch(messageType)
+			{
+				//OP_REPLY 	1 	Reply to a client request. responseTo is set
+				case OP_REPLY:
+					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(messageBuffer);
+					//analogicznie poni¿ej
+					break;
+				//OP_MSG 	1000 	generic msg command followed by a string
+				case OP_MSG:
+					break;
+				//OP_UPDATE 	2001 	update document
+				case OP_UPDATE:
+					break;
+				//OP_INSERT 	2002 	insert new document
+				case OP_INSERT:
+					break;
+				//OP_QUERY 	2004 	query a collection
+				case OP_QUERY:
+					break;
+				//OP_GET_MORE 	2005 	Get more data from a query. See Cursors
+				case OP_GET_MORE:
+					break;
+				//OP_DELETE 	2006 	Delete documents
+				case OP_DELETE:
+					break;
+				//OP_KILL_CURSORS 	2007 	Tell database client is done with a cursor
+				case OP_KILL_CURSORS:
+					break;
+				default:
+					//b³¹d, trzeba wyrzuciæ wyj¹tek
+					break;
+			}
 		} 
 		catch (IOException e) 
 		{
