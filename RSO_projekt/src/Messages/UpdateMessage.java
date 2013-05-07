@@ -1,9 +1,10 @@
+package Messages;
 
 public class UpdateMessage {
-    private MsgHeader header;             // standard message header
-    private int ZERO;               // 0 - reserved for future use
-    private string fullCollectionName; // "dbname.collectionname"
-    private int flags;              // bit vector. see below
-    private document selector;           // the query to select the document
-    private document update;             // specification of the update to perform
+    public MessageHeader header;             // standard message header
+    public int ZERO;               // 0 - reserved for future use
+    public String fullCollectionName; // "dbname.collectionname"
+    public int flags;              // bit vector. see below
+    public String selector;           // the query to select the document
+    public String update;             // specification of the update to perform
 }

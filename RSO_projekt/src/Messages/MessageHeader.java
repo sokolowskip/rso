@@ -1,3 +1,4 @@
+package Messages;
 
 public class MessageHeader {
 	private int   messageLength; // total message size, including this

@@ -1,5 +1,7 @@
-import java.util.Arrays;
+package Messages;
 
+import java.util.Arrays;
+import java.lang.String;
 public class MessageParser {
 
 	public enum MessageType
@@ -17,7 +19,7 @@ public class MessageParser {
 
 	public static MessageType getType(byte[] msg)
 	{
-		int opCode = (intToByteArray(byteSubarray(msg, 12, 4)));
+		int opCode = byteArrayToInt(msg, 12);
 		
 		switch(opCode)
 		{
@@ -57,78 +59,108 @@ public class MessageParser {
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
 		
-		return ReplyMessage();
+		return new ReplyMessage();
 	}
 	
 	public static GenericMessage ParseGenericMessage(byte[] msg)
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
 		
-		return GenericMessage();
+		return new GenericMessage();
 	}
 	
 	public static UpdateMessage ParseUpdateMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
+		UpdateMessage updateMessage = new UpdateMessage();
+		
+		updateMessage.header = CreateHeader(msg);
+
 		
 		String fullCollectionName = byteArrayToString(msg, 20);
 		int stringLength = fullCollectionName.length();
 		
+		updateMessage.fullCollectionName = fullCollectionName;
+		
 		int i = stringLength + 20 + 1;
 		
-		int flags = (byteArrayToInt(msg, i));
+		updateMessage.flags = (byteArrayToInt(msg, i));
 		
-		return UpdateMessage();
+		i += 4;
+
+		int selectorLength = (byteArrayToInt(msg, i));
+		
+
+		byte[] selector = byteSubarray(msg, i, selectorLength);
+		
+		i += selectorLength;
+		
+
+		int UpdateLength = (byteArrayToInt(msg, i));
+		
+		byte[] update = byteSubarray(msg, i, UpdateLength);
+		
+		return updateMessage;
 	}
 	
 	public static InsertMessage ParseInsertMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
-		return InsertMessage();
+		
+		InsertMessage insertMessage = new InsertMessage();
+		
+		insertMessage.header = CreateHeader(msg);
+		
+		insertMessage.flags = (byteArrayToInt(msg, 16));
+		
+		String fullCollectionName = byteArrayToString(msg, 20);
+		
+		int i = 20 + fullCollectionName.length() + 1;
+		
+		insertMessage.fullCollectionName = fullCollectionName;
+		
+		//tutaj powinienem obrobic jeszcze adres do dokumentu / dokumentow ale nie wiem jak to zrobic
+		
+		return insertMessage; 
 	}
 	
 	public static QueryMessage ParseQueryMessage(byte[] msg)
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
-		return QueryMessage();
+		return new QueryMessage();
 	}
 	
 	public static GetMoreMessage ParseGetMoreMessage(byte[] msg)
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
-		return GetMoreMessage();
+		return new GetMoreMessage();
 	}
 	
 	public static DeleteMessage ParseDeleteMessage(byte[] msg)
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
-		return DeleteMessage();
+		return new DeleteMessage();
 	}
 	
 	public static KillCursorsMessage ParseKillCursorsMessage(byte[] msg)
 	{
 		MessageHeader messageHeader = CreateHeader(msg);
-		return KillCursorsMessage();
+		return new KillCursorsMessage();
 	}
 	
-	private static int byteSubarray(byte[] msg, int from, int count)
+	private static byte[] byteSubarray(byte[] msg, int from, int count)
 	{
-		return Arrays.copyOfRange(msg, from, from + count);
+		return Arrays.copyOfRange(msg, from, from + count - 1);
 	}
-	
-	
-	
 	
 	private static MessageHeader CreateHeader(byte[] msg)
 	{
-		 messageLength = (byteArrayToInt(msg, 0));
-		 requestID = (byteArrayToInt(msg, 4));
-		 responceTo = (byteArrayToInt(msg, 8));
-		 opCode = (byteArrayToInt(msg, 12));	
+		 int messageLength = (byteArrayToInt(msg, 0));
+		 int requestID = (byteArrayToInt(msg, 4));
+		 int responceTo = (byteArrayToInt(msg, 8));
+		 int opCode = (byteArrayToInt(msg, 12));	
 		
-		return MessageHeader(messageLength, requestID, responceTo, opCode);
+		return new MessageHeader(messageLength, requestID, responceTo, opCode);
 	}
-
+	
 	private static String byteArrayToString(byte[] b, int from)
 	{
 		int to = from;
@@ -145,7 +177,19 @@ public class MessageParser {
 		
 		to = to - 1;
 		
-		return new String(copyOfRange(b, from, to), "ANSI");
+		String string = null;
+		try
+		{
+			string = new String(Arrays.copyOfRange(b, from, to), "ANSI");
+		}
+		catch(Exception e)
+		{
+		//nic tu nie ma 
+		}
+		
+		from = to + 2;
+		
+		return string;
 	}
 	
 	private static int byteArrayToInt(byte[] b, int from)
