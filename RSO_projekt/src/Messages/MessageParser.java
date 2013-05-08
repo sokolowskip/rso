@@ -1,6 +1,8 @@
 package Messages;
 
 import java.util.Arrays;
+import BSON.Document;
+import BSON.BSON;
 import java.lang.String;
 public class MessageParser {
 
@@ -55,65 +57,33 @@ public class MessageParser {
 		}
 	}
 	
-	public static ReplyMessage ParseReplyMessage(byte[] msg)
-	{
-		MessageHeader messageHeader = CreateHeader(msg);
-		
-		return new ReplyMessage();
-	}
-	
-	public static GenericMessage ParseGenericMessage(byte[] msg)
-	{
-		MessageHeader messageHeader = CreateHeader(msg);
-		
-		return new GenericMessage();
-	}
-	
 	public static UpdateMessage ParseUpdateMessage(byte[] msg)
 	{
 		UpdateMessage updateMessage = new UpdateMessage();
 		
-		updateMessage.header = CreateHeader(msg);
+		Index i = new Index();
+		updateMessage.header = getHeader(msg, i);
+		
+		int zero = getInt(msg, i);//powinno byc zero
+		
+		updateMessage.fullCollectionName = getString(msg, i);
+		
+		updateMessage.flags = getInt(msg, i);
 
-		
-		String fullCollectionName = byteArrayToString(msg, 20);
-		int stringLength = fullCollectionName.length();
-		
-		updateMessage.fullCollectionName = fullCollectionName;
-		
-		int i = stringLength + 20 + 1;
-		
-		updateMessage.flags = (byteArrayToInt(msg, i));
-		
-		i += 4;
-
-		int selectorLength = (byteArrayToInt(msg, i));
-		
-
-		byte[] selector = byteSubarray(msg, i, selectorLength);
-		
-		i += selectorLength;
-		
-
-		int UpdateLength = (byteArrayToInt(msg, i));
-		
-		byte[] update = byteSubarray(msg, i, UpdateLength);
-		
 		return updateMessage;
 	}
 	
 	public static InsertMessage ParseInsertMessage(byte[] msg)
 	{
-		
 		InsertMessage insertMessage = new InsertMessage();
 		
-		insertMessage.header = CreateHeader(msg);
+		Index i = new Index();
+		insertMessage.header = getHeader(msg, i);
 		
-		insertMessage.flags = (byteArrayToInt(msg, 16));
 		
-		String fullCollectionName = byteArrayToString(msg, 20);
+		insertMessage.flags = getInt(msg, i);
 		
-		int i = 20 + fullCollectionName.length() + 1;
+		String fullCollectionName = getString(msg, i);
 		
 		insertMessage.fullCollectionName = fullCollectionName;
 		
@@ -124,50 +94,118 @@ public class MessageParser {
 	
 	public static QueryMessage ParseQueryMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
+		QueryMessage queryMessage = new QueryMessage();
+		Index i = new Index();
+		queryMessage.header = getHeader(msg, i);
+		
+		queryMessage.flags = getInt(msg, i);                  // bit vector of query options.  See below for details.
+		queryMessage.fullCollectionName = getString(msg, i); // "dbname.collectionname"
+		queryMessage.numberToSkip = getInt(msg, i);          // number of documents to skip
+		queryMessage.numberToReturn = getInt(msg, i);        // number of documents to return
+	                                     //  in the first OP_REPLY batch
+	   // document  query;                 // query object.  See below for details.
+	  // document  returnFieldSelector;  // Optional. Selector indicating the fields
 		return new QueryMessage();
 	}
 	
 	public static GetMoreMessage ParseGetMoreMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
+		GetMoreMessage getMoreMessage = new GetMoreMessage();
+		Index i = new Index();
+		getMoreMessage.header = getHeader(msg, i);
+		int zero = getInt(msg, i); //nie wiem co z tym zerem
+		getMoreMessage.fullCollectionName = getString(msg, i); // "dbname.collectionname"
+		getMoreMessage.numberToReturn = getInt(msg, i);        // number of documents to return
+		getMoreMessage.cursorID = getInt64(msg, i);
 		return new GetMoreMessage();
 	}
 	
 	public static DeleteMessage ParseDeleteMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
+		DeleteMessage deleteMessage = new DeleteMessage();
+		Index i = new Index();
+		deleteMessage.header = getHeader(msg, i);
+		int zero = getInt(msg, i); //nie wiem co z tym zerem
+		deleteMessage.fullCollectionName = getString(msg, i); // "dbname.collectionname"
+		deleteMessage.flags = getInt(msg, i);                  // bit vector of query options.  See below for details
 		return new DeleteMessage();
 	}
 	
 	public static KillCursorsMessage ParseKillCursorsMessage(byte[] msg)
 	{
-		MessageHeader messageHeader = CreateHeader(msg);
+		KillCursorsMessage killCursorsMessage = new KillCursorsMessage();
+		Index i = new Index();
+		killCursorsMessage.header = getHeader(msg, i);
+		int zero = getInt(msg, i); //nie wiem co z tym zerem
+		int numberOfCursorIDs = getInt(msg, i);
+		killCursorsMessage.numberOfCursorIDs = numberOfCursorIDs;
+		killCursorsMessage.cursorIDs = new long[numberOfCursorIDs];
+		
+		for(int temp = 0; temp<numberOfCursorIDs; temp++)
+		{
+			killCursorsMessage.cursorIDs[temp] = getInt64(msg, i);
+		}
+		
 		return new KillCursorsMessage();
 	}
-	
-	private static byte[] byteSubarray(byte[] msg, int from, int count)
+
+	public static GenericMessage ParseGenericMessage(byte[] msg)
 	{
-		return Arrays.copyOfRange(msg, from, from + count - 1);
+		GenericMessage genericMessage = new GenericMessage();
+		Index i = new Index();
+		genericMessage.header = getHeader(msg, i);
+		genericMessage.message = getString(msg,i);
+		return new GenericMessage();
 	}
 	
-	private static MessageHeader CreateHeader(byte[] msg)
+	public static ReplyMessage ParseReplyMessage(byte[] msg)
 	{
-		 int messageLength = (byteArrayToInt(msg, 0));
-		 int requestID = (byteArrayToInt(msg, 4));
-		 int responceTo = (byteArrayToInt(msg, 8));
-		 int opCode = (byteArrayToInt(msg, 12));	
+		ReplyMessage replyMessage = new ReplyMessage();
+		Index i = new Index();
+		replyMessage.header = getHeader(msg, i);
+		replyMessage.flags = getInt(msg,i);
+		replyMessage.fullCollectionName = getString(msg, i);
+		replyMessage.numberToSkip = getInt(msg, i);          // number of documents to skip
+		replyMessage.numberToReturn = getInt(msg, i);        // number of documents to return
+		return new ReplyMessage();
+	}
+	
+	//prywatne funkcje poni¿ej
+	
+	private static MessageHeader getHeader(byte[] msg, Index i)
+	{
+		 int messageLength = getInt(msg, i);
+		 int requestID = getInt(msg, i);
+		 int responceTo = getInt(msg, i);
+		 int opCode = getInt(msg, i);	
 		
 		return new MessageHeader(messageLength, requestID, responceTo, opCode);
 	}
 	
-	private static String byteArrayToString(byte[] b, int from)
+	private static int getInt(byte[] b, Index i)
 	{
+		int value = byteArrayToInt(b, i.getValue());
+		i.move(4);
+		return value;
+	}
+	
+	private static long getInt64(byte[] b, Index i)
+	{
+		int value = byteArrayToInt64(b, i.getValue());
+		i.move(8);
+		return value;
+	}
+	
+	private static String getString(byte[] b, Index i)
+	{
+		
+		int from = i.getValue();
 		int to = from;
+		int change = 0;
 		while(b[to] != 0)
 		{
 			to = to + 1;
-			
+			change = change + 1;
 			if(b.length <= to)
 			{
 				break;
@@ -187,11 +225,27 @@ public class MessageParser {
 		//nic tu nie ma 
 		}
 		
-		from = to + 2;
+		i.move(change + 1);
 		
 		return string;
 	}
 	
+	private static byte[] byteSubarray(byte[] msg, int from, int count)
+	{
+		return Arrays.copyOfRange(msg, from, from + count - 1);
+	}
+	
+	private static Document getDocument(byte[] msg, Index i)
+	{
+		int sizeOfDocument = getInt(msg, i);
+		i.move(-4);//trzeba sie cofnac
+		
+		byte[] document = byteSubarray(msg, i.getValue(), sizeOfDocument);
+		
+		//tu nastepuje parsowanie
+		
+		return null;
+	}
 	private static int byteArrayToInt(byte[] b, int from)
 	{
 		return   b[from + 0] & 0xFF |
@@ -199,12 +253,17 @@ public class MessageParser {
 				(b[from + 2] & 0xFF) << 16 |
 				(b[from + 3] & 0xFF) << 24;
 	}
-
-	private static int Byte(byte[] b)
+	
+	private static int byteArrayToInt64(byte[] b, int from)
 	{
-		return   b[0] & 0xFF |
-				(b[1] & 0xFF) << 8 |
-				(b[2] & 0xFF) << 16 |
-				(b[3] & 0xFF) << 24;
+		return   b[from + 0] & 0xFF |
+				(b[from + 1] & 0xFF) << 8 |
+				(b[from + 2] & 0xFF) << 16 |
+				(b[from + 2] & 0xFF) << 24 |
+				(b[from + 1] & 0xFF) << 32 |
+				(b[from + 2] & 0xFF) << 40 |
+				(b[from + 1] & 0xFF) << 48 |
+				(b[from + 2] & 0xFF) << 56;
 	}
+
 }
