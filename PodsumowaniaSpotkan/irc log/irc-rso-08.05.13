@@ -1,0 +1,253 @@
+* Now talking on #rso
+* madjack.2600.net sets mode +n #rso
+* madjack.2600.net sets mode +t #rso
+* ChanServ sets mode +n #rso
+* ChanServ sets mode +t #rso
+* ChanServ (services@2600.net) has joined #rso
+* services.2600.net gives channel operator status to ChanServ
+* ChanServ has changed the topic to: 
+* ChanServ (services@2600.net) has left #rso
+* pawel (qwebirc@ircaddict.org) has joined #rso
+<pawel> cześć
+<GIBBON> czesc
+* Mateusz (~chatzilla@89-77-207-149.dynamic.chello.pl) has joined #rso
+<Mateusz> heja
+<GIBBON> siema
+<Mateusz> mam nadzieję że nie spóźniłem się za bardzo :)
+<Mateusz> widzę że jak na razie mało nas
+<Mateusz> ... do pieczenia chleba
+<pawel> no mało
+<Mateusz> no zauważyłem taki babol trochę, że Marek miał pisać tego bsona, i napisał parsowanie bsona
+<Mateusz> tyle że parser przyjmuje chary
+<Mateusz> a moje wiadomości przyjmują bajty
+<Mateusz> i tu trochę taki zgrzyt
+<pawel> to jedna cholera
+<Mateusz> no jak na razie na chama zamienienie charów na byte nie było takie fajne bo coś się pieprzył moduł testowy Marka 
+<GIBBON> poczekajmy nea reszte ekipy
+<Mateusz> ok
+<GIBBON> zeby sie nie powtarzac
+<pawel> konwersja byte <-> char to nic skomplikowanego
+<pawel> z tym BSONem to jeszcze sporo roboty
+<pawel> może nie ciężkiej
+<pawel> ale trzeba jeszcze obsłużyć zagnieżdżenia
+<Mateusz> no jasne
+<pawel> generalnie to jeżeli chcemy zrobić co trzeba na wtorek to bardzo dużo pracy
+<Mateusz> ale to można rekurencyjnie afaik zrobić
+<pawel> no tak
+<pawel> a i ja czekam mniej więcej
+<pawel> do 20:30
+<pawel> jak się reszta nie pojawi
+<pawel> to możemy na szyko omówić 
+<pawel> i ja maila napiszę z moimi przemyśleniami i zadaniami\
+<Mateusz> ok
+<pawel> Mateusz, Ty napisałeś już to parsowanie wiadomości?
+<pawel> albo na ile napisałeś?
+<Mateusz> już commituję
+<Mateusz> jest prawie wszytko
+<pawel> Piotrek, obczaiłeś co należy wysyłać do shela mongo?
+<pawel> ok
+<Mateusz> tylko musze dopisać wywoływanie funkcji parsowania dokumentów
+<pawel> wydaje mi się, że teraz najważeniejsze jest INSERT i QUERY
+<pawel> żebyśmy mogli pokazać, że coś zapisujemy i dczytujemy
+<Mateusz> wiadomości potraktowałem wszystkei po równo
+<pawel> ok, to super
+<GIBBON> ogarnialem to co one sobie przesylaja i juz na poczatku sa trzy zapytania i trzy odpowiedzi
+<GIBBON> tylko poto zeby ten shell sie podlaczyl;
+<pawel> no tak
+<pawel> tak to wiem
+<GIBBON> wiem co tam jest i chyba dalo by sie fake'owe komunikaty wyslac
+<pawel> wiesz co on odpowiada
+<pawel> ?
+<pawel> to na pewno
+<Mateusz> pawel: jak na razie zakladam ze wszystko jest ok, i nie mam obslugi bledow
+<pawel> on tam pewnie wysyła jakieś potwierdzenia
+<pawel> Matesz jak się pisze na czerwono :p ?
+<Mateusz> o tak?
+<pawel> ok, spoko - tak na razie musi być
+<GIBBON> tak ale w pierwszym jest adres i numer portu remote hosta
+<pawel> no na przykład
+<Mateusz> zalezy jakiego klienta uzywasz pawel
+<GIBBON> a w kolejnych to nie wiem co
+<pawel> albo tak jak piszesz mój login, żeby na czerwono było
+<Mateusz> no to zalezy od klienta
+<pawel> a spoko, właściwie to nieważne
+<Mateusz> dla chatzilli to jest % C 4
+<Mateusz> bez spacji
+<Mateusz> Czasami efekty sa zdumiewajace
+<pawel> %C4 mateusz: sprawdzam tylko
+<pawel> chyba nie działa :P
+<Mateusz> Chyba nie masz chatzilli
+<pawel> właśnie widzę
+<Mateusz> Powiedzialbym, ze bajeczne
+<pawel> dobra reszty nie widzę
+<pawel> :D
+<pawel> a więc to co musimy zrobić
+<pawel> w ogóle chcecie to omawiać, czy wystarczy jak maila wyślę?
+<Mateusz> Wziąść  się do roboty
+<GIBBON> nie no mow jakjuz jestesmy
+<GIBBON> bo pewnie beda jakies pytania
+<Mateusz> ^
+<pawel> to tak
+<pawel> zadania na drugi etam
+<pawel> - opracowanie szczegółowej koncepcji rozwiązania,
+<pawel> - realizacja prototypu oferującego ograniczoną funkcjonalność,
+<pawel> - opracowanie koncepcji testów porównawczych,
+<pawel> - opracowanie scenariusza końcowej demonostracji projektu.
+<pawel> no i punkt drugi to wiadomo to co nam się uda zakodować to będzie
+<pawel> punkt pierwszy miałby napisać na podstawie tych dokumentów przygotowanych na pierwszy etap
+<pawel> nie na pierwszy etap
+<pawel> ale z zadań które były przydzielane na pierwszym spotkaniu
+<pawel> po I etapie
+<pawel> no i zgodnie z tym
+<pawel> Piotrek Ty masz opisać shaarding
+<pawel> coś o tym napisałeś
+<pawel> więc nie powinno być Ci ciężko
+<pawel> tylko będziesz musiał napisać propozycje rozwiązania
+<pawel> Ty MAteusz miałeś napisać o odczytach
+<Mateusz> ok, a ja?
+<Mateusz> przeniosłeś te zadanie komuś innemu
+<Mateusz> ale ok
+<Mateusz> do kodu zerkałem, w sumie nie pisze tam więcej niż dokumentacja
+<Mateusz> w sumie niewiele więcej
+<Mateusz> ale nie mam ochoty wracać do kodu, szczerze mówiąc
+<pawel> hmmm komuś innemu?
+<pawel> to na drugim spotkaniu dostałeś  coś innego
+<pawel> właśnie parsowanie wiadomości
+<Mateusz> hmmm
+<Mateusz> no dobra
+<pawel> bo miałeś mieć BSONa
+<Mateusz> to napiszę to
+<Mateusz> a, faktyczeskojo
+<pawel> a więc też opisać koncepcje
+<Mateusz> no to wsio jasne
+<pawel> no niestety jesteśmy trochę w dupie
+<pawel> według moich założeń teraz powinniśmy mieć już kulejący odczyt i zapis
+<pawel> niestety nie mamy tego
+<pawel> i nie wiem czy będziemy mieli na wtorek
+<pawel> no i uzupełnienie tych dokumentów jest jednym elementem które należy wykonac
+<pawel> drugi to jest dalsze kodowanie
+<pawel> tu Piotrek Ty mógłbyś opracować co należy odsyłać do mongo
+<pawel> nie wiem czy to jest gdzieś udokumentowane
+<GIBBON> ja na poczatku zajalbym sie moze tym podlaczeniem shella mongo do naszej bazy, zeby sie laczyl i mozna bylo te komunikaty odbierac
+<Mateusz> aha, powiedz mi, czy to co piszę ma być super zgodne z ortodoksyjnymi regułami programowania obiektowego?
+<pawel> ja nie znalazłem
+<Mateusz> bo ja te dokumenty to zrobiłem tak że ich atrybuty umieściłem w zmiennych publicznych
+<pawel> Piotek,ok 
+<GIBBON> tylko ja bym to zrobil ze zhardkodowalbym jakies odpowiedzi
+<pawel> tak będzie ok
+<Mateusz> a teortycznie można by pierdolnąć zajebiste konstruktory i gety do zmiennych prywatnych
+<GIBBON> ktore by byly wysylane wtedy gdy id wiadomosci to 0 1 i 2
+<pawel> Mateusz, ja nie mam nic przeciwko temu
+<Mateusz> ale komu kurwa chcemy utrudniac życie xD
+<GIBBON> bo to wtedy jest to podlaczanir
+<Mateusz> ok świetnie, cieszę się
+<pawel> generalnie moją rolą jest być kierownikiem projektu
+<GIBBON> ale to co mam zamiar zrobic pewnie bedzie takim polsrodkiem
+<pawel> większość nowoczesnych Project Manangerów nawet nie umie programować :D
+<Mateusz> no własnie dlatego Ciebie pytam
+<GIBBON> moze to sie nada na potrzeby tego prototypu
+<Mateusz> no dobra
+<pawel> no właśnie ja nie jestem do tego dobrą osobą :P
+<Mateusz> ale w każdym razie pytam się dla porządku
+<pawel> ale ja ogólnie mam o tym taką opinię
+<pawel> że nie będziemy tego kodu utrzymywać więc można to pierdolić
+<Mateusz> hue
+<Mateusz> ale taki kod na zmiennych publicznych jest fajny
+<pawel> a poza tym nie wiem jak to jest z tym w Javie
+<Mateusz> w pracy ostatnio przeglądałem kod który niby jest zajebisty spełnia założenia ale czyta się go chujowo
+<pawel> w C# 
+<Mateusz> a można było to zrobić prościej, prymitywniej
+<Mateusz> no dobra, nie narzekam
+<pawel> specjaliści mówią eby zawsze używać właściwości
+<pawel> ale tam jest składnia 10 trazy bardziej zwięzła do tego
+<pawel> więc jest spoko
+<pawel> a jeśli chodzi o głupie klasy przechowujące dane
+<Mateusz> pawel: wiem jak jest w C#
+<pawel> i mające dziesiątki metod get/set to ja tego nie lubię :)
+<Mateusz> bo też tam pisałem
+<Mateusz> jednak nie piszemy w c#
+<pawel> no właśnie, więc wiesz, że tam enkapsulacja nie boli :)
+<Mateusz> niestety :p
+<pawel> też tak myślę :)
+<pawel> no i Mateusz, zadanie programityczne dla Ciebie
+<pawel> za chwilę napiszę 
+<Mateusz> wow
+<Mateusz> świetnie
+<Mateusz> pawel: tak się cieszę
+<pawel> telefon miałem :p
+<pawel> chcesz napisać inserty czy query?
+<pawel> najlepiej byłoby query
+<pawel> tylko właśnie ciągle nie wiemy jak właściwie te dane są trzymane 
+<Mateusz> :(
+<pawel> widzę, że w mongo jest taka klasa DiskLoc
+<pawel> i do nie jest zapisywane coś
+<pawel> a może niedokładnie przy jej pomocy
+<pawel> ale w jej okolicy
+<pawel> no dobra Mateusz, co wolałbyś zrobić?
+<Mateusz> jeśli mam już opisywać odczyty
+<Mateusz> to wolę query
+<pawel> ok
+<pawel> wiesz mniej więcej w jakim formacie to jest w mongo zapisywane?
+<Mateusz> nie
+<pawel> ale i tak musisz opisać 
+<Mateusz> no query jest powiązane z odczytem
+<Mateusz> bo query to zapytanie czyli odczyt
+<Mateusz> ne c'est pais?
+<pawel> tak, jak najbardziej
+<pawel> z tym nie byłoby problemu
+<pawel> gdyby MArcin wywiązał się ze swojego zadania
+<pawel> a on napisał bajkę, a nie nic wiążącego
+<pawel> no dobra w każdym razie napisz ten odczyt
+<Mateusz> jasne
+<pawel> pewnie na początku i tak będzie potrzebny jakiś fejkowy plik na dysku
+<pawel> no dobra i to by było tyle 
+<pawel> czyli po dwa zadania są przydzielone
+<pawel> ja ze swojej strony opiszę interfejs mongod
+<pawel> czyli mniej więcej to co wcześniej pisałem w sposób sformalizowany
+<pawel> i opiszę testy koncepcje testów porównawczych
+<pawel> oraz wszelkie zadania kierownika projekty
+<pawel> np: napisanie maila z opierdolem
+<pawel> :)
+<GIBBON> ok, wrzucisz to dzisiaj jakos?
+<GIBBON> tzn zadania
+<pawel> tak
+<GIBBON> dobra to chyba konczymy
+<pawel> zaraz zaczynam pisanie maila oraz wrzucę do repo coś
+<GIBBON> ja wrzucce loga
+<pawel> macie duże czasu do wtorku?
+<GIBBON> zeby druga polowa miala lekturw
+<pawel> a i jeszcze najważniejsze chyba
+<GIBBON> jakiegos kolosa mam w piatek
+<pawel> tylko coś sprawdzę
+<pawel> Konta w pracowni 518 zostały założone. Zapraszam we wtorek w godzinach 10-12 do p. 573A po odbiór haseł.
+<pawel> ma ktoś z was to hasło?
+<GIBBON> ja mam
+<pawel> a to super
+<Mateusz> a po co tamte kompy
+<Mateusz> przeca robimy na własnych :D
+<pawel> chyba takie jest wymaganie
+<GIBBON> ale nie wiem co to za domena wiec jeszcze sie laczylem
+<pawel> czy się mylę?
+<pawel> no dobra, możemy konczyć chyba
+<pawel> ja chciałbym jeszcze w sobotę spotkanie zrobić
+<pawel> będziecie mogli?
+<GIBBON> jasne w sobote spotkanie moze byc
+<GIBBON> ale wieczorem?
+<pawel> wieczorem to pewnie sporo osób gdzieś wychodzi
+<pawel> myślałem bardziej o 16-18
+<GIBBON> ok wlasnie dlatego pytalem
+<GIBBON> mi pasuje 16-18
+<pawel> no dobra, to ja w mailu dzisiaj zaproponuje
+<pawel> ważniejsza wydaje mi się część programistyczna
+<pawel> w dokumentach zawsze można coś naściemiać
+<pawel> więc to powinien być priorytet do soboty
+<Mateusz> w sobotę to ja nie wiem
+<Mateusz> ale w piątek na bank coś zrobię
+<pawel> ok
+<pawel> dobra to ja spadam
+<Mateusz> papatki
+<pawel> biorę się za pisanie maila 
+<pawel> narazie 
+<pawel> ::D
+<GIBBON> bye
+* pawel has quit ()
