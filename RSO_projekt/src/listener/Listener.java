@@ -131,10 +131,11 @@ public class Listener {
 			byte[] temp = messageBuffer.array();
 			//pomijamy jeszcze naglowek
 			char[] c = new char[temp.length - 16];
-			for (int i1 = 0, i2 = 15; i2 < temp.length - 16; i1++, i2++) {
+			for (int i1 = 0, i2 = 16; i1 < temp.length - 16; i1++, i2++) {
 				c[i1] = (char) temp[i2];
 			}
 			//ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
+			//System.out.println(c.length);
 			bizon.parseBSON(c);
 		} 
 		catch (IOException e) 
