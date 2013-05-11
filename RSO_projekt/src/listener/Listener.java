@@ -3,18 +3,17 @@ package listener;
 import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import bson.BSON;
 
-<<<<<<< HEAD
-import Messages.MessageParser;
-import Messages.*;
-=======
 
 import messages.MessageHeader;
->>>>>>> 8c0b8eaeb84b84a5867658c23f563a0b49dfcd04
+import messages.MessageParser;
+import messages.ReplyMessage;
 
 /**
  * Klasa nasluchiwacza. 
@@ -28,22 +27,27 @@ public class Listener {
 
 //	private String _name;
 //	private String _ip;
-	static int _port;
+	private static int port;
 	private static ServerSocket serverSocket;
+	
+	//Czasem w odpowiedzi trzeba wyslac
+	//adres klienta z ktorego przyszlo zapytanie
+	private static InetAddress remoteHostIP;
+	private static int 		remoteHostPort;
 	
 	//tu bedzie umieszczana odebrana wiadomosc
 	private static ByteBuffer messageBuffer;
 	
-	Listener(String name, String ip, int port) 
+	Listener(String name, String ip, int _port) 
 	{
 //		_name = name;
 //		_ip = ip;
-		_port = port;
+		port = _port;
 	}
 
 	public static void main(String[] args) throws IOException
 	{
-		if (setupSocket(_port))
+		if (setupSocket(port))
 		{
 			initAndListen();
 		}
@@ -80,6 +84,8 @@ public class Listener {
 		   try
 		   {
 			   clientSocket = serverSocket.accept();
+			   remoteHostIP = clientSocket.getInetAddress();
+			   remoteHostPort = clientSocket.getPort();
 			   accepted(clientSocket);
 		   }
 		   catch (IOException e)
@@ -91,7 +97,15 @@ public class Listener {
 	}
 	
 
-	
+	/**
+	 * Po kolei odczytuje bajty z otrzymanej wiadomosci
+	 * Wrzuca je do messageBuffer
+	 * Oddziela czesc naglowka i wrzuca ja do obiektu messages.MessageHeader
+	 * Oddziela czesc dokumentu i wrzuca ja do obiektu bson.BSON
+	 * Tworzy obiekt ReplyMessage i w razie potrzeby wysyla odpowiedz.
+	 * 
+	 * @param clientSocket
+	 */
 	static void accepted(Socket clientSocket) 
 	{
 		try 
@@ -101,6 +115,7 @@ public class Listener {
 			int length = message.length;
 			message[0] = (byte) length;
 			int i = 1;
+			//wczytujemy po kolei bajty z socketa 
 			while (i != length)
 			{
 				try
@@ -112,22 +127,34 @@ public class Listener {
 				}
 				catch (EOFException e)
 				{
-					System.err.println("Incorrect document length. ");
+					System.err.println("Incorrect message length. ");
 					break;
 				}
 			}
-<<<<<<< HEAD
-			// TODO Tutaj trzeba pewnie bedzie stworzyc obiekt klasy GenericMessage od Mateusza. 
-			@SuppressWarnings("unused")
-
-			MessageParser.MessageType messageType = MessageParser.getType(messageBuffer);
+			
+			//zamieniamy na obiekt ByteBuffer - podobno jest sprytniejszy
+			messageBuffer = ByteBuffer.wrap(message);
+			//na razie sam naglowek
+			MessageHeader header = new MessageHeader(
+					Integer.reverseBytes(messageBuffer.getInt(0)),
+					Integer.reverseBytes(messageBuffer.getInt(4)),
+					Integer.reverseBytes(messageBuffer.getInt(8)),
+					Integer.reverseBytes(messageBuffer.getInt(12)));
+			System.out.println("length: " + header.getMessageLength());
+			System.out.println("rqst: " + header.getRequestID());
+			System.out.println("resp: " + header.getResponseTo());
+			System.out.println("opcode: " + header.getOpCode());
+			//spoko, wszystko dziala
+			
+			MessageParser.MessageType messageType = MessageParser.getType(messageBuffer.array());
 			
 			switch(messageType)
 			{
 				//OP_REPLY 	1 	Reply to a client request. responseTo is set
 				case OP_REPLY:
-					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(messageBuffer);
-					//analogicznie poni¿ej
+					@SuppressWarnings("unused")
+					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(messageBuffer.array());
+					//analogicznie poniï¿½ej
 					break;
 				//OP_MSG 	1000 	generic msg command followed by a string
 				case OP_MSG:
@@ -151,23 +178,9 @@ public class Listener {
 				case OP_KILL_CURSORS:
 					break;
 				default:
-					//b³¹d, trzeba wyrzuciæ wyj¹tek
+					//bï¿½ï¿½d, trzeba wyrzuciï¿½ wyjï¿½tek
 					break;
 			}
-=======
-			//zamieniamy na obiekt ByteBuffer - podobno jest sprytniejszy
-			messageBuffer = ByteBuffer.wrap(message);
-			//na razie sam naglowek
-			MessageHeader header = new MessageHeader(
-					Integer.reverseBytes(messageBuffer.getInt(0)),
-					Integer.reverseBytes(messageBuffer.getInt(4)),
-					Integer.reverseBytes(messageBuffer.getInt(8)),
-					Integer.reverseBytes(messageBuffer.getInt(12)));
-			System.out.println("length: " + header.getMessageLength());
-			System.out.println("rqst: " + header.getRequestID());
-			System.out.println("resp: " + header.getResponseTo());
-			System.out.println("opcode: " + header.getOpCode());
-			//spoko, wszystko dziala
 			
 			//reszta leci do obiektu bizona
 			BSON bizon = new BSON();
@@ -181,13 +194,46 @@ public class Listener {
 			//ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
 			//System.out.println(c.length);
 			bizon.parseBSON(c);
->>>>>>> 8c0b8eaeb84b84a5867658c23f563a0b49dfcd04
+			
+			//teraz trzeba cos dopowiedziec
+			//konstruktor przyjmuje oryginalny naglowek i dokument
+			//o to co trzeba odpowiedziec martwimy sie gdzie indziej
+			Response response = new Response(header, bizon);
+			if (response.createResponse())
+				transmit(response.getBytes(), clientSocket.getOutputStream());
 		} 
 		catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Wysyla odpowiedz.
+	 * 
+	 * @param bytes
+	 * @param outputStream
+	 */
+	private static void transmit(byte[] bytes, OutputStream outputStream) 
+	{
+		for (byte b : bytes) 
+		{
+			try {
+				outputStream.write(b);
+			} catch (IOException e) {
+				System.err.println("Transmition failed.");
+				e.printStackTrace();
+			}
+		}		
+	}
+
+	public InetAddress getRemoteHostIP() {
+		return remoteHostIP;
+	}
+
+	public int getRemoteHostPort() {
+		return remoteHostPort;
 	}
 
 }
