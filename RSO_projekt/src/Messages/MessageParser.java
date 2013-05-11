@@ -70,6 +70,9 @@ public class MessageParser {
 		
 		updateMessage.flags = getInt(msg, i);
 
+		updateMessage.selector = getDocument(msg, i);
+		updateMessage.update = getDocument(msg, i);
+		
 		return updateMessage;
 	}
 	
@@ -103,8 +106,12 @@ public class MessageParser {
 		queryMessage.numberToSkip = getInt(msg, i);          // number of documents to skip
 		queryMessage.numberToReturn = getInt(msg, i);        // number of documents to return
 	                                     //  in the first OP_REPLY batch
-	   // document  query;                 // query object.  See below for details.
-	  // document  returnFieldSelector;  // Optional. Selector indicating the fields
+		queryMessage.query = getDocument(msg, i);                 // query object.  See below for details.
+		if(i.checkIt())
+		{
+			queryMessage.returnFieldSelector = getDocument(msg, i);// Optional. Selector indicating the fields
+		}
+		
 		return new QueryMessage();
 	}
 	
@@ -128,6 +135,8 @@ public class MessageParser {
 		int zero = getInt(msg, i); //nie wiem co z tym zerem
 		deleteMessage.fullCollectionName = getString(msg, i); // "dbname.collectionname"
 		deleteMessage.flags = getInt(msg, i);                  // bit vector of query options.  See below for details
+		deleteMessage.selector = getDocument(msg, i);
+
 		return new DeleteMessage();
 	}
 	
@@ -145,7 +154,7 @@ public class MessageParser {
 		{
 			killCursorsMessage.cursorIDs[temp] = getInt64(msg, i);
 		}
-		
+			
 		return new KillCursorsMessage();
 	}
 
@@ -240,11 +249,11 @@ public class MessageParser {
 		int sizeOfDocument = getInt(msg, i);
 		i.move(-4);//trzeba sie cofnac
 		
-		byte[] document = byteSubarray(msg, i.getValue(), sizeOfDocument);
+		byte[] documentSource = byteSubarray(msg, i.getValue(), sizeOfDocument);
 		
-		//tu nastepuje parsowanie
+		Document parsedDocument = null;//tu nastepuje parsowanie
 		
-		return null;
+		return parsedDocument;
 	}
 	private static int byteArrayToInt(byte[] b, int from)
 	{

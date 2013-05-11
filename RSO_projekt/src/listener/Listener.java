@@ -5,9 +5,16 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import bson.BSON;
 
+<<<<<<< HEAD
 import Messages.MessageParser;
 import Messages.*;
+=======
+
+import messages.MessageHeader;
+>>>>>>> 8c0b8eaeb84b84a5867658c23f563a0b49dfcd04
 
 /**
  * Klasa nasluchiwacza. 
@@ -23,6 +30,9 @@ public class Listener {
 //	private String _ip;
 	static int _port;
 	private static ServerSocket serverSocket;
+	
+	//tu bedzie umieszczana odebrana wiadomosc
+	private static ByteBuffer messageBuffer;
 	
 	Listener(String name, String ip, int port) 
 	{
@@ -87,16 +97,16 @@ public class Listener {
 		try 
 		{
 			DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-			byte[] messageBuffer = new byte[in.readUnsignedByte()];
-			int length = messageBuffer.length;
-			messageBuffer[0] = (byte) length;
+			byte[] message = new byte[in.readUnsignedByte()];
+			int length = message.length;
+			message[0] = (byte) length;
 			int i = 1;
 			while (i != length)
 			{
 				try
 				{
-					messageBuffer[i] = (byte) in.readUnsignedByte();
-					System.out.print(Integer.toHexString(messageBuffer[i] & 0xff) + " ");
+					message[i] = (byte) in.readUnsignedByte();
+//					System.out.print(Integer.toHexString(message[i] & 0xff) + " ");
 //					System.out.print(Integer.toHexString((in.readUnsignedByte())) + " ");
 					i++;
 				}
@@ -106,6 +116,7 @@ public class Listener {
 					break;
 				}
 			}
+<<<<<<< HEAD
 			// TODO Tutaj trzeba pewnie bedzie stworzyc obiekt klasy GenericMessage od Mateusza. 
 			@SuppressWarnings("unused")
 
@@ -143,6 +154,34 @@ public class Listener {
 					//b³¹d, trzeba wyrzuciæ wyj¹tek
 					break;
 			}
+=======
+			//zamieniamy na obiekt ByteBuffer - podobno jest sprytniejszy
+			messageBuffer = ByteBuffer.wrap(message);
+			//na razie sam naglowek
+			MessageHeader header = new MessageHeader(
+					Integer.reverseBytes(messageBuffer.getInt(0)),
+					Integer.reverseBytes(messageBuffer.getInt(4)),
+					Integer.reverseBytes(messageBuffer.getInt(8)),
+					Integer.reverseBytes(messageBuffer.getInt(12)));
+			System.out.println("length: " + header.getMessageLength());
+			System.out.println("rqst: " + header.getRequestID());
+			System.out.println("resp: " + header.getResponseTo());
+			System.out.println("opcode: " + header.getOpCode());
+			//spoko, wszystko dziala
+			
+			//reszta leci do obiektu bizona
+			BSON bizon = new BSON();
+			//ale parseBSON przyjmuje tablice char wiec konwertujemy
+			byte[] temp = messageBuffer.array();
+			//pomijamy jeszcze naglowek
+			char[] c = new char[temp.length - 16];
+			for (int i1 = 0, i2 = 16; i1 < temp.length - 16; i1++, i2++) {
+				c[i1] = (char) temp[i2];
+			}
+			//ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
+			//System.out.println(c.length);
+			bizon.parseBSON(c);
+>>>>>>> 8c0b8eaeb84b84a5867658c23f563a0b49dfcd04
 		} 
 		catch (IOException e) 
 		{
