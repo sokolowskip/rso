@@ -8,8 +8,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import bson.BSON;
 
+import bson.BSON;
 
 import messages.MessageHeader;
 import messages.MessageParser;
@@ -78,22 +78,22 @@ public class Listener {
 	 */
 	static void initAndListen()
 	{
-	   while (true)
-	   {	   
 		   Socket clientSocket = null;
 		   try
 		   {
 			   clientSocket = serverSocket.accept();
 			   remoteHostIP = clientSocket.getInetAddress();
 			   remoteHostPort = clientSocket.getPort();
-			   accepted(clientSocket);
+			   while (true)
+			   {	   
+				   accepted(clientSocket);
+			   }
 		   }
 		   catch (IOException e)
 		   {
 				System.err.println("Accept failed.");
 				System.exit(1);
 		   }
-	   }
 	}
 	
 
@@ -121,8 +121,6 @@ public class Listener {
 				try
 				{
 					message[i] = (byte) in.readUnsignedByte();
-//					System.out.print(Integer.toHexString(message[i] & 0xff) + " ");
-//					System.out.print(Integer.toHexString((in.readUnsignedByte())) + " ");
 					i++;
 				}
 				catch (EOFException e)
@@ -140,13 +138,10 @@ public class Listener {
 					Integer.reverseBytes(messageBuffer.getInt(4)),
 					Integer.reverseBytes(messageBuffer.getInt(8)),
 					Integer.reverseBytes(messageBuffer.getInt(12)));
-			System.out.println("length: " + header.getMessageLength());
-			System.out.println("rqst: " + header.getRequestID());
-			System.out.println("resp: " + header.getResponseTo());
-			System.out.println("opcode: " + header.getOpCode());
 			//spoko, wszystko dziala
 			
 			MessageParser.MessageType messageType = MessageParser.getType(messageBuffer.array());
+			System.out.println("Received: " + messageType.name());
 			
 			switch(messageType)
 			{
@@ -192,7 +187,6 @@ public class Listener {
 				c[i1] = (char) temp[i2];
 			}
 			//ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
-			//System.out.println(c.length);
 			bizon.parseBSON(c);
 			
 			//teraz trzeba cos dopowiedziec
@@ -216,23 +210,20 @@ public class Listener {
 	 * @param outputStream
 	 */
 	private static void transmit(byte[] bytes, OutputStream outputStream) 
-	{
-		for (byte b : bytes) 
-		{
-			try {
-				outputStream.write(b);
-			} catch (IOException e) {
-				System.err.println("Transmition failed.");
-				e.printStackTrace();
-			}
-		}		
+ {
+		try {
+			outputStream.write(bytes);
+		} catch (IOException e) {
+			System.err.println("Transmition failed.");
+			e.printStackTrace();
+		}
 	}
 
-	public InetAddress getRemoteHostIP() {
+	public static InetAddress getRemoteHostIP() {
 		return remoteHostIP;
 	}
 
-	public int getRemoteHostPort() {
+	public static int getRemoteHostPort() {
 		return remoteHostPort;
 	}
 
