@@ -15,8 +15,8 @@ import bson.BSON;
  * @author Piotr Cebulski
  * 
  */
-public class Response {
-
+public class Response 
+{
 	private MessageHeader header;
 	@SuppressWarnings("unused")
 	private BSON bizon;
@@ -49,8 +49,8 @@ public class Response {
 		case 0: // Pierwsze zapytanie klienta to: whatsmyuri
 				// a wiec trzeba w odpowienie miejsce wlozyc
 				// adres i port remoteHosta.
-			byte[] ip = Listener.getRemoteHostIP().getHostAddress().getBytes();
-			byte[] port = Integer.toString(Listener.getRemoteHostPort()).getBytes();
+			byte[] ip = ClientHandler.getRemoteHostIP().getHostAddress().getBytes();
+			byte[] port = Integer.toString(ClientHandler.getRemoteHostPort()).getBytes();
 			response = ByteBuffer.allocate(fakeResponse0a.length
 										+ ip.length 
 										+ 1// +1 na srednik
