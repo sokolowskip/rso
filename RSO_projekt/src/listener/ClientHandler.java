@@ -73,10 +73,15 @@ public class ClientHandler extends Thread
 		try 
 		{
 			DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-			byte[] message = new byte[in.readUnsignedByte()];
-			int length = message.length;
-			message[0] = (byte) length;
-			int i = 1;
+			//dlugosc to int (dzieki Mateusz)
+			int length = Integer.reverseBytes(in.readInt());
+			byte[] message = new byte[length];
+            message[0] = (byte)(length >>> 24);
+            message[1] = (byte)(length >>> 16);
+            message[2] = (byte)(length >>> 8);
+            message[3] = (byte)(length);
+			//czyli lyknelismy juz 4 bajty
+			int i = 4;
 			//wczytujemy po kolei bajty z socketa 
 			while (i != length)
 			{
@@ -102,7 +107,12 @@ public class ClientHandler extends Thread
 					Integer.reverseBytes(messageBuffer.getInt(12)));
 			//spoko, wszystko dziala
 			
-			MessageParser.MessageType messageType = MessageParser.getType(messageBuffer.array());
+			//zamieniamy jeszcze na char
+			char[] chars = new char[message.length];
+			for (int i1 = 0; i1 < chars.length; i1++)
+			    chars[i1] = (char) message[i1];
+			
+			MessageParser.MessageType messageType = MessageParser.getType(chars);
 			System.out.println("Received: " + messageType.name());
 			
 			switch(messageType)
@@ -110,7 +120,7 @@ public class ClientHandler extends Thread
 				//OP_REPLY 	1 	Reply to a client request. responseTo is set
 				case OP_REPLY:
 					@SuppressWarnings("unused")
-					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(messageBuffer.array());
+					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(chars);
 					//analogicznie poni�ej
 					break;
 				//OP_MSG 	1000 	generic msg command followed by a string
@@ -142,11 +152,10 @@ public class ClientHandler extends Thread
 			//reszta leci do obiektu bizona
 			BSON bizon = new BSON();
 			//ale parseBSON przyjmuje tablice char wiec konwertujemy
-			byte[] temp = messageBuffer.array();
-			//pomijamy jeszcze naglowek
-			char[] c = new char[temp.length - 16];
-			for (int i1 = 0, i2 = 16; i1 < temp.length - 16; i1++, i2++) {
-				c[i1] = (char) temp[i2];
+			//z pominieciem naglowka
+			char[] c = new char[message.length - 16];
+			for (int i1 = 0, i2 = 16; i1 < message.length - 16; i1++, i2++) {
+				c[i1] = (char) message[i2];
 			}
 			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
 			bizon.parseBSON(c);

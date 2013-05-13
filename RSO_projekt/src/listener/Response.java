@@ -62,7 +62,7 @@ public class Response
 			response.put(port);
 			response.put(fakeResponse0b);
 			// jeszcze trezba poprawic dlugsc
-			response.put(0, (byte) response.array().length);
+			response.putInt(0, Integer.reverseBytes(response.array().length));
 			break;
 		case 1:
 			response = ByteBuffer.wrap(fakeResponse1);
