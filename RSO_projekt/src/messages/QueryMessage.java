@@ -1,6 +1,6 @@
 package messages;
 
-import bson.Document;
+import bson.BSONElement;
 
 
 public class QueryMessage {
@@ -10,7 +10,7 @@ public class QueryMessage {
 	public String fullCollectionName;
 	public int numberToReturn;
 	public int numberToSkip;
-	public Document query;
-	public Document returnFieldSelector;
+	public BSONElement query;
+	public BSONElement returnFieldSelector;
 
 }

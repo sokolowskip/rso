@@ -1,12 +1,12 @@
 package messages;
 
-import bson.Document;
+import bson.BSONElement;
 
 public class DeleteMessage {
 
 	public MessageHeader header;
 	public int flags;
 	public String fullCollectionName;
-	public Document selector;
+	public BSONElement selector;
 
 }

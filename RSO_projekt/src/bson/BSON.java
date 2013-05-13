@@ -1,24 +1,17 @@
 package bson;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class BSON 
-{			
-	List<Document<?>> docs;
+{
 	
-	public BSON()
-	{
-		docs = new ArrayList<Document<?>>();
-	}
-	
-	public int parseBSON(char[] data)
+	static int parseBSON(char[] data, BSONDocument doc)
 	{
 		int len = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
-		
-		docs = new ArrayList<Document<?>>();
+	
 		
 		int index = 4;
 		while (true)
@@ -34,7 +27,7 @@ public class BSON
 			}
 			index++;
 			
-			index = process(type, data, index, docs, name);
+			index = process(type, data, index, doc.elems, name);
 			
 			if (index >= len - 1)
 				break;
@@ -43,13 +36,13 @@ public class BSON
 		return index;
 	}
 	
-	private int process(int type, char[] data, int index, List<Document<?>> docs, String name)
+	static int process(int type, char[] data, int index, List<BSONElement<?>> docs, String name)
 	{		
 		switch (type)
 		{
 			case 0x01:
 			{
-				Document<Double> temp = new Document<Double>();
+				BSONElement<Double> temp = new BSONElement<Double>();
 				temp.name = name;
 				
 				long temp2 = 0;
@@ -63,7 +56,7 @@ public class BSON
 			}
 			case 0x02:
 			{
-				Document<String> temp = new Document<String>();
+				BSONElement<String> temp = new BSONElement<String>();
 				temp.data = "";
 				temp.name = name;
 				
@@ -82,12 +75,12 @@ public class BSON
 			}
 			case 0x03:
 			{
-				Document<BSON> temp = new Document<BSON>();
-				temp.data = new BSON();
+				BSONElement<BSONDocument> temp = new BSONElement<BSONDocument>();
+				temp.data = new BSONDocument();
 				temp.name = name;
 				
 				char[] data2 = Arrays.copyOfRange(data, index, data.length);
-				int offset = temp.data.parseBSON(data2);
+				int offset = parseBSON(data2, temp.data);
 				index += offset + 1;
 				
 				docs.add(temp);
@@ -95,8 +88,8 @@ public class BSON
 			}
 			case 0x04:
 			{
-				Document<ArrayList<Document<?>>> temp = new Document<ArrayList<Document<?>>>();
-				temp.data = new ArrayList<Document<?>>();
+				BSONElement<ArrayList<BSONElement<?>>> temp = new BSONElement<ArrayList<BSONElement<?>>>();
+				temp.data = new ArrayList<BSONElement<?>>();
 				temp.name = name;
 				
 				int index2 = index;				
@@ -124,7 +117,7 @@ public class BSON
 			}
 			case 0x07:	
 			{
-				Document<ObjectID> temp = new Document<ObjectID>();
+				BSONElement<ObjectID> temp = new BSONElement<ObjectID>();
 				temp.data = new ObjectID();
 				temp.name = name;
 				
@@ -142,7 +135,7 @@ public class BSON
 			}
 			case 0x08:
 			{
-				Document<Boolean> temp = new Document<Boolean>();
+				BSONElement<Boolean> temp = new BSONElement<Boolean>();
 				temp.name = name;
 				
 				if (data[index] == 1)
@@ -158,7 +151,7 @@ public class BSON
 			case 0x11:
 			case 0x12:
 			{
-				Document<Long> temp = new Document<Long>();			
+				BSONElement<Long> temp = new BSONElement<Long>();			
 				temp.name = name;
 				
 				temp.data = (long)0;
@@ -171,7 +164,7 @@ public class BSON
 			}
 			case 0x0A:
 			{
-				Document<Byte> temp = new Document<Byte>();			
+				BSONElement<Byte> temp = new BSONElement<Byte>();			
 				temp.name = name;
 				temp.data = null;
 				
@@ -180,7 +173,7 @@ public class BSON
 			}
 			case 0x10:
 			{
-				Document<Integer> temp = new Document<Integer>();			
+				BSONElement<Integer> temp = new BSONElement<Integer>();			
 				temp.name = name;
 				
 				temp.data = data[index] + (data[index + 1] << 8) + (data[index + 2] << 16) + (data[index + 3] << 24);
