@@ -1,6 +1,9 @@
 package messages;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import bson.Document;
 import bson.BSON;
 import java.lang.String;
@@ -89,6 +92,22 @@ public class MessageParser {
 		String fullCollectionName = getString(msg, i);
 		
 		insertMessage.fullCollectionName = fullCollectionName;
+		
+		List<Document> documents = new LinkedList<Document>();
+		
+		while(i.checkIt())
+		{
+			documents.add(getDocument(msg, i));
+		}
+		
+		insertMessage.documents = new Document[documents.size()];
+		
+		Iterator<Document> iterator = documents.iterator();
+		for(int j = 0; iterator.hasNext(); j++)
+		{
+			insertMessage.documents[j] = iterator.next();
+		}
+		
 		
 		//tutaj powinienem obrobic jeszcze adres do dokumentu / dokumentow ale nie wiem jak to zrobic
 		
