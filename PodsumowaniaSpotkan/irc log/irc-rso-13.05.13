@@ -1,0 +1,521 @@
+* ChanServ sets mode +n #rso
+* ChanServ sets mode +t #rso
+* ChanServ (services@2600.net) has joined #rso
+* services.2600.net gives channel operator status to ChanServ
+* ChanServ has changed the topic to: 
+* ChanServ (services@2600.net) has left #rso
+* Disconnected (Connection reset by peer).
+* Now talking on #rso
+<pawel> cześć
+<pawel> co dacie radę do jutra zrobić?
+* ChanServ gives channel operator status to GIBBON
+<GIBBON> czesc
+<mar> z tego co czytałem logi z poprzedniego irca to miałeś Paweł wrzucić nowy przydział zadań? 
+<pawel> mail był
+<pawel> i tam były zadania
+<mar> prezentacja końca domyślam się że będzie w czerwcu ?
+<pawel> tak
+<mar> z punktu 1 opis mongos zrobiłem z punktu 2 inserty jeszcze nie
+<pawel> jest już w repo?
+<mar> już jakiś czas temu to dałem
+<mar> ale jak coś to wrzuce jeszcze raz
+<pawel> ok
+<pawel> to co tam opisałeś powinno zostać domergowane jako rozdział do
+<pawel> https://github.com/sokolowskip/rso/blob/master/Dokumenty%20-%20etap%202/Szczegolowa_Kocepcja_Rozwiazania.docx
+<pawel> zrobisz to?
+<mar> jasne
+<pawel> pok
+<pawel> ok
+<mar> mam poprstu dodać to co ja napisałem jako kolejne rozdziały ?
+<pawel> no tak,
+<pawel> nie czytałem tego dokładnie
+<pawel> więc ewentualnie jakieś poprawki stylistyczne
+* Mateusz (~chatzilla@89-77-207-149.dynamic.chello.pl) has joined #rso
+<Mateusz> Hey PPA
+<Mateusz> ups
+<Mateusz> heja
+<pawel> no i tak, żeby to wyglądało na opis naszego pomysłi
+<pawel> siema
+<mar> już poprawiam
+<mar> cześć
+<pawel> Mateusz, Marcin dacie radę zrobić ten zapis i odczyt?
+<pawel> nawet najgłupiej
+<pawel> ?
+<Mateusz> uh
+<Mateusz> na kiedy
+<pawel> no na jutro :D
+<pawel> dla mnie może to nawet być władowanie BSONA do pamięci
+<pawel> a później na dysk
+<pawel> i czytanie jego po jakichś najprostszych kryteriach
+<Mateusz> D:
+<Mateusz> a mamy strukturę danych?
+<Mateusz> gdzie one są zapisywane?
+<pawel> jeszcze nigdzie
+<pawel> struktura to władowanie BSONA na dysk
+<Mateusz> no dobra 
+<Mateusz> ale to ma być taka mapka, jo?
+<pawel> w tej chwili moim zdaniem musi wystarczyć
+<Mateusz> hashmapa :DD
+<pawel> nie wiem
+<pawel> trzeba to jakoś zaprojektować
+<mar> ja nie ukrywam że ten kod mongo jest dla mnie dosyć skomplikowany... ale jak ktoś mógł bym mi trochę to wytłumaczyć to spróbuje to zrobić
+<pawel> a wiesz co się dzieje w tej chwili w naszym kodzie
+<pawel> ?
+<pawel> bo genralnie nie musimy w ogóle naśladować kodu mongo
+<pawel> to co usieliśmy zaimplementować w zgodzie z nim
+<pawel> przynajmniej początek mamy
+<pawel> w skrócie moja wiedza jest aktualnie taka
+<pawel> odczytujemy komunikaty
+<Mateusz> włączam eclipse i ogarniam co się dzieje
+<pawel> potrafimy je odbierać i parsować
+<pawel> no i teraz należy zaprojektować
+<Mateusz> i powinniśmy odczytywać dokumenty
+<pawel> jak one powinny być zapisane na dysku
+<pawel> jak dla mnie w tej chwili musi wystarczyć coś w stylu
+<pawel> powiedzmy
+<pawel> pliki będące nazwami kolekcji
+<pawel> w nich po kolei zapisane w BSON dane
+<pawel> a więc osoba zapisująca
+<pawel> w komunikacie
+<pawel> insert ma nazwę kolekcji
+<pawel> patrzy czy istnieje plik jej odpowiadający
+<pawel> jeżeli nie tworzy go
+<pawel> i wrzuca BSON mu odpowiadający
+<pawel> osoba odczytująca tu jest dużo więcej pracy
+<pawel> niestety
+<pawel> wczytuje taki plik
+* tomek (qwebirc@ircaddict.org) has joined #rso
+<tomek> siema
+<pawel> powiedzmy, że w tej chwili zrobimy tylko query w stylu name == "John"
+<pawel> czyli porównywanie
+<tomek> wlasnie dodalem deleta
+<pawel> no i odczytywanie będzie polegała po kolei na wczytywaniu wszystkich BSON z kolekcji i sprawdzaniu czy pasują do warunku
+<pawel> czy mniej więcej jest jasne jak to powinno być zrobione?
+<pawel> to jest tylko moja idea
+<pawel> i osoby piszące powinny to zaprojektować
+<pawel> Tomek, wrzucileś jakiś kod od delete, czy opis?
+<tomek> kod
+<mar> chwila. załaduje sobie kod i jak coś to będę pytał
+<tomek> i na ile moge przeczytac to co napisales powinno byc ok
+<tomek> oczywiscie funkcjonalnosc okrojona
+<Mateusz> pawel
+<tomek> tak wogole Marek ma dzisiaj urodziny dziewczyny i przeprasza ale nie moze sie dzisiaj z nami konsultowac
+<Mateusz> a moze zrobimy foldery, ktore sa kolekcjami
+<Mateusz> a w srodku pliki
+<Mateusz> a nazwy plikow to na przyklad hashe albo indeksy jakies
+<pawel> może być teraz i tak
+<pawel> to i tak później trzeba będzie zmienić
+<Mateusz> indeksy oczywiscie musialyby byc unikalne
+<Mateusz> niekoniecznie, taki system ma prawie same zalety
+<pawel> bo nie bez powodu bazy danych są inaczej implementowane
+<Mateusz> zwlaszcza ze czesc roboty przenosimy na filesystem
+<Mateusz> no dooobra
+<pawel> Mateusz 
+<pawel> właściwie to ja się nie wtrącam w to
+<Mateusz> he, he
+<pawel> dobrze by było, żebyście się tylko dogadali co do projektu
+<pawel> żeby spójnie coś napisać
+<tomek> ja zrobilem kolekcje przy wykorzystaniu guava
+<tomek> i w niej trzymam DBObejct-y
+<tomek> a jak przesukuje ich zawartosc to parsuje na json i porownuje
+<tomek> ciezko mi bylo to robic bez updatow ale w tescie sobie zasymulowalem czesciowa kolekcje
+<tomek> sory bez insertow nie updatow
+<tomek> :)
+<pawel> no dobra, moim zdaniem istotne jest to, żeby była jakaś struktura danych zapisywanych na dysku
+<pawel> a więc Marcin jesteś w stanie to zaprojektować?
+<pawel> idea każdy dokument 1 plik ma moim zdaniem taką wadę
+<tomek> oj slabo 
+<tomek> wolne to bedzie chyba
+<pawel> niech będzie wolne
+<pawel> no dobra to ja napiszę jeszcze raz swoją ideę, a później czekam na komentarze
+<pawel> i ewentualnie inne propozycje
+<pawel> to wszystko oczywiście będzie wolne i niewydajne
+<tomek> ok
+<pawel> first make it work then make it fast
+<Mateusz> właśnie zabrałem sie za przeróbkę aby był char i byte jednocześnie
+<pawel> ale zróbmy to może zgodnie z ową sentencją :)
+<Mateusz> marek jesteś pewien że to musi być char?!
+<pawel> Marka nie ma :p
+<Mateusz> to kto to jest mar
+<Mateusz> a, marcin
+<pawel> a więc każda kolekcja posiada swój plik,  w nim są po kolei zapisywane dokumenty
+<pawel> BSON jak pamiętam konczy się w charakterystyczny spsób
+<pawel> a więc odczyt będzie polegał na wczytaniu do pamięci w tej chwili nawet całego pliku
+<pawel> sparsowanie BSONa i sprawdzenie czy spełnia warunki z QUERY
+<pawel> czyli też dokumentu tam podanego
+<pawel> usuwanie będzie właściwie wyglądało tak samo jak Query, tylko zamiast zwracania dokumentów, będą one usuwane
+<pawel> to nie wydaje mi się trudne i do napisania w parę godzin
+<Mateusz> pawel: BSON nie konczy sie w charakterystyczny sposob
+<Mateusz> na poczatku BSONa jest podana jego dlugosc w bajtach
+<Mateusz> nawet jezeli sie konczy w taki czy inny sposob to nie ma znaczenia
+<pawel> a ok,
+<pawel> więc jak się rozpoznaje gdzie jest jego koniec?
+<Mateusz> eee, po prostu wiemy ze sie konczy bo trwa tylko N bajtów
+<Mateusz> bym się odniósł do bsonspec.org ale ono padło
+<pawel> podobnie chciałem zrobić :)
+<pawel> a to tym lepiej
+<pawel> no faktycznie, ja w nasz kod zajrzałem
+<pawel> no dobra, to teraz czekam  na komentarze dotyczące mojej propozycji
+<Mateusz> ej, ale w odczycie, jak znajdziesz konkretnego bsona
+<Mateusz> i to jest dość upierdliwe jeśli chodzi o kasowanie
+<Mateusz> bo jeżeli chcesz skasować jakiś dokument
+<Mateusz> to zostaje dziura
+<Mateusz> i co z nią
+<pawel> wiem o tym
+<Mateusz> każda operacja to by było przepisanie wszystkiego
+<GIBBON> tak jak w facebook'u <-- nigdy nic nie kasuja
+<pawel> chciałem tylko zaznaczyć, że mamy 16 godzin do oddania projektu
+<Mateusz> kurwa 
+<pawel> do oddania tej cześci
+<pawel> generalnie do tego powinno być pewnie B-drzewo użyte
+<pawel> ale tego to się do jutra napewno nie da zaimplementować
+<pawel> a poza tym Mateusz nie wiem jak bazy danych obsługują usuwania, odczyty bez indesków to nic innego jak jeżdżenie po dysku po wszystkich elementach
+<pawel> stąd takie różnice przy query używającecyh indeks i nie
+<Mateusz> Gibbon co to ma znaczyć ta linijka 
+<Mateusz> byte[] message = new byte[in.readUnsignedByte()];
+<Mateusz> :(
+<Mateusz> a czekaj chyba wiem o co chodzi 
+<pawel> a wolisz Mateusz każdy dokument = nowy plik?
+<GIBBON> to pobiera pierwszy byte
+<Mateusz> a długość jest w incie
+<GIBBON> ten zawierajacy dlugosc wiadomosci
+<Mateusz> czyli 4 bajty
+<GIBBON> racja 
+<GIBBON> chyba zapomnialem o tym
+<GIBBON> dla tych pierwszych wiadomosci nie mialo to znaczenia
+<GIBBON> ale to trzeba zmienic
+<GIBBON> dzieki
+<Mateusz> Gibbon to ty przerób clienthandlera tak aby było dobrze
+<Mateusz> i aby przerabiał na chary
+<Mateusz> w razie czego zrobi się na bajty
+<Mateusz> mi marek mówił że bajty są signed i unsigned
+<Mateusz> i lepiej to zrobić na charach
+<Mateusz> ja isę nad tym wczesniej nie zastanawiałęm więc przyznałem mu rację no bo co
+<pawel> hmm... byte to jest jak na moje oko 0..255
+<Mateusz> pawel: mysle, ze na poczatek nam to duzo upraszcza
+<pawel> ok, czy wszyscy się na to zgadzają?
+<Mateusz> pawel: marek twierdzi ze -127:127
+<GIBBON> w javie nie ma typow unsigned
+<Mateusz> pawel: 1 dokument = 1 plik upraszcza duzo
+<Mateusz> na poczatek mozna nawet pierdolic agregacje
+<pawel> dobra - tak naprawdę z bajtem to jeden chuj
+<pawel> to przecież chodzi tylko o to jak są bity ustawione
+<pawel> w nim nie ma żadnej magii
+<GIBBON> ^ dokladnie tak
+<Mateusz> te uproszczenie polega na tym ze nie musimy pisac funkcji wyszukujacej dokument
+<Mateusz> no ja wiem ze nie ma magii
+<Mateusz> ale chce aby to juz bylo zrobione
+<Mateusz> i aby jakies gowno mozna bylo odhaczyc
+<pawel> tu masz rację
+<pawel> zgadzam się w 100%
+<pawel> tylko nie rozumiem w czym to rozwiązanie upraszcza odczyt
+<pawel> bo zapis i usuwaniu i aktualizację to jak najbardziej
+<pawel> wyjaśnisz :) ?
+<GIBBON> BSON nie jest reprezentacja znakowa, to czemu mialbym cokolwiek zmieniac na char?
+<mar> ja widze ze na jutro marne szanse zebym napisał insert :/
+<tomek> Paweł - zabieram sie wlasnie za koncepcje testow porownawczych
+<Mateusz> pawel: chociazby dlatego, ze jesli znamy index, to po prostu bierzemy liste plikow z jakiegos folderu 
+<Mateusz> listę tą mamy od systemu
+<tomek> mam przykladowo zaproponowac test wykonyjacy 1000 insertow , wyjasnic dlaczego itp
+<Mateusz> tfu, jesli nie znamy indeksow
+<Mateusz> a jeśli chodzi o inserty, to tylko tworzymy index
+<Mateusz> i od razu pakujemy 
+<pawel> tak, i jeszcze zaproponuj testy zakładające wielodostęp oraz przykład jakiejś awarii węzła
+<Mateusz> wielodostęp przy systemie plików jest łatwy
+<pawel> no dobra, to przy indeskowanych spoko
+<tomek> ok
+<pawel> właściwie dla mnie ok, 
+<pawel> jak oddamy to jutro trzeba się będzie dokadnie zastanwowić
+<Mateusz> to mamy mieć już jakieś testy na jutro?
+<Mateusz> guuurwa
+<tomek> nie testy tylko ich koncepcje
+<Mateusz> a, koncepcja
+<Mateusz> no to ciężar zdjęty
+<tomek> :)
+<pawel> http://stackoverflow.com/questions/4127386/how-is-the-data-in-a-mongodb-database-stored-on-disk
+<pawel> a w ogóle nie wiem czemu kurwa nie pomyślałem wcześniej o wpisaniu tego zdania do googla :P
+<tomek> :D
+<Mateusz> afaik mamy dostęp do laboratorium w 500 100 900?
+<Mateusz> tak?
+<Mateusz> zatem można tam wykorzystać LAN i postawić tam cośtam
+<tomek> taki chyba wogole jest cel wszystkich grup
+<Mateusz> postawić N serwerów, niech się łączą jakoś
+<pawel> Marcin, wiesz co masz zrobić z insertami?
+<Mateusz> dobra, to kto pisze odczyty a kto inserty
+<Mateusz> a właśnie
+<mar> wiem o co chodzi ale nie wiem jak to zrobić :/
+<Mateusz> i problem jest taki, że te parsowanie BSON jest hmm
+<Mateusz> kurwa mac czy ono w ogóle jest napisane? 
+<tomek> jest w repo
+<Mateusz> parseBson zwraca inta
+<pawel> Marcin : masz napiasć obsługę w tym miejscu
+<pawel>     //OP_INSERT  2002  insert new document     case OP_INSERT:      break;
+<pawel> linia 123 plik ClientHandler
+<tomek> skad to wziales?
+<tomek> ok :)
+<pawel> to co teraz zostało zaproponowane przez Mateusza naprawdę nie jest trudne
+<mar> widze
+<Mateusz> troszczę się o moich grupokolegów :)
+<pawel> Mateusz, mógłbyś sprecyzować jak chciałbyś pliki nazywać?
+<pawel> :D
+<Mateusz> a mamy ich indeksy?
+<pawel> nie mamy
+<Mateusz> uważam że tylko indeksami, może przepisanymi jakoś na chary
+<Mateusz> kurde
+<pawel> mówisz o ObjectId
+<pawel> ?
+<Mateusz> nom
+<tomek> kto napisal tego clienthadlera?
+<Mateusz> on jest unikalny
+<Mateusz> tomek: Gibbon
+<pawel> no tak
+<tomek> ok 
+<Mateusz> wiec on na 100% sie nada
+<pawel> w linku któty wysłałem jest napisane jak on jest nadawny
+<tomek> tez w takim razie bede musial dodac tam swoje
+<pawel> przy zapsie trzea go nadać
+<Mateusz> ew. można zrobić hash
+<pawel> dla mnie może to być NewGuid
+<Mateusz> ale to trochę ryzykowne ;_;
+<pawel> nie wiem jakie jest do tego api
+<Mateusz> w sumie obojętnie co tam musi być, powinno być unikalne
+<Mateusz> i możliwe przenoszalne do chara
+<pawel> ale obstawiam, że coś w stylu Guid.NewGuid() jak w C#
+<Mateusz> bo nazwy plików muszą mieć cywilizowaną nazwę
+<pawel> będzie unikalne i łatwe do zdobycua
+<pawel> co tym myślisz Mateusz?
+<Mateusz> hm, no ok
+<Mateusz> a da się przełożyć to do stringa?
+<mar> gdzie w ClientHandlerze jest wywołanie deleta ?
+<Mateusz>     case OP_DELETE:
+<Mateusz>      break;
+<Mateusz> 132 linia
+<Mateusz> ClienHandler.java
+<Mateusz> tego switch case ja pisałem
+<Mateusz> miałem taką cichą nadzieję że będzie on oczywisty ;_;
+<Mateusz> nawet jest komentarz
+<Mateusz> .//OP_DELETE  2006  Delete documents
+<pawel> Mateusz jest :)
+<Mateusz> pawel: co
+<pawel> oczywisty :)
+<Mateusz> :)
+<pawel> w skrócie dobra robota :)
+<pawel> System.out.println(UUID.randomUUID().toString());
+<pawel> drukuje: 90b9505a-9bf4-4da2-9fc7-392b4a6f7408
+<pawel> więc spoko
+<pawel> nada się
+<Mateusz> wyczepiście
+<tomek> jak pobrac parametry?
+<tomek> mam na mysli weszlo np do delete i chce wiedziec co mam usunac?
+<pawel> no właśnie, Mateusz?
+<pawel> ObjectId to jedno
+<Mateusz> no, tak jak w prawdziwych zapytań to jest
+<pawel> a co z zapytaniami po innych parametrach?
+<Mateusz> momencik
+<pawel> jak dla mnie trzeba jechać po tych plikach
+<Mateusz> w obiekcie DeleteDocument jest 
+<Mateusz> selector
+<pawel> i je wszystkie przeglądać
+<Mateusz> selector: BSON document that represent the query used to select the documents to be removed. The selector will contain one or more elements, all of which must match for a document to be removed from the collection.
+<Mateusz> no niestety
+<pawel> no tak
+<Mateusz> czyli pobierasz listę plików z fs
+<Mateusz> dczytujesz każdy
+<Mateusz> sprawdzasz czy selector pasuje
+<pawel> dokładnie
+<Mateusz> i kasujesz albo nie
+<Mateusz> w sumie można to zrobić na wątkach aby było szybciej 8)
+<pawel> dobra, nie ma co pierdolić po próżnicy
+<Mateusz> TE GÓWNO JEST TAKIE ROZPROSZONE ŁOJEZU
+<pawel> Marcin wiesz już jak to napisać?
+<pawel> Mateusz?
+<pawel> Tomek?
+<Mateusz> co mam pisac
+<Mateusz> koncepcje testow czy co
+<pawel> Piotrek chcesz coś popisać?
+<pawel> odczyty?
+<Mateusz> to koncepcje testow pierdolci?
+<GIBBON> mialem chyba jeszcze napisac koncepcje rozwiazania
+<Mateusz> gdzie jest marek
+<Mateusz> czemu nie napisal bsona
+<GIBBON> czyli jak nasz sharding by wygladal
+<GIBBON> pawel: chodzilo ci o kod?
+<pawel> tak
+<GIBBON> jak poprawie tego babola z dlugoscia wiadomosci
+<mar> nie wiem jak ;/
+<pawel> Marcin czego nie wiesz?
+<Mateusz> aha tomek
+<Mateusz> weź ogarnij biblioteki i wrzuć je na repo
+<mar> javy ucze sie od klku miesiecy poprostu brak doswiadczenia... ;/
+<tomek> o jakich bibliotekach mowisz?
+<Mateusz> Description Resource Path Location Type
+<Mateusz> Project 'RSO_projekt' is missing required library: 'C:\Users\Tomek\Downloads\querydsl-mongodb-2.3.0-apt-one-jar.jar' RSO_projekt  Build path Build Path Problem
+<tomek> ok sory myslalem ze zalaczylo
+<tomek> dzieki za info
+<pawel> dobra, Marcin, trochę kiepsko że dopiero dzisiaj do kodu zajrzałeś, ale trudno. Powiedz z czym masz problem, a postaram się pomóc
+<pawel> ja jave też znam kiepsko, ale takie operacje to raczej ogarniam
+<tomek> ja mam jeszcze pytanie co do fs 
+<tomek> gdzie to pobiore
+<tomek> ?
+<Mateusz> xD
+<mar> daj mi pare minut musze to narazie zrozumieć po sojemu
+<Mateusz> nie wiem, tam gdzie bin może 
+<tomek> czym jest to fs?
+<Mateusz> filesystem
+<Mateusz> czyli system plików
+<tomek> a ok
+<tomek> :)
+<Mateusz> http://docs.oracle.com/javase/tutorial/essential/io/file.html
+<GIBBON> czy jak napisze w koncepcji rozwiazania, ze bedziemy sie wzorowac caly czas na mongo jesli chodzi o sharding to bedzie ok?
+<tomek> dobra czyli tez mam przeszukiwac pliki na dysku jak rozumiem?
+<Mateusz> powiem tak, nie mając parsowania BSON nie będę w stanie zrobić nic innego niż SELECT *
+<GIBBON> mam na mysli serwery konfiguracyjne i rundy balancera?
+<Mateusz> fyi
+<pawel> GIBBON z tego co widziałem opisałeś tam mniej więcej jak to działa
+<GIBBON> tak
+<pawel> więc opisz że tak to zaimplementujemy
+<pawel> Marcin?
+<GIBBON> ok
+<GIBBON> wlasnie o to sie pytalem
+<pawel> Mateusz, parsowanie nie działa?
+<pawel> ja założyłem, że Tomek powiedział prawdę, że działa
+<tomek> ja tego szczerze mowiac nie testowalem, ale Marek mowil ze dziala
+<pawel> sory, miałem na myśli Marka
+<tomek> ok
+<pawel> Mateusz
+<pawel> w tej kolekcji: List<Document<?>> docs;
+<pawel> nie ma po sparsowaniu tego co trzeba?
+<tomek> dla pewnosci spytam - mam stworzyc sobie przykladowa strukture plikow na dysku i dostosowac moje delete do pracy na nich?
+<Mateusz> pawel, zobacz na zawartosc klasy Document
+<pawel> w tej chwili to dobry pomysł
+<mar> czytam kod
+<pawel> kurwa :/
+<pawel> faktycznie
+<pawel> no dobra
+<pawel> to niby "jakoś" może działać
+<Mateusz> moze nie zrobil commita
+<Mateusz> ale to nie ma prawadzialac
+<pawel> w tej kolekcji będą pary name: wartość
+<tomek> niestety musze sie zbierac dlatego chcialbym wyjasnic jeszcze jedna sprawe
+<mar> czy na podstawie deleta mogę jakoś zrobićinserta ?
+<pawel> ten delete teraz to raczej nie działa
+<tomek> dokument stworze najprawdopodobniej jutro. mam go wyfrukowac?
+<pawel> Marcin, insert to bardzo prosta sprawa w tej chwili
+<pawel> w skrócie:
+<pawel> 1) czytasz nazwę kolekcji ze sparsowanej wiadomości
+<mar> wiem że prosta ale nie wiem jak się do tego zabrać
+<tomek> nie pracuje na plikach, dziala jako koelkcja
+<pawel> 2) otwierasz odpowiedni katalog
+<pawel> 3) tworzysz nazwę pliku jako nowy GUID
+<pawel> czy UUID
+<tomek> musze dodac przelozenie kolekcja - plik
+<pawel> wrzucasz tam dokument
+<pawel> tomek, racja
+<pawel> Marcin rozumiesz?
+<mar> skad mam wiedzieć który katalog ?
+<pawel> ja bym założył jakoś podobnie jak w Mongo
+<pawel> czyli rootem domyślnym byłby jakiś domyślny katalog
+<pawel> nieważne jaki
+<pawel> a w nim znalazł by się katalog o nazwie kolekcji
+<mar> gdzie jest przekazywana nazwa kolekcji ?
+<pawel> tomek, wydrukuj
+<pawel> Marcin było z 5 razy opisane
+<pawel> plik InsertMessage
+<pawel> public String   fullCollectionName;
+<tomek> ok dzieki. przeczytam reszte konwersacji pozniej na repo. 
+<pawel> w dokumentach jest to
+<tomek> na razie
+* tomek has quit (Quit: Page closed)
+<Mateusz> ok pawel, to co zostaje dla mnie
+<Mateusz> rozumiem że ten .docx nt. odczytów jest *jakoś* ok
+<Mateusz> napisać szkielet robienia query?
+<Mateusz> no to i tak kiedyś trzeba będzie napisać znając życie
+<pawel> Mateusz tak
+<pawel> chociaż ja chyba straciłem nadzieję, że coś jutro będzie działało
+<pawel> powiedzmy, że jebać system
+<Mateusz> mogę spróbować napisać na jutro parsowanie BSON
+<pawel> ja zaraz zajrzę do BSONA i napiszę go
+<pawel> ja to zrobię dzisiaj 
+<Mateusz> w moim messageparser mam metody statyczne
+<Mateusz> zobacz jak ja parsuje to jest bardzo elegancko zrobione imho
+<pawel> a Ty jak będziesz miał czas napisz BSON -> JSON
+<mar> ok jak utworzę już sobie plik to co dalej?
+<pawel> bo bez tego i tak nic nie wyświellimy
+<Mateusz> no dobra 
+<pawel> a nie Mateusz pierdolę
+<pawel> wysyła się BSONa
+<pawel> klient go musi umieć parsować
+<pawel> my nie
+<Mateusz> ok :)
+<pawel> ja ogarnę tego BSONA, wydaje mi się, ze to co napisałem Marek mniej więcej działa
+<pawel> Marcin to będzie mniej więcej wszystko z zapisami
+<pawel> Mateusz, czy struktura taka mniej więcej, że dokument będzie zawierał słownik
+<pawel> alo i nie słownik
+<pawel> niech teraz nawet zostanie tak jak jest
+<pawel> dokument będzie kolekcją tego co teraz nazywa się Document
+<Mateusz> co
+<Mateusz> hm, no ok
+<pawel> Mateusz, zaraz wrzucę moją propozycję struktury BSONDocument
+<pawel> ok?
+<pawel> i powiesz czy pasuję
+<Mateusz> http://bsonspec.org/#/specification
+<Mateusz> bsonspec działa
+<Mateusz> mi się wydajeże należy bezwzględnie na nim się bazować
+<Mateusz> i powiem Ci tak, potrzebujemy dwóch klas
+<Mateusz> jedną to jest BSON_Element
+<Mateusz> i BSON_Document
+<Mateusz> mniejsza o nazwy
+<Mateusz> ale mam nadzieję że chwytasz
+<Mateusz> BSON_Document to jest int i lista elementów 
+<Mateusz> element jest klasą generyczną 
+<Mateusz> i zawiera kod, nazwę, i wartość
+<pawel> taką też mam idea właśnie
+<pawel> wydaje się naturalna :D
+<Mateusz> można by to zrobić nawet jeszcze inaczej, na trzech klasach
+<Mateusz> bo nie wiem czy kompilator nie będzie się przypierdalał
+<Mateusz> tj. zrobić dokument, element i generyczną wartość
+<Mateusz> ok to się cieszę że się zgadzamy
+<Mateusz> zatem co mam napisać pawel bo w sumie pisales mi rozne rzeczy a potem odwolywales
+<Mateusz> zatem chce aby byla jasnosc
+<Mateusz> chyba ze nic to wtedy ok :D
+<pawel> robienie
+<pawel> odczytów
+<pawel> za moment wrzucę interfejs jaki zaprojektowałem
+<pawel> i możesz się na nim bazować
+<Mateusz> ok
+<mar> każdy pojedyńczy insert ma być nowym plikiem ?
+<pawel> tak
+<Mateusz> afaik w insercie może być wiele dokumentów
+<Mateusz> zatem każdy dokument to nowy plik
+<pawel> Mateusz możesz zobaczyć?
+<Mateusz> już momencik
+<mar> no dobra utworze plik a gdzie jest przekazywana sama treść tego pliku ? czy to poprostu ma być pusty plik z odpowiednią nazwą ?
+<pawel> tu masz opisane
+<pawel> http://docs.mongodb.org/meta-driver/latest/legacy/mongodb-wire-protocol/
+<pawel> jak wygląda message od inserta
+<pawel> to będzie documents
+<pawel> ich moze być tak jak pisał Mateusz więcej niż jeden
+<pawel> ale powiedzmy, że w tej chwili zapisuj tylko jeden
+<Mateusz> za chwilke zupdatuje insertmessage
+<Mateusz> bo nie robilem parsowania tablicy dokumentow ;+_;
+<Mateusz> jest ok
+<Mateusz> gdybym mial sie czepiac, ot by sie przydalby jakis cod
+<Mateusz> code
+<Mateusz> moze w enumie
+<Mateusz> albo w incie
+<Mateusz> albo w tym i tym
+<Mateusz> xD
+<Mateusz> i ogólnie pawel mi sie podoba
+<pawel> w sensie kod typu?
+<Mateusz> kod mi sie podoba
+<pawel> chodzi mi code? co chciałbyś żeby to było?
+<Mateusz> chodzi o to, że jak chcesz rozpoznawać co jest w środku elementu
+<pawel> no tak
+<pawel> ale wiesz co tak patrzę na ten kod Marka to on wcale chyba nie jest zły
+<pawel> on raczej tylko kosmetyki wymaga
+<Mateusz> może
+<Mateusz> on jest totalnie nieczytelny
+<pawel> a może inaczej
+<pawel> wiele na pewno można z niego użyć
+<GIBBON> dobra bo ja musze sie odłączyć teraz, to tyle dzisiejszego loga bedzie
+<pawel> ok
