@@ -37,8 +37,9 @@ public class DeleteTest {
 	public void test() {
 		Delete deleteObj = new Delete();
 
-		String json = "{ \"id\" : 5 , \"name\" : \"pi¹ty\" , \"value\" : 8.78}";
-		deleteObj.deleteObject(collection, 1);
+		// String json =
+		// "{ \"id\" : 5 , \"name\" : \"pi¹ty\" , \"value\" : 8.78}";
+		deleteObj.deleteObject(collection, 2);
 		System.out.println(collection);
 	}
 }
