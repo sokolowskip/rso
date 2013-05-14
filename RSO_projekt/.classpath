@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/Tomek/Downloads/querydsl-mongodb-2.3.0-apt-one-jar.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Tomek/Downloads/google-gson-2.2.3-release/google-gson-2.2.3/gson-2.2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Tomek/Downloads/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/guava-14.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/querydsl-mongodb-2.3.0-apt-one-jar.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
