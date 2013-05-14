@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import bson.Document;
+import bson.BSONDocument;
 import bson.BSON;
 import java.lang.String;
 public class MessageParser {
@@ -93,16 +93,16 @@ public class MessageParser {
 		
 		insertMessage.fullCollectionName = fullCollectionName;
 		
-		List<Document> documents = new LinkedList<Document>();
+		List<BSONDocument> documents = new LinkedList<BSONDocument>();
 		
 		while(i.checkIt())
 		{
 			documents.add(getDocument(msg, i));
 		}
 		
-		insertMessage.documents = new Document[documents.size()];
+		insertMessage.documents = new BSONDocument[documents.size()];
 		
-		Iterator<Document> iterator = documents.iterator();
+		Iterator<BSONDocument> iterator = documents.iterator();
 		for(int j = 0; iterator.hasNext(); j++)
 		{
 			insertMessage.documents[j] = iterator.next();
@@ -263,16 +263,16 @@ public class MessageParser {
 		return Arrays.copyOfRange(msg, from, from + count - 1);
 	}
 	
-	private static Document getDocument(char[] msg, Index i)
+	private static BSONDocument getDocument(char[] msg, Index i)
 	{
 		int sizeOfDocument = getInt(msg, i);
 		i.move(-4);//trzeba sie cofnac
 		
 		char[] documentSource = byteSubarray(msg, i.getValue(), sizeOfDocument);
 		
-		BSON bson = new BSON();
 		
-		Document parsedDocument = bson.parseBSON(documentSource);//tu nastepuje parsowanie
+		BSONDocument parsedDocument = new BSONDocument();
+		BSON.parseBSON(documentSource, parsedDocument);//tu nastepuje parsowanie
 		
 		
 		i.move(sizeOfDocument);
