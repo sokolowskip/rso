@@ -1,0 +1,20 @@
+OK, idea jest taka, ¿e mamy N kolekcji, a w ka¿dej kolekcji pewn¹ liczbê dokumentów. 
+
+Ka¿dy dokument jest niezale¿ny wobec siebie i nale¿y tylko do jednej kolekcji. By mo¿liwie nie komplikowaæ struktury plików, myœlê ¿e mo¿na nie komplikowaæ rozwi¹zania i trzymaæ ka¿dy dokument w oddzielnych plikach, niezale¿nych wobec siebie. Pliki te bêd¹ posegregowane wed³ug kolekcji. Kolekcje w takim wypadku powinny byæ folderami. Same kolekcje mog¹ byæ odzwierciedlane przez foldery. 
+
+W takiej strukturzy nazwy plików, odpowiadaj¹cych dokumentom to unikalny id w formacie szesnastkowym. 
+Nazwy folderów powinny odpowiadaæ nazwom kolekcji. 
+
+Za³o¿enia: ka¿dy dokument znajduje siê w jednej kolekcji, nie wiêcej ani mniej, kolekcje nie mog¹ dzieliæ siê dokumentami, mog¹ je co najwy¿ej sobie przekazywaæ
+generowane id jest unikalne
+Wewn¹trz pliku przechowujemy jedynie go³y BSON, nic wiêcej nie musimy.
+
+Jak te rozwi¹zanie zaimplementowaæ? 
+
+Zapisywanie: Maj¹c jakiœ dokument do insertu i nazwê kolekcji, tworzymy jakiœ id, na podstawie tego id tworzymy stringa, prosimy system operacyjny o utworzenie pliku z nazw¹ równ¹ treœci tego stringa, a je¿eli siê uda wk³adamy to tego pliku dokument jaki mamy zapisaæ. Je¿eli dostajemy n dokumentów, to có¿, musimy tworzyæ n plików (jeden plik, jeden dokument).
+
+Odczytywanie: Maj¹c query, wiemy z jakiej kolekcji mamy wczytaæ dane. Prosimy system operacyjny o listê plików z danej kolekcji. Po otrzymaniu jej, przewijamy siê po tej liœcie, i sprawdzamy ka¿dy plik/dokument z otrzymanym query. Je¿eli dany dokument spe³nia warunek zawarty w query kopiujemy go do tablicy, wysy³anego potem do wykonawcy zapytania.
+
+Kasowanie: jw, z tym ¿e pliki/dokumenty kasujemy zamiast je gdzieœ przerzucaæ.
+
+Update: Jw
