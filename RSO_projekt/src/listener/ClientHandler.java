@@ -12,6 +12,7 @@ import messages.MessageHeader;
 import messages.MessageParser;
 import messages.ReplyMessage;
 import bson.BSON;
+import bson.BSONDocument;
 
 /**
  * Klasa przyjmujaca wiadomosci od pojedynczego klienta.
@@ -150,7 +151,7 @@ public class ClientHandler extends Thread
 			}
 			
 			//reszta leci do obiektu bizona
-			BSON bizon = new BSON();
+			BSONDocument bizon = new BSONDocument();
 			//ale parseBSON przyjmuje tablice char wiec konwertujemy
 			//z pominieciem naglowka
 			char[] c = new char[message.length - 16];
@@ -158,7 +159,7 @@ public class ClientHandler extends Thread
 				c[i1] = (char) message[i2];
 			}
 			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
-			bizon.parseBSON(c);
+			BSON.parseBSON(c, bizon);
 			
 			//teraz trzeba cos dopowiedziec
 			//konstruktor przyjmuje oryginalny naglowek i dokument

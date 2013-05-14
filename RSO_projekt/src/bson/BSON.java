@@ -8,7 +8,7 @@ import java.util.List;
 public class BSON 
 {
 	
-	static int parseBSON(char[] data, BSONDocument doc)
+	public static int parseBSON(char[] data, BSONDocument doc)
 	{
 		int len = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
 	
@@ -36,7 +36,7 @@ public class BSON
 		return index;
 	}
 	
-	static int process(int type, char[] data, int index, List<BSONElement<?>> docs, String name)
+	private static int process(int type, char[] data, int index, List<BSONElement<?>> docs, String name)
 	{		
 		switch (type)
 		{

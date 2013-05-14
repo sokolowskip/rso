@@ -3,7 +3,7 @@ package listener;
 import java.nio.ByteBuffer;
 
 import messages.MessageHeader;
-import bson.BSON;
+import bson.BSONDocument;
 
 /**
  * Ta klasa bedzie laczyla dokument z naglowkiem. Zmienna response przechowuje
@@ -19,11 +19,11 @@ public class Response
 {
 	private MessageHeader header;
 	@SuppressWarnings("unused")
-	private BSON bizon;
+	private BSONDocument bizon;
 
 	private ByteBuffer response;
 
-	public Response(MessageHeader _header, BSON _bizon) {
+	public Response(MessageHeader _header, BSONDocument _bizon) {
 		header = _header;
 		bizon = _bizon;
 	}
