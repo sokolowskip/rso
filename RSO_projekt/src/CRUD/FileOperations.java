@@ -6,6 +6,8 @@ import java.io.FileWriter;
 
 public class FileOperations {
 	
+
+	//TODO: dodaæ sens
 	public void findFiles(String directory) {
 		File folder = new File(directory);
 		File[] listOfFiles = folder.listFiles();
@@ -18,7 +20,18 @@ public class FileOperations {
 			}
 		}
 	}
+	
+	//zwraca listê plików nale¿¹cych do danej kolekcji
+	public static File[] openCollection(String collectionName)
+	{
+		//zak³adam ¿e pliki le¿¹ p³asko w kolekcji, je¿eli oka¿e siê to ma³o wydajne trzeba bêdzie to skomplikowaæ
+		File folder = new File(collectionName);
+		File[] listOfFiles = folder.listFiles();
+		
+		return listOfFiles;
+	}
 
+	//TODO: dodaæ sens
 	public void addToFile() {
 		try {
 			FileWriter fstream = new FileWriter("out.txt", true); // true tells
