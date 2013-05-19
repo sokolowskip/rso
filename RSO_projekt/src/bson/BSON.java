@@ -40,6 +40,7 @@ public class BSON
 	{		
 		switch (type)
 		{
+			//double
 			case 0x01:
 			{
 				BSONElement<Double> temp = new BSONElement<Double>();
@@ -54,6 +55,7 @@ public class BSON
 				docs.add(temp);
 				break;
 			}
+			//string
 			case 0x02:
 			{
 				BSONElement<String> temp = new BSONElement<String>();
@@ -73,6 +75,7 @@ public class BSON
 				docs.add(temp);
 				break;
 			}
+			//document (embedded)
 			case 0x03:
 			{
 				BSONElement<BSONDocument> temp = new BSONElement<BSONDocument>();
@@ -86,6 +89,7 @@ public class BSON
 				docs.add(temp);
 				break;
 			}
+			//document (array)
 			case 0x04:
 			{
 				BSONElement<ArrayList<BSONElement<?>>> temp = new BSONElement<ArrayList<BSONElement<?>>>();
@@ -115,6 +119,7 @@ public class BSON
 				docs.add(temp);
 				break;
 			}
+			//ObjectId
 			case 0x07:	
 			{
 				BSONElement<ObjectID> temp = new BSONElement<ObjectID>();
@@ -133,6 +138,7 @@ public class BSON
 				docs.add(temp);
 				break; 
 			}
+			//Boolean
 			case 0x08:
 			{
 				BSONElement<Boolean> temp = new BSONElement<Boolean>();
@@ -147,8 +153,11 @@ public class BSON
 				docs.add(temp);
 				break;
 			}
+			//UTC datetime
 			case 0x09:
+			//Timestamp
 			case 0x11:
+			//64-bit integer
 			case 0x12:
 			{
 				BSONElement<Long> temp = new BSONElement<Long>();			
@@ -162,6 +171,7 @@ public class BSON
 				docs.add(temp);
 				break;	
 			}
+			//Null Value
 			case 0x0A:
 			{
 				BSONElement<Byte> temp = new BSONElement<Byte>();			
@@ -171,6 +181,7 @@ public class BSON
 				docs.add(temp);
 				break;	
 			}
+			//32-bit Integer
 			case 0x10:
 			{
 				BSONElement<Integer> temp = new BSONElement<Integer>();			
