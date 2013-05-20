@@ -15,8 +15,7 @@ import bson.BSONDocument;
  * @author Piotr Cebulski
  * 
  */
-public class Response 
-{
+public class Response {
 	private MessageHeader header;
 	@SuppressWarnings("unused")
 	private BSONDocument bizon;
@@ -39,8 +38,11 @@ public class Response
 		case 2:
 			connectionInitiationResponse(2);
 			return true;
-		default:
-			return false;
+		default: 
+			response = ByteBuffer.wrap(fakeInsertResponse);
+			response.putInt(4, Integer.reverseBytes(header.getRequestID()));
+			response.putInt(8, Integer.reverseBytes(header.getRequestID() + 1));
+			return true;
 		}
 	}
 
@@ -49,13 +51,13 @@ public class Response
 		case 0: // Pierwsze zapytanie klienta to: whatsmyuri
 				// a wiec trzeba w odpowienie miejsce wlozyc
 				// adres i port remoteHosta.
-			byte[] ip = ClientHandler.getRemoteHostIP().getHostAddress().getBytes();
-			byte[] port = Integer.toString(ClientHandler.getRemoteHostPort()).getBytes();
-			response = ByteBuffer.allocate(fakeResponse0a.length
-										+ ip.length 
-										+ 1// +1 na srednik
-										+ port.length 
-										+ fakeResponse0b.length);
+			byte[] ip = ClientHandler.getRemoteHostIP().getHostAddress()
+					.getBytes();
+			byte[] port = Integer.toString(ClientHandler.getRemoteHostPort())
+					.getBytes();
+			response = ByteBuffer.allocate(fakeResponse0a.length + ip.length
+					+ 1// +1 na srednik
+					+ port.length + fakeResponse0b.length);
 			response.put(fakeResponse0a);
 			response.put(ip);
 			response.put((byte) 0x3a);// srednik
@@ -107,4 +109,15 @@ public class Response
 			0x1b, 0x00, 0x00, 0x00, 0x6e, 0x6f, 0x74, 0x20, 0x72, 0x75, 0x6e,
 			0x6e, 0x69, 0x6e, 0x67, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x2d,
 			0x2d, 0x72, 0x65, 0x70, 0x6c, 0x53, 0x65, 0x74, 0x00, 0x00 };
+
+	final byte[] fakeInsertResponse = new byte[] { 0x53, 0x00, 0x00, 0x00,
+			0x03, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00,
+			0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x2f,
+			0x00, 0x00, 0x00, 0x10, 0x6e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10,
+			0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49,
+			0x64, 0x00, 0x01, 0x00, 0x00, 0x00, 0x0a, 0x65, 0x72, 0x72, 0x00,
+			0x01, 0x6f, 0x6b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			(byte) 0xf0, 0x3f, 0x00 };
+
 }
