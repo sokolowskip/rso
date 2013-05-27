@@ -19,7 +19,7 @@ public class Listener
 	private static ServerSocket serverSocket;
 	
 
-	Listener(int _port) 
+	public Listener(int _port) 
 	{
 		port = _port;
 		if (setupSocket(port))
