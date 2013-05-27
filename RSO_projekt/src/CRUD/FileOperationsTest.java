@@ -8,12 +8,13 @@ import bson.BSON;
 import bson.BSONDocument;
 
 public class FileOperationsTest {
-	String directory = "C:/Users/Tomek/Desktop/test";
+	String directory = "C:/Users/Tomek/Desktop/test/";
 
 	@Test
 	public void test() {
 		FileOperations fo = new FileOperations();
 		fo.findFiles(directory);
+		
 		BSONDocument doc = new BSONDocument();
 		// parsowanie string, int i date
 		char[] testData = new char[] { 0x45, 0x00, 0x00, 0x00, 0x07, 0x5f,
@@ -31,7 +32,9 @@ public class FileOperationsTest {
 			System.out.println("Name: " + doc.getElems().get(i).getName());
 			// System.out.println(doc.getElems().get(i).getName());
 		}
-
+		
+		fo.addToFile("1.txt", doc);
+		
 	}
 
 }
