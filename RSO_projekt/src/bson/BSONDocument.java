@@ -28,6 +28,14 @@ public class BSONDocument {
 		return true;
 	}
 	
+	public List<BSONElement<?>> getElems() {
+		return elems;
+	}
+
+	public void setElems(List<BSONElement<?>> elems) {
+		this.elems = elems;
+	}
+
 	private Boolean checkCondition(BSONElement<?> condition)
 	{
 		//TODO napisaæ
