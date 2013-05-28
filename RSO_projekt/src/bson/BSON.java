@@ -38,12 +38,14 @@ public class BSON
 	
 	private static int process(int type, char[] data, int index, List<BSONElement<?>> docs, String name)
 	{		
-		switch (type)
+		BSONtype bsonType = BSONtype.fromInt(type);
+		switch (bsonType)
 		{
 			//double
-			case 0x01:
+			case DOUBLE:
 			{
 				BSONElement<Double> temp = new BSONElement<Double>();
+				temp.type = bsonType;
 				temp.name = name;
 				
 				long temp2 = 0;
@@ -56,10 +58,11 @@ public class BSON
 				break;
 			}
 			//string
-			case 0x02:
+			case STRING:
 			{
 				BSONElement<String> temp = new BSONElement<String>();
 				temp.data = "";
+				temp.type = bsonType;
 				temp.name = name;
 				
 				int curLen = data[index] + (data[index + 1] << 8) + (data[index + 2] << 16) + (data[index + 3] << 24);
@@ -76,10 +79,11 @@ public class BSON
 				break;
 			}
 			//document (embedded)
-			case 0x03:
+			case EMBEDDED:
 			{
 				BSONElement<BSONDocument> temp = new BSONElement<BSONDocument>();
 				temp.data = new BSONDocument();
+				temp.type = bsonType;
 				temp.name = name;
 				
 				char[] data2 = Arrays.copyOfRange(data, index, data.length);
@@ -90,10 +94,11 @@ public class BSON
 				break;
 			}
 			//document (array)
-			case 0x04:
+			case ARRAY:
 			{
 				BSONElement<ArrayList<BSONElement<?>>> temp = new BSONElement<ArrayList<BSONElement<?>>>();
 				temp.data = new ArrayList<BSONElement<?>>();
+				temp.type = bsonType;
 				temp.name = name;
 				
 				int index2 = index;				
@@ -120,10 +125,11 @@ public class BSON
 				break;
 			}
 			//ObjectId
-			case 0x07:	
+			case OBJECTID:	
 			{
 				BSONElement<ObjectID> temp = new BSONElement<ObjectID>();
 				temp.data = new ObjectID();
+				temp.type = bsonType;
 				temp.name = name;
 				
 				temp.data.time = (data[index] << 24) + (data[index + 1] << 16) + (data[index + 2] << 8) + data[index + 3];
@@ -139,10 +145,11 @@ public class BSON
 				break; 
 			}
 			//Boolean
-			case 0x08:
+			case BOOL:
 			{
 				BSONElement<Boolean> temp = new BSONElement<Boolean>();
 				temp.name = name;
+				temp.type = bsonType;
 				
 				if (data[index] == 1)
 					temp.data = true;
@@ -154,14 +161,15 @@ public class BSON
 				break;
 			}
 			//UTC datetime
-			case 0x09:
+			case DATE:
 			//Timestamp
-			case 0x11:
+			case TIMESTAMP:
 			//64-bit integer
-			case 0x12:
+			case LONG:
 			{
 				BSONElement<Long> temp = new BSONElement<Long>();			
 				temp.name = name;
+				temp.type = bsonType;
 				
 				temp.data = (long)0;
 				for (int i = 0; i < 8; i++)
@@ -172,20 +180,22 @@ public class BSON
 				break;	
 			}
 			//Null Value
-			case 0x0A:
+			case NULL:
 			{
 				BSONElement<Byte> temp = new BSONElement<Byte>();			
 				temp.name = name;
+				temp.type = bsonType;
 				temp.data = null;
 				
 				docs.add(temp);
 				break;	
 			}
 			//32-bit Integer
-			case 0x10:
+			case INT:
 			{
 				BSONElement<Integer> temp = new BSONElement<Integer>();			
 				temp.name = name;
+				temp.type = bsonType;
 				
 				temp.data = data[index] + (data[index + 1] << 8) + (data[index + 2] << 16) + (data[index + 3] << 24);
 				index += 4;
@@ -193,6 +203,8 @@ public class BSON
 				docs.add(temp);
 				break;	
 			}
+			case NONE:
+				break;
 		}
 		
 		return index;
