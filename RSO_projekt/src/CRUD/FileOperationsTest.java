@@ -8,14 +8,13 @@ import bson.BSON;
 import bson.BSONDocument;
 
 public class FileOperationsTest {
-	String directory = "C:/Users/Tomek/Desktop/test/";
+	String directory = "testoweBsony/";
 
 	@Test
 	public void test() {
-		FileOperations fo = new FileOperations();
-		fo.findFiles(directory);
-		
+		FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
+		
 		// parsowanie string, int i date
 		char[] testData = new char[] { 0x45, 0x00, 0x00, 0x00, 0x07, 0x5f,
 				0x69, 0x64, 0x00, 0x51, 0x84, 0x03, 0xa2, 0x58, 0x54, 0x2b,
@@ -25,16 +24,14 @@ public class FileOperationsTest {
 				0x00, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x44,
 				0x61, 0x74, 0x65, 0x00, 0x0e, 0x34, 0xae, 0x6b, 0x3e, 0x01,
 				0x00, 0x00 };
+		
 		BSON.parseBSON(testData, doc);
+		
+		// wyswietlanie zawartosci BSON-a
 		for (int i = 0; i < doc.getElems().size(); i++) {
 			System.out.println("Data: " + doc.getElems().get(i).getData());
-			// System.out.println(doc.getElems().get(i).getData());
 			System.out.println("Name: " + doc.getElems().get(i).getName());
-			// System.out.println(doc.getElems().get(i).getName());
 		}
-		
-		fo.addToFile("1.txt", doc);
-		
 	}
 
 }
