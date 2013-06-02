@@ -35,7 +35,7 @@ public class FileOperations {
 
 	public static BSONDocument readFromFile(File file) {
 		long longNumber = file.length();
-		char[] array = new char[(int) longNumber];
+		byte[] array = new byte[(int) longNumber];
 		String[] tablica = new String[(int) longNumber];
 		StringBuilder fileContent = new StringBuilder();
 
@@ -68,7 +68,7 @@ public class FileOperations {
 			// konwersja dziesietnej na znak
 			sb.append((char) decimal);
 			tablica[i] = sb.toString();
-			array[i] = tablica[i].charAt(0);
+			array[i] = (byte)tablica[i].charAt(0);
 		}
 
 		BSONDocument bsonDocument = new BSONDocument();

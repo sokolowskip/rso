@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import messages.MessageHeader;
 import messages.MessageParser;
@@ -154,10 +155,12 @@ public class ClientHandler extends Thread
 			BSONDocument bizon = new BSONDocument();
 			//ale parseBSON przyjmuje tablice char wiec konwertujemy
 			//z pominieciem naglowka
-			char[] c = new char[message.length - 16];
-			for (int i1 = 0, i2 = 16; i1 < message.length - 16; i1++, i2++) {
-				c[i1] = (char) message[i2];
-			}
+			//char[] c = new char[message.length - 16];
+			//for (int i1 = 0, i2 = 16; i1 < message.length - 16; i1++, i2++) {
+			//	c[i1] = (char) message[i2];
+			//}
+			byte[] c = Arrays.copyOfRange(message, 16, message.length);
+
 			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
 			BSON.parseBSON(c, bizon);
 			
