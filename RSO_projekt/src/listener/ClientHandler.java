@@ -108,11 +108,6 @@ public class ClientHandler extends Thread
 					Integer.reverseBytes(messageBuffer.getInt(12)));
 			//spoko, wszystko dziala
 			
-			//zamieniamy jeszcze na char
-			//char[] chars = new char[message.length];
-			//for (int i1 = 0; i1 < chars.length; i1++)
-			//    chars[i1] = (char) message[i1];
-			
 			MessageParser.MessageType messageType = MessageParser.getType(message);
 			System.out.println("Received: " + messageType.name());
 			
@@ -152,12 +147,6 @@ public class ClientHandler extends Thread
 			
 			//reszta leci do obiektu bizona
 			BSONDocument bizon = new BSONDocument();
-			//ale parseBSON przyjmuje tablice char wiec konwertujemy
-			//z pominieciem naglowka
-			//char[] c = new char[message.length - 16];
-			//for (int i1 = 0, i2 = 16; i1 < message.length - 16; i1++, i2++) {
-			//	c[i1] = (char) message[i2];
-			//}
 			
 			int strLen = 0;
 			for (int j = 20; j < message.length; j++)
