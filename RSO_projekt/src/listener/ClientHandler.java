@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -110,11 +111,11 @@ public class ClientHandler extends Thread
 			//spoko, wszystko dziala
 			
 			//zamieniamy jeszcze na char
-			char[] chars = new char[message.length];
-			for (int i1 = 0; i1 < chars.length; i1++)
-			    chars[i1] = (char) message[i1];
+			//char[] chars = new char[message.length];
+			//for (int i1 = 0; i1 < chars.length; i1++)
+			//    chars[i1] = (char) message[i1];
 			
-			MessageParser.MessageType messageType = MessageParser.getType(chars);
+			MessageParser.MessageType messageType = MessageParser.getType(message);
 			System.out.println("Received: " + messageType.name());
 			
 			switch(messageType)
@@ -122,7 +123,7 @@ public class ClientHandler extends Thread
 				//OP_REPLY 	1 	Reply to a client request. responseTo is set
 				case OP_REPLY:
 					@SuppressWarnings("unused")
-					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(chars);
+					ReplyMessage replyMessage = MessageParser.ParseReplyMessage(message);
 					//analogicznie poni�ej
 					break;
 				//OP_MSG 	1000 	generic msg command followed by a string
@@ -159,7 +160,19 @@ public class ClientHandler extends Thread
 			//for (int i1 = 0, i2 = 16; i1 < message.length - 16; i1++, i2++) {
 			//	c[i1] = (char) message[i2];
 			//}
-			byte[] c = Arrays.copyOfRange(message, 16, message.length);
+			
+			int strLen = 0;
+			for (int j = 20; j < message.length; j++)
+				if (message[j] == 0)
+				{
+					strLen = j - 20;
+					break;
+				}
+			
+			String collectionName ="";
+			try { collectionName = new String(message, 20, strLen, "UTF-8"); } catch (UnsupportedEncodingException e) {};
+			
+			byte[] c = Arrays.copyOfRange(message, strLen + 21, message.length);
 
 			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak dalej sprawdzac
 			BSON.parseBSON(c, bizon);
