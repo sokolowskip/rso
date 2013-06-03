@@ -1,5 +1,7 @@
 package bson;
 
+import static junit.framework.Assert.*;
+
 import org.junit.Test;
 
 public class BSONtest {
@@ -52,14 +54,17 @@ public class BSONtest {
 	@Test
 	public void BSON2byte() 
 	{
-		BSONDocument doc = new BSONDocument();
+		BSONDocument doc1 = new BSONDocument();
 		BSONDocument doc2 = new BSONDocument();
 		BSONDocument doc3 = new BSONDocument();
 		
-		BSON.parseBSON(testData, doc);
+		BSON.parseBSON(testData, doc1);
 		BSON.parseBSON(testData2, doc2);
 		BSON.parseBSON(testData3, doc3);
 		
-		byte[] bson = BSON.getBSON(doc);
+		byte[] bson = BSON.getBSON(doc1);
+		
+		BSONDocument doc1b = new BSONDocument();
+		BSON.parseBSON(bson, doc1b);
 	}
 }

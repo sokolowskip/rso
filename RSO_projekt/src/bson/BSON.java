@@ -14,23 +14,58 @@ public abstract class BSON
 	{
 		List<byte[]> byteList = new ArrayList<byte[]>();
 		
+		//4 bajty na d³ugoœæ BSONa
+		int totalSize = 4;
 		for (int i = 0; i < doc.getElems().size(); i++)
 		{	
 			byteList.add(getBytes(doc.getElems().get(i)));
+			totalSize += byteList.get(i).length;
 		}
-		return byteList.get(0);
+		
+		byte[] res = new byte[totalSize];
+		byte[] length = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(totalSize).array();
+		
+		System.arraycopy(length, 0, res, 0, 4);		
+		int offset = 4;
+		for (int i = 0; i < byteList.size(); i++)
+		{
+			System.arraycopy(byteList.get(i), 0, res, offset, byteList.get(i).length);
+			offset += byteList.get(i).length;
+		}
+		
+		return res;
 	}
 	
 	private static byte[] getBytes(BSONElement elem)
 	{
+		byte[] nameBytes = elem.getName().getBytes();
+		
 		switch(elem.getType())
 		{
 			case OBJECTID:
 			{
-				byte[] temp = new byte[1 + elem.getName().getBytes().length + 1 + 12];
-				temp[0] = 0x07;
+				int offset = 0;
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 12];
+				ObjectID data = (ObjectID)elem.data;
 				
-				//System.arraycopy(arg0, arg1, arg2, arg3, arg4)
+				temp[0] = 0x07;
+				offset++;
+				
+				System.arraycopy(nameBytes, 0, temp, offset, nameBytes.length);
+				offset += nameBytes.length;
+				temp[offset] = 0;
+				offset++;
+				
+				System.arraycopy(ByteBuffer.allocate(4).putInt(data.time).array(), 0, temp, offset, 4);
+				offset += 4;
+				/*
+				temp.data.machine = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+				offset += 3;
+				temp.data.procID = (data[index] << 8) + data[index + 1];
+				offset += 2;	
+				temp.data.counter = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+				offset += 3;
+					*/
 				return temp;
 			}
 			
