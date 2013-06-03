@@ -43,11 +43,21 @@ public class Update {
 						+ searchElement.getName() + " w pliku " + file);
 				System.out.println("zawartoœæ: " + searchElement.getData());
 				// update pliku
-				// FileOperations.updateFile(file);
+				int age = 31;
+				FileOperations.updateFile(file, "mkyong", age);
 			}
 
 			// TODO:
 			// dodac inne opcje (aktualizacja nie tylko po nazwie)
+			// case double
+			// case String
+			// case BSONDocument
+			// case array
+			// case IbjectId
+			// case Boolean
+			// case Long
+			// case null
+			// case Integer
 		}
 	}
 }

@@ -8,12 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.sun.org.apache.bcel.internal.generic.Type;
+
 import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
 
 public class FileOperations {
-	String directory = "C:/Users/Tomek/Desktop/test/";
 
 	// zwraca listê plików nale¿¹cych do danej kolekcji
 	public static File[] openCollection(String collectionName) {
@@ -94,7 +95,25 @@ public class FileOperations {
 			if (documentElement.getName().equals(updateName))
 				;
 			{
-				// documentElement.setData(updateData);
+				System.out.println("Typy: ");
+				System.out.println(documentElement.getData().getClass());
+				
+				// if (documentElement.getData() instanceof String){
+				// System.out.println("Znaleziono stringa");
+				// }
+				
+				switch (documentElement.getData().getClass().getName()) {
+				  case "java.lang.String":
+					  System.out.println("Znaleziono stringa");
+				    break;
+				  case "java.lang.Integer":
+					  System.out.println("Znaleziono inta");
+				    break;
+				  case "java.lang.Long":
+					  System.out.println("Znaleziono longa");
+					    break;
+				}			
+				
 				// delete file
 				// insert file
 			}
