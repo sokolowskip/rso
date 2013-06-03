@@ -1,0 +1,336 @@
+* Now talking on #rso
+* madjack.2600.net sets mode +n #rso
+* madjack.2600.net sets mode +t #rso
+* ChanServ sets mode +n #rso
+* ChanServ sets mode +t #rso
+* ChanServ (services@2600.net) has joined #rso
+* services.2600.net gives channel operator status to ChanServ
+* ChanServ has changed the topic to: 
+* ChanServ (services@2600.net) has left #rso
+* Marek (qwebirc@ircaddict.org) has joined #rso
+<Marek> widzę, że na kanale rso jak zawsze tłumy
+* Mateusz (~chatzilla@89-77-207-149.dynamic.chello.pl) has joined #rso
+* pawel (qwebirc@ircaddict.org) has joined #rso
+<pawel> siema
+<Marek> siema
+<Marek> jbc ja jestem za siebie i tomka
+<Marek> bo dalej nakurwiamy na wydziale
+<pawel> ok
+<pawel> wiecie czy Marcin będzie?
+<GIBBON> siema
+<Mateusz> Cześć
+<Marek> czesc
+<pawel> cześć
+<Marek> cześć
+<Marek> (to było od Tomka)
+<pawel> :D
+<pawel> no dobra, widzę, że Marcina nie ma
+<pawel> zadzwonię do niego i się dowiem co i jak
+<pawel> nie odbiera
+<pawel> miał ktoś z nim jakiś kontakt?
+<pawel> no w sumie nieważne
+<pawel> może na początek powiedzcie co jest na tą chwilę zrobione?
+<pawel> ja wiem, że miałem zrobić jakąś małą robotę z komunikatami
+<GIBBON> z balansowania jak na razie niewiele, ale zamierzam to poprawic
+<GIBBON> kupilem zapas redbulla
+<pawel> mozesz mi Piotrek przypomnieć o co chodziło? (trochę mi szczegóły z głowy wylecialy)
+<pawel> ale dzisiaj to napiszę
+<GIBBON> trzeba zrobic proces serwera konfiguracyjnego
+<GIBBON> ktory  bedzie zbieral dane o bazie z shardow
+<GIBBON> i proces balancera
+<GIBBON> ktory bedzie rownowazyl obciazenie
+<GIBBON> czyli przenosil z miejsca na miejsce kawalki bazy
+<pawel> a ok, jak rozumiem, serwer konfiguracyjny zbiera dane
+<pawel> i gdzei je zapisuje, przechowuje?
+<GIBBON> te procesy na dysk nic nie zapisuja
+<GIBBON> balancer potrzebuje serwera konfiguracyjnego
+<GIBBON> zeby znac aktualny stan bazy
+<pawel> i balancer odpytuje serwer konfiguracyjny?
+<GIBBON> tak
+<pawel> bo zastanawiam się czy nie zrobić by tego jednym procesem?
+<pawel> co o tym myślisz?
+<Marek> Marcin własnie napisał, że nie może wejść na irca
+<GIBBON> no zobacze jak to bedzie szlo
+<GIBBON> zeby bylo porzadnie powinny to byc odddzielne
+<GIBBON> procesy
+<Marek> też mi się wydaje, że można to ogarnąć dwa w jednym
+<Marek> nie potrzeba wtedy dodatkowej komunikacji
+<Marek> a i tak zakładamy jedną instancję mongos
+<pawel> co o tym myślisz Piotrek? byłoby ułatwieniem
+<pawel> na porządnie to mamy mało czasu :D
+<GIBBON> ok, macie racje
+* `26 (qwebirc@ircaddict.org) has joined #rso
+<`26> cześć marcin tutaj jakieś problemy z ircem miałem nie mogłem wejść
+<`26> sry paweł telefonu nie miałem przy sobie
+<pawel> ok spoko
+<`26> odrazu mówię że nie potrafie zrobić tych insertów poprostu za mało umiem w javie
+<pawel> Marcin, słyszałem, że masz problem z zakodowaniem tego dodawanie
+<pawel> a no właśnie
+<pawel> więc ja mam propozycję
+<pawel> nie wiem czy inni się zgodzą
+<`26> nie wiem jesli ktoś ma czas i może ustawić się ze mną na uczelni i mi pomóc
+<pawel> żebyś Ty sobie odpuścił kodowanie, a zamiast tego wymyślimy Ci inne zadania
+<pawel> co o tym myślicie?
+<GIBBON> ok
+<`26> jestem za jesli ktoś potrafi to zrobić a ja zajął bym się jakimiś innymi kwestiami nie związanymi bezpośrednio z kodowaniem
+<Marek> Tomek jest chętny na inserta
+<Marek> tzn na jego robienie
+<pawel> ok. mi pasuje
+<pawel> to Marcin zaraz znajdę Ci jakąś robotę
+<`26> ok
+<pawel> to znaczy i tak masz przeprowadzić prezentację koncową
+<`26> tak
+<`26> na 11 czerwca
+<pawel> no i dodatkowo pewnie jakieś dokumenty, jakieś powiedzmy wyniki testów stworzysz 
+<`26> dobra
+<pawel> no dobrze, a jak stoją operacje CRUD?
+<Marek> jbc ja obecnie robię przechodzenie z obiektów BSONDocument z powrotem na tablice bytów - jak się okazało jest to jednak potrzzebne (do updatów)
+<Marek> Tomek ogarnia tego CRUDa
+<pawel> Mateusz a jak odczyty?
+<Mateusz> no, napisałem je
+<Marek> jak narazie Tomek nie mógł dalej ruszyć
+<Mateusz> nie testowałem
+<Mateusz> brakuje mi zapytań
+<Marek> bo nie było jeszcze inserta
+<Marek> ale jak sam go będzie robił
+<pawel> a spoko, to super
+<Marek> to ogarnie
+<pawel> to podsumowując
+<pawel> Marek robi bson -> byte
+<pawel> Mateusz odczyty
+<pawel> Tomek pozostałe z CRUD
+<pawel> Piorek balancer
+<Marek> ja jeszcze mogę coś do tego dobrać
+<Marek> bo przy tym bson -> byte aż tyle nie ma
+<pawel> nielicząc Piotrka, gdzei będziemy pewnie wszyscy coś robili w tym
+<pawel> ile szacujecie, że jeszcze wam pracy zostało
+<pawel> ?
+<Mateusz> jak będą inserty będę mógł testować odczyty 
+<Mateusz> ja uważam że są w sumie skonczone
+<Mateusz> ale potrzeba zapytań
+<Mateusz> kto robi zapytania?
+<Mateusz> bo to jest ważne i wcale nie trywialen!
+<pawel> ok, ja mniej więcej to rozumiałem przez odczyty
+<pawel> możesz powiedzieć na czym polega funkcjonalność odczytów?
+<pawel> jak widzę w tej chwili, jest to wczytywanie plików z odpowiednich kolekcji, dobrze rozumiem?
+<pawel> Piotrek, możesz powiedzieć czego brakowało przy odbieraniu komunikatów?
+<GIBBON> hmm
+<GIBBON> jak to?
+<GIBBON> brakowalo odpowiedzi
+<GIBBON> wtedy gdy trzeba odpowiedziec cos zeby shell mongo poszedl dalej
+<GIBBON> a nie stal i czekal na odpowiedz
+<GIBBON> np przy insertach
+<GIBBON> ja zrobilem tam jakis czas temu odpowiedz na inserta
+<GIBBON> ale zdaje sie ze dzialala tylko dla pierwszego
+<GIBBON> pozniej nie wrocilem do tego
+<GIBBON> tam chodzi o to ze w odpowiedzi trzeba zawrdzec numerek requesta na ktorego ona odpowiada
+<Marek> ja to mogę ogarnąć
+<pawel> a no dobra, to się przy testach jakoś podrzeźbi
+<pawel> ok, 
+<pawel> to tak, żeby nie tracić czasu
+<Marek> tzn odpowiedzi ze strony naszej bazy 
+<GIBBON> tak
+<pawel> możecie powiedzieć ile jeszcze przewidujecie czasu na dokończenie tego co teraz macie do zrobienia?
+<Marek> Tomek mówi - wcześniej niż na pon nie bardzo
+<Marek> z mojej strony bson na jutro wieczór pewnie będzie
+<pawel> i pytanie do Tomka, Ty w update napisałeś już dopasowywanie dokumentu w pliku do dokumentu z zapytania?
+<GIBBON> ja to do srody musze skonczyc
+<GIBBON> ale poza jutrzejszym wykladem
+<pawel> @GIBBON dasz radę?
+<Marek> w trakcie
+<GIBBON> to mam wolne
+<GIBBON> wiec bede nad tym siedzial
+<Marek> tzn Tomek mówi, że jest w trakcie
+<pawel> bo jak byś to napisał to byś mógł i zapytania zrobić
+<pawel> a korzystasz z metod do odczytów Mateusza?
+<Marek> Tomek: No tak ale nie wyorbię się bo skończę to co już mam dopiero na pon
+<Marek> (właśnei dostałem inserta)
+<GIBBON> @Marek rso / RSO_projekt / src / listener / Response.java popatrz na linijki 43 i 44
+<GIBBON> tam jest cos nie tak
+<pawel> nie dasz rady, żeby do soboty działały te operacje?
+<Marek> Tomek: słabo, jadę na wesele w międzyczasie
+<Marek> Tomek: poza warszawe
+<GIBBON> a gdzie, bo ja tesh jade na wesele? moze na to samo
+<pawel> ajj :/
+<Marek> a na kiedy całość jest?
+<pawel> trochę słabo, bo tylko poniedziałek będzie na jakieś testy?
+<Marek> @Piotrek ok obczaję
+<`26> czy podczas prezentacji końcowej wystarczy będzie pokazać same wyniki testów czy fizycznie będe musiał prowadzącemu pokazać jak to działa ?
+<Marek> @Piotrek Lublin
+<GIBBON> a to nie
+<pawel> fizycznie by się przydało
+<GIBBON> ktos wie jak w naszej bazie stwierdzic obciazenie?
+<GIBBON> czy to w MB
+<pawel> a ja w piątek wróiłem z Lublna :D
+<GIBBON> czy w jakis dokumentach
+<GIBBON> cokolwiek, zebym mial punkt zaczepienia
+<GIBBON> ??
+<pawel> a wiesz jak to w mongo wygląda?
+<Marek> mi się wydaje, że obciążenie to wielkość kawałków przechowywanych na poszeczególnych shardach
+<Marek> czyli w mb
+<pawel> ja też tak myślę
+<GIBBON> kawalek w mongo ma chyba 64MB tak?
+<Marek> nie wiem
+<GIBBON> domyslnie ma 64 juz sprawdzilem
+<pawel> to będziemy musieli dużo danych wygenerować
+<pawel> Mateusz, Ty jesteś?
+<Mateusz> no jestem
+<Mateusz> o co cho
+<pawel> super :D
+<Mateusz> czytam tu sobie co wy piszecie
+<Mateusz> i jakeiś wesela lubliny etc
+<pawel> i nic nie odpowiadasz :p
+<pawel> chciałbym coś ustalić i się za robotę brać
+<Mateusz> no bo się mnie nic nie pytacie ;p
+<Mateusz> no, ja mówię o zapytaniach
+<Mateusz> i w sumie co dalej trzeba
+<pawel> pytałem się co rozumiesz przez odczyty?
+<Mateusz> nie
+<pawel> no dobra, to jeszcze raz
+<pawel> rozumiesz przez to, wczytanie danych z katalogów (kolekcji) i plików do pamięci
+<pawel> ?
+<Mateusz> tak
+<Mateusz> tylko do tego potrzebuję zapytań :D
+<Mateusz> bo wczytuję plik
+<pawel> rozumiem
+<Mateusz> sprawdzam czy zgodny z zapytaniem
+<Mateusz> i albo go wkładam do bufora albo nie
+<pawel> to z  drugiej strony
+<pawel> ja właśnie przez to rozumiem zapytania
+<Mateusz> poza tym, wszystko powinno byc tak jak ja to opisałem w koncepcji
+<pawel> a ty przez co?
+<Mateusz> no wiesz ale hehe
+<Mateusz> zapytania używasz także na przykłąd w delecie
+<Mateusz> bo zapytanie to jest wyszukanie pewnego wzorca
+<pawel> no tak
+<Mateusz> np. jeżeli wiek > 18 to delete
+<pawel> zgadza się
+<Mateusz> i trzeba sprawdzać czy wiek jest cośtam cośtma
+<pawel> e tam, nie będzie tego implementować
+<Mateusz> ok to chcesz abym napisał także zapytania, tak?
+<pawel> tylko typu ==
+<Mateusz> no wiesz jakieś proste trzeba będzie
+<Mateusz> tylko to i jedynie
+<Mateusz> ?
+<Mateusz> ok to na dniach to napisze
+<pawel> tak właściwie mówiłem prowadzącemu ostatnio
+<Mateusz> okay
+<pawel> to nie jest najistotniejesze z punktu widzenia tego przedmiotu
+<pawel> a zapytania typu == już działają teoretycznie (to znaczy bez testów)?
+<Mateusz> nie
+<Mateusz> w ogóle nie ruszałem tego
+<pawel> a zrobisz to?
+<Mateusz> tak
+<Mateusz> napisze to w ciągu kilku dni
+<Mateusz> najpóźniej w piatek
+<pawel> a do kiedy mógłbyś?
+<Mateusz> od biedy mogę w czwartek :---D
+<pawel> ok
+<pawel> a teraz pytanie do Tomka
+<pawel> dałbyś radę do piątku CUD zrobić
+<pawel> bez zapytań
+<Marek> bez zapytań
+<pawel> same zapytania by się później wykorzystało od MAteusza
+<Mateusz> do zapytań stworzę nową klasę
+<Mateusz> ona będzie tylko porównywać jakieś shity
+<Marek> czyli po prostu usuwanie i updatowanie rekordów, które zostały już wybrane?
+<Mateusz> raz dwa się napisze i będzie spokój
+<pawel> do Tomka: insert to wiadomo jak
+<pawel> a w update i delete zapytania wykorzystałoby się funkcje którą napiszę MAteusz
+<pawel> insert i delete to prosta sprawa
+<Marek> ok
+<pawel> tylko update wydaje się bardzie skomplikowany
+<Marek> na piątek Tomek zrobi
+<pawel> super
+<pawel> to tylko zrób to jakoś tak
+<Marek> tylko jak to ma wyglądać
+<pawel> żeby dało się ładnie podłączyć to co Mateusz napisze?
+<Marek> Tomkowy update dostaje nazwy plikow z bsonami do updatowania?
+<Marek> no właśnie
+<Marek> czyli na przykład Mateusza część wybiera pliki z bsonami i BSONElementy
+<Marek> ?
+<pawel> Mateusza część na podstawie selectora, czy jak go tam zwać
+<pawel> wybiera pliki
+<pawel> a Tomka ma je updatować
+<Marek> ok
+<Marek> TOmek mówi: czyli dostaję na wejściu nazwę pliku do zmiany i to co ma być wsadzone
+<pawel> Mateusz tak będzie ok?
+<pawel> jak dla mnie to na wejściu dostajesz update message
+<Mateusz> zobaczę co zawiera update message
+<pawel> tam masz public BSONDocument selector;
+<pawel> i to Cie nie obchodzi
+<Mateusz> a, to ok
+<Mateusz> no to będzie spoko
+<pawel> wywołujesz fukcję którą napisze Mateusz
+<pawel> i ona Ci zwróci albo nazwy plików
+<pawel> albo nazwy i odrazu zawartość
+<pawel> pewnie tak będzie najlepiej
+<pawel> i na tym wyokonujesz to co jest w public BSONDocument update;
+<pawel> Mateusz, dobrze mówię?
+<Mateusz> hm, wiesz co, to trzeba będzie inaczej
+<Mateusz> mi się wydaje że raczej trzeba będzie zrobić odczyt z selektorem
+<Mateusz> a potem tak jakby inserty na to same miejsce
+<Mateusz> i to chyba nazwy plików
+<Mateusz> bo my potrzebujemy i zawartości i nazwy plików
+<Mateusz> bo chcemy gdzieś to zapisywać
+<pawel> no tak nazwa pliku i zawartość
+<pawel> czyli seletor będzie to zwaracał
+<Mateusz> okay
+<pawel> i jeżeli to będzie zapytanie będzie olewał nazwy plików
+<pawel> a do update będzie zwaracał je z zawartością
+<pawel> z kolei delete nie będzie potrzebował zawartości
+<Mateusz> czyli trzeba będzie to zrobić w dwóch różnych funkcjach :D
+<pawel> czy mógłbyś na jutro stworzyć jedynie intefejs
+<pawel> który jako parametr będzie przymował selector
+<pawel> a zwracał będzie listę obiektów typu <zawartość, nazwa pliku>?
+<pawel> nie 
+<pawel> funkcja byłaby jedna
+<pawel> taka jak ją opisałem
+<pawel> a różne operacje różne elementy jej by wykorzystwały
+<pawel> ma to sens co mówie?
+<pawel> a właściwie za chwilę wrzucę coś do repo
+<pawel> i powiedz mi czy moja idea jest dobra
+<Mateusz> co
+<Mateusz> nie ma sensu
+<Mateusz> bo do deleta nie potrzebujemy zawartościii
+<pawel> i tak to wczytujesz, żeby wykonać selectora
+<pawel> więc żaden ból już to przesłać
+<Mateusz> a czekaj
+<pawel> co o tym myślisz?
+<Mateusz> faktycznie to ma sens
+<Mateusz> bo aby sprawdzić selektro i tak trzeba wczytać plik
+<Mateusz> no doobra
+<pawel> możesz zobaczyć to co wrzuciłem teraz do repo
+<pawel> i Ty Tomek też
+<pawel> no dobra bo ja chciałem powoli konczyć,
+<pawel> jak rozumiem w weekend będzie tylko Marek, Mateusz i Marcin?
+<Mateusz> tak,
+<pawel> będzie mieli czas?
+<pawel> bo dobrze by to było jakoś wszystko posklejać
+<GIBBON> jak cos to w niedziele wieczorem ja bede
+<GIBBON> tylko w sobote na wesele jade
+<`26> no ja tą prezentacje końcową bede przygotowywał
+<pawel> i jeszcze dochodzi jedno pytanie do Piotrka, jak powinny wyglądać odczyty przy założeniu że dane będą po różnych serwerach po rozwalane?
+<pawel> ok, to dobrze, przydasz się :)
+<pawel> Marcin, no tak
+<GIBBON> wlasnie to jest dziwne co my chcemy zrobic, bo w naszym projekcie wogole nie mamy tego query routing
+<pawel> :D przydałoby się
+<pawel> tylko wiesz jak on powinien wyglądać?
+<pawel> bo ja za bardzo nie mam wizji
+<GIBBON> no ja tez sie nad tym nie zastanawialem
+<GIBBON> ale zobaczymy moze to nie bedzie nic wielkiego
+<pawel> no dla mnie idea tego, że zapytanie idzie do jednego mongod a dane mogą być w różnych jest trochę dziwna
+<pawel> no dobra, ale tak czy inaczej, ja bym na dzisiaj konczył
+<pawel> do piątku każdy ma jakąś robotę
+<GIBBON> w mongodb jest wlasnie ten mongos, ktory odpowiada za query routing
+<GIBBON> bo to on laczy sie do serwera konfiguracyjnego, ktory wie gdzie co jest
+<pawel> tylko informujcie na bieżąco o postępach
+<GIBBON> ale jak u nas bedzie wszystko razem
+<GIBBON> to moze jakos sie to uda latwo zrobic
+<GIBBON> ok, jak dla mnie mozemy konczyc
+<pawel> tak, żeby nie było, że wszyscy wyjadą i nie będziemy wiedzieli co jest grane
+<pawel> ma ktoś jakieś pytania?
+<Mateusz> niet
+<Mateusz> będziemy pod mejlem
+<Mateusz> xD
+<GIBBON> dobranoc <-- tu się kończy log irca
