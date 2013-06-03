@@ -10,6 +10,34 @@ import java.util.List;
 
 public abstract class BSON 
 {
+	public static byte[] getBSON(BSONDocument doc)
+	{
+		List<byte[]> byteList = new ArrayList<byte[]>();
+		
+		for (int i = 0; i < doc.getElems().size(); i++)
+		{	
+			byteList.add(getBytes(doc.getElems().get(i)));
+		}
+		return byteList.get(0);
+	}
+	
+	private static byte[] getBytes(BSONElement elem)
+	{
+		switch(elem.getType())
+		{
+			case OBJECTID:
+			{
+				byte[] temp = new byte[1 + elem.getName().getBytes().length + 1 + 12];
+				temp[0] = 0x07;
+				
+				//System.arraycopy(arg0, arg1, arg2, arg3, arg4)
+				return temp;
+			}
+			
+			default:
+				return new byte[0];
+		}
+	}
 	
 	public static int parseBSON(byte[] data, BSONDocument doc)
 	{
@@ -32,7 +60,7 @@ public abstract class BSON
 				String name = new String(data, index, index2 - index, "UTF-8");
 				index = index2 + 1;
 				
-				index = process(type, data, index, doc.elems, name);
+				index = parse(type, data, index, doc.elems, name);
 				
 				if (index >= len - 1)
 					break;
@@ -46,7 +74,7 @@ public abstract class BSON
 		return index;
 	}
 	
-	private static int process(int type, byte[] data, int index, List<BSONElement<?>> docs, String name) throws UnsupportedEncodingException
+	private static int parse(int type, byte[] data, int index, List<BSONElement<?>> docs, String name) throws UnsupportedEncodingException
 	{		
 		BSONtype bsonType = BSONtype.fromInt(type);
 		
@@ -128,7 +156,7 @@ public abstract class BSON
 					}
 					index2++;
 					
-					index2 = process(curType, data, index2, temp.data, "elem");
+					index2 = parse(curType, data, index2, temp.data, "elem");
 				}
 				index2++;
 				

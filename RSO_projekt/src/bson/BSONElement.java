@@ -6,6 +6,13 @@ public class BSONElement<T>
 	T data;
 	BSONtype type;
 	
+	public BSONElement(String name, T data, BSONtype type)
+	{
+		this.name = name;
+		this.data = data;
+		this.type = type;
+	}
+	
 	public BSONtype getType() {
 		return type;
 	}
