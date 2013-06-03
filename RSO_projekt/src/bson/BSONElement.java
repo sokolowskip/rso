@@ -4,6 +4,7 @@ public class BSONElement<T>
 {
 	String name;
 	T data;
+	BSONtype type;
 	
 	public String getName() {
 		return name;

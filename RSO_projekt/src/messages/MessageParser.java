@@ -22,7 +22,7 @@ public class MessageParser {
 		OTHER
 	}
 
-	public static MessageType getType(char[] msg)
+	public static MessageType getType(byte[] msg)
 	{
 		int opCode = byteArrayToInt(msg, 12);
 		
@@ -60,7 +60,7 @@ public class MessageParser {
 		}
 	}
 	
-	public static UpdateMessage ParseUpdateMessage(char[] msg)
+	public static UpdateMessage ParseUpdateMessage(byte[] msg)
 	{
 		UpdateMessage updateMessage = new UpdateMessage();
 		
@@ -79,7 +79,7 @@ public class MessageParser {
 		return updateMessage;
 	}
 	
-	public static InsertMessage ParseInsertMessage(char[] msg)
+	public static InsertMessage ParseInsertMessage(byte[] msg)
 	{
 		InsertMessage insertMessage = new InsertMessage();
 		
@@ -114,7 +114,7 @@ public class MessageParser {
 		return insertMessage; 
 	}
 	
-	public static QueryMessage ParseQueryMessage(char[] msg)
+	public static QueryMessage ParseQueryMessage(byte[] msg)
 	{
 		QueryMessage queryMessage = new QueryMessage();
 		Index i = new Index();
@@ -134,7 +134,7 @@ public class MessageParser {
 		return new QueryMessage();
 	}
 	
-	public static GetMoreMessage ParseGetMoreMessage(char[] msg)
+	public static GetMoreMessage ParseGetMoreMessage(byte[] msg)
 	{
 		GetMoreMessage getMoreMessage = new GetMoreMessage();
 		Index i = new Index();
@@ -146,7 +146,7 @@ public class MessageParser {
 		return new GetMoreMessage();
 	}
 	
-	public static DeleteMessage ParseDeleteMessage(char[] msg)
+	public static DeleteMessage ParseDeleteMessage(byte[] msg)
 	{
 		DeleteMessage deleteMessage = new DeleteMessage();
 		Index i = new Index();
@@ -159,7 +159,7 @@ public class MessageParser {
 		return new DeleteMessage();
 	}
 	
-	public static KillCursorsMessage ParseKillCursorsMessage(char[] msg)
+	public static KillCursorsMessage ParseKillCursorsMessage(byte[] msg)
 	{
 		KillCursorsMessage killCursorsMessage = new KillCursorsMessage();
 		Index i = new Index();
@@ -177,7 +177,7 @@ public class MessageParser {
 		return new KillCursorsMessage();
 	}
 
-	public static GenericMessage ParseGenericMessage(char[] msg)
+	public static GenericMessage ParseGenericMessage(byte[] msg)
 	{
 		GenericMessage genericMessage = new GenericMessage();
 		Index i = new Index();
@@ -186,7 +186,7 @@ public class MessageParser {
 		return new GenericMessage();
 	}
 	
-	public static ReplyMessage ParseReplyMessage(char[] msg)
+	public static ReplyMessage ParseReplyMessage(byte[] msg)
 	{
 		ReplyMessage replyMessage = new ReplyMessage();
 		Index i = new Index();
@@ -200,7 +200,7 @@ public class MessageParser {
 	
 	//prywatne funkcje poni�ej
 	
-	private static MessageHeader getHeader(char[] msg, Index i)
+	private static MessageHeader getHeader(byte[] msg, Index i)
 	{
 		 int messageLength = getInt(msg, i);
 		 int requestID = getInt(msg, i);
@@ -210,21 +210,21 @@ public class MessageParser {
 		return new MessageHeader(messageLength, requestID, responceTo, opCode);
 	}
 	
-	private static int getInt(char[] b, Index i)
+	private static int getInt(byte[] b, Index i)
 	{
 		int value = byteArrayToInt(b, i.getValue());
 		i.move(4);
 		return value;
 	}
 	
-	private static long getInt64(char[] b, Index i)
+	private static long getInt64(byte[] b, Index i)
 	{
 		int value = byteArrayToInt64(b, i.getValue());
 		i.move(8);
 		return value;
 	}
 	
-	private static String getString(char[] b, Index i)
+	private static String getString(byte[] b, Index i)
 	{
 		
 		int from = i.getValue();
@@ -258,18 +258,17 @@ public class MessageParser {
 		return string;
 	}
 	
-	private static char[] byteSubarray(char[] msg, int from, int count)
+	private static byte[] byteSubarray(byte[] msg, int from, int count)
 	{
 		return Arrays.copyOfRange(msg, from, from + count - 1);
 	}
 	
-	private static BSONDocument getDocument(char[] msg, Index i)
+	private static BSONDocument getDocument(byte[] msg, Index i)
 	{
 		int sizeOfDocument = getInt(msg, i);
 		i.move(-4);//trzeba sie cofnac
 		
-		char[] documentSource = byteSubarray(msg, i.getValue(), sizeOfDocument);
-		
+		byte[] documentSource = byteSubarray(msg, i.getValue(), sizeOfDocument);
 		
 		BSONDocument parsedDocument = new BSONDocument();
 		BSON.parseBSON(documentSource, parsedDocument);//tu nastepuje parsowanie
@@ -278,7 +277,7 @@ public class MessageParser {
 		i.move(sizeOfDocument);
 		return parsedDocument;
 	}
-	private static int byteArrayToInt(char[] b, int from)
+	private static int byteArrayToInt(byte[] b, int from)
 	{
 		return   b[from + 0] & 0xFF |
 				(b[from + 1] & 0xFF) << 8 |
@@ -286,7 +285,7 @@ public class MessageParser {
 				(b[from + 3] & 0xFF) << 24;
 	}
 	
-	private static int byteArrayToInt64(char[] b, int from)
+	private static int byteArrayToInt64(byte[] b, int from)
 	{
 		return   b[from + 0] & 0xFF |
 				(b[from + 1] & 0xFF) << 8 |

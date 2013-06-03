@@ -1,88 +1,101 @@
 package bson;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class BSON 
+public abstract class BSON 
 {
 	
-	public static int parseBSON(char[] data, BSONDocument doc)
+	public static int parseBSON(byte[] data, BSONDocument doc)
 	{
-		int len = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
-	
-		
+		ByteBuffer wrapper = ByteBuffer.wrap(data, 0, 4);
+		wrapper.order(ByteOrder.LITTLE_ENDIAN);
+		int len = wrapper.getInt();
 		int index = 4;
-		while (true)
-		{
-			int type = data[index]; 
-			index++;
-			
-			String name = "";
-			while(data[index] != 0)
-			{
-				name += data[index];
-				index++;
-			}
-			index++;
-			
-			index = process(type, data, index, doc.elems, name);
-			
-			if (index >= len - 1)
-				break;
-		}
 		
+		try
+		{			
+			while (true)
+			{
+				int type = data[index]; 
+				index++;
+				
+				int index2 = index;
+				while(data[index2] != 0)
+					index2++;
+				
+				String name = new String(data, index, index2 - index, "UTF-8");
+				index = index2 + 1;
+				
+				index = process(type, data, index, doc.elems, name);
+				
+				if (index >= len - 1)
+					break;
+			}
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			
+		}
+
 		return index;
 	}
 	
-	private static int process(int type, char[] data, int index, List<BSONElement<?>> docs, String name)
+	private static int process(int type, byte[] data, int index, List<BSONElement<?>> docs, String name) throws UnsupportedEncodingException
 	{		
-		switch (type)
+		BSONtype bsonType = BSONtype.fromInt(type);
+		
+		switch (bsonType)
 		{
 			//double
-			case 0x01:
+			case DOUBLE:
 			{
 				BSONElement<Double> temp = new BSONElement<Double>();
+				temp.type = bsonType;
 				temp.name = name;
 				
-				long temp2 = 0;
-				for (int i = 0; i < 8; i++)
-					temp2 += ((long)data[index + i] << 8 * i);				
-				index += 8;				
+				ByteBuffer wrapper = ByteBuffer.wrap(data, index, 8);
+				wrapper.order(ByteOrder.LITTLE_ENDIAN);
+				temp.data = wrapper.getDouble();
 				
-				temp.data = Double.longBitsToDouble(temp2);
+				index += 8;
+				
 				docs.add(temp);
 				break;
 			}
 			//string
-			case 0x02:
+			case STRING:
 			{
 				BSONElement<String> temp = new BSONElement<String>();
-				temp.data = "";
+				temp.type = bsonType;
 				temp.name = name;
 				
-				int curLen = data[index] + (data[index + 1] << 8) + (data[index + 2] << 16) + (data[index + 3] << 24);
+				ByteBuffer wrapper = ByteBuffer.wrap(data, index, 4);
+				wrapper.order(ByteOrder.LITTLE_ENDIAN);
+				int curLen = wrapper.getInt();
+				
 				index += 4;
 				
-				for (int i = 0; i < curLen - 1; i++)
-				{
-					temp.data += data[index];
-					index++;
-				}
-				index++;
+				temp.data = new String(data, index, curLen, "UTF-8");
+				index += curLen;
 				
 				docs.add(temp);
 				break;
 			}
 			//document (embedded)
-			case 0x03:
+			case EMBEDDED:
 			{
 				BSONElement<BSONDocument> temp = new BSONElement<BSONDocument>();
 				temp.data = new BSONDocument();
+				temp.type = bsonType;
 				temp.name = name;
 				
-				char[] data2 = Arrays.copyOfRange(data, index, data.length);
+				byte[] data2 = Arrays.copyOfRange(data, index, data.length);
 				int offset = parseBSON(data2, temp.data);
 				index += offset + 1;
 				
@@ -90,27 +103,31 @@ public class BSON
 				break;
 			}
 			//document (array)
-			case 0x04:
+			case ARRAY:
 			{
 				BSONElement<ArrayList<BSONElement<?>>> temp = new BSONElement<ArrayList<BSONElement<?>>>();
 				temp.data = new ArrayList<BSONElement<?>>();
+				temp.type = bsonType;
 				temp.name = name;
 				
 				int index2 = index;				
-				int len = data[index2] + (data[index2 + 1] << 8) + (data[index2 + 2] << 16) + (data[index2 + 3] << 24);
+				ByteBuffer wrapper = ByteBuffer.wrap(data, index, 4);
+				wrapper.order(ByteOrder.LITTLE_ENDIAN);
+				int curLen = wrapper.getInt();
 				index2 += 4;				
 				
-				while (index2 < index + len - 1)
+				while (index2 < index + curLen - 1)
 				{
 					int curType = data[index2]; 
 					index2++;
-					String n = "";
+
+					//czytanie indeksu w tablicy zapisanego w postaci stringa (indeks nie jest nigdzie u¿ywany)
 					while (data[index2] != 0)
 					{
-						n += data[index2];
 						index2++;
 					}
 					index2++;
+					
 					index2 = process(curType, data, index2, temp.data, "elem");
 				}
 				index2++;
@@ -120,12 +137,14 @@ public class BSON
 				break;
 			}
 			//ObjectId
-			case 0x07:	
+			case OBJECTID:	
 			{
 				BSONElement<ObjectID> temp = new BSONElement<ObjectID>();
 				temp.data = new ObjectID();
+				temp.type = bsonType;
 				temp.name = name;
 				
+				//nie u¿ywam bytebuffera poniewa¿ niektóre pola maj¹ po 3 bajty i nie odpowiadaj¹ ¿adnemu typowi z bytebuffera
 				temp.data.time = (data[index] << 24) + (data[index + 1] << 16) + (data[index + 2] << 8) + data[index + 3];
 				index += 4;
 				temp.data.machine = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
@@ -139,10 +158,11 @@ public class BSON
 				break; 
 			}
 			//Boolean
-			case 0x08:
+			case BOOL:
 			{
 				BSONElement<Boolean> temp = new BSONElement<Boolean>();
 				temp.name = name;
+				temp.type = bsonType;
 				
 				if (data[index] == 1)
 					temp.data = true;
@@ -154,45 +174,53 @@ public class BSON
 				break;
 			}
 			//UTC datetime
-			case 0x09:
+			case DATE:
 			//Timestamp
-			case 0x11:
+			case TIMESTAMP:
 			//64-bit integer
-			case 0x12:
+			case LONG:
 			{
 				BSONElement<Long> temp = new BSONElement<Long>();			
 				temp.name = name;
+				temp.type = bsonType;
 				
-				temp.data = (long)0;
-				for (int i = 0; i < 8; i++)
-					temp.data += ((long)data[index + i] << 8 * i);
+				ByteBuffer wrapper = ByteBuffer.wrap(data, index, 8);
+				wrapper.order(ByteOrder.LITTLE_ENDIAN);
+				temp.data = wrapper.getLong();
+				
 				index += 8;
 				
 				docs.add(temp);
 				break;	
 			}
 			//Null Value
-			case 0x0A:
+			case NULL:
 			{
 				BSONElement<Byte> temp = new BSONElement<Byte>();			
 				temp.name = name;
+				temp.type = bsonType;
 				temp.data = null;
 				
 				docs.add(temp);
 				break;	
 			}
 			//32-bit Integer
-			case 0x10:
+			case INT:
 			{
 				BSONElement<Integer> temp = new BSONElement<Integer>();			
 				temp.name = name;
+				temp.type = bsonType;
 				
-				temp.data = data[index] + (data[index + 1] << 8) + (data[index + 2] << 16) + (data[index + 3] << 24);
+				ByteBuffer wrapper = ByteBuffer.wrap(data, index, 4);
+				wrapper.order(ByteOrder.LITTLE_ENDIAN);
+				temp.data = wrapper.getInt();
 				index += 4;
 				
 				docs.add(temp);
 				break;	
 			}
+			case NONE:
+				break;
 		}
 		
 		return index;

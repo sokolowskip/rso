@@ -45,8 +45,12 @@ public class Read {
 			e.printStackTrace();
 		}
 		
+		byte[] array2 = new byte[(int) longNumber];
+		for (int i = 0; i < longNumber; i++)
+			array2[i] = (byte)array[i];
+		
 		BSONDocument bsonDocument = new BSONDocument();
-		BSON.parseBSON(array, bsonDocument);
+		BSON.parseBSON(array2, bsonDocument);
 		return bsonDocument;
 	}
 
