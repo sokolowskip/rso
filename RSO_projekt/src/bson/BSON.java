@@ -81,7 +81,7 @@ public abstract class BSON
 				
 				index += 4;
 				
-				temp.data = new String(data, index, curLen, "UTF-8");
+				temp.data = new String(data, index, curLen - 1, "UTF-8");
 				index += curLen;
 				
 				docs.add(temp);

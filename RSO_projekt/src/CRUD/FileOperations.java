@@ -13,6 +13,7 @@ import com.sun.org.apache.bcel.internal.generic.Type;
 import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
+import bson.BSONtype;
 
 public class FileOperations {
 
@@ -88,7 +89,7 @@ public class FileOperations {
 	public static <T> void updateFile(File file, String updateName, T updateData) {
 		BSONDocument bsonDocument = new BSONDocument();
 		bsonDocument = readFromFile(file);
-
+		
 		Iterator<BSONElement<?>> iterator = bsonDocument.getElems().iterator();
 		while (iterator.hasNext()) {
 			BSONElement<?> documentElement = iterator.next();
@@ -102,17 +103,20 @@ public class FileOperations {
 				// System.out.println("Znaleziono stringa");
 				// }
 				
-				switch (documentElement.getData().getClass().getName()) {
-				  case "java.lang.String":
-					  System.out.println("Znaleziono stringa");
-				    break;
-				  case "java.lang.Integer":
-					  System.out.println("Znaleziono inta");
-				    break;
-				  case "java.lang.Long":
-					  System.out.println("Znaleziono longa");
-					    break;
-				}			
+				// switch (documentElement.getData().getClass().getName()) {
+				// case "java.lang.String":
+				// System.out.println("Znaleziono stringa");
+				// break;
+				// case "java.lang.Integer":
+				// System.out.println("Znaleziono inta");
+				// break;
+				// case "java.lang.Long":
+				// System.out.println("Znaleziono longa");
+				// break;
+				// }
+				
+//				BSONtype.fromInt(documentElement.getData());
+				
 				
 				// delete file
 				// insert file
