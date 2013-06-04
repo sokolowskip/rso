@@ -28,12 +28,7 @@ public class Listener
 		}
 	}
 
-	/**MAIN**/
-	public static void main(String[] args) throws IOException
-	{
-		new Listener(27017);
-	}
-	
+
 	
 	/**
 	 * Tworzy obiekt serverSocket.
