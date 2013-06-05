@@ -1,63 +1,69 @@
 package CRUD;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import messages.UpdateMessage;
 import bson.BSONDocument;
 import bson.BSONElement;
 
 public class Update {
-	public void updateEntry(UpdateMessage updateMessage) {
+	String dbDirectory = "exampleDB/";
+
+	void updateDocument(UpdateMessage updateMessage) {
+		String collectionName = updateMessage.fullCollectionName;
+		BSONDocument bsonDocument = updateMessage.selector;
+		BSONDocument updateBsonDocument = updateMessage.update;
+
+		// pobieranie nazwy pliku do zmodyfikowania z updateMessage
+		String fileNameToUpdate = FileOperations.findIdElement(bsonDocument);
+
+		// wyszukiwanie pliku na dysku
+		File fileToUpdate = FileOperations.findFile(fileNameToUpdate,
+				collectionName);
+
+		if (fileToUpdate != null) {
+			// update
+			System.out.println(fileNameToUpdate);
+			System.out.println(collectionName);
+			updateElements(updateBsonDocument, fileToUpdate);
+
+		}
+	}
+
+	public void updateElements(BSONDocument updateDocument, File fileToUpdate) {
 		// pobieranie danych z updateMessage
-		BSONDocument updateBsonDocument = updateMessage.selector;
-		Iterator<BSONElement<?>> iterator = updateBsonDocument.getElems()
+		Iterator<BSONElement<?>> iterator = updateDocument.getElems()
 				.iterator();
 
-		// przeszukiwanie update message
+		// przeszukiwanie updateMessage
 		while (iterator.hasNext()) {
 			BSONElement<?> updateElement = iterator.next();
 			if (updateElement.getName() != null) {
-				File[] fileArray = FileOperations
-						.openCollection(updateMessage.fullCollectionName);
-				for (int i = 0; i < fileArray.length; i++) {
-					// przeszukiwanie wszystkich plikow
-					compareWithFile(fileArray[i], updateElement, updateMessage);
-				}
+				compareWithFile(updateElement, fileToUpdate);
 			}
 		}
 	}
 
-	public void compareWithFile(File file, BSONElement<?> updateElement,
-			UpdateMessage updateMessage) {
+	public void compareWithFile(BSONElement<?> updateElement, File fileToUpdate) {
 		// pobieranie danych z pliku
-		BSONDocument fileBsonDocument = FileOperations.readFromFile(file);
+		BSONDocument fileBsonDocument = FileOperations
+				.readFromFile(fileToUpdate);
 		Iterator<BSONElement<?>> iterator2 = fileBsonDocument.getElems()
 				.iterator();
 		// przeszukiwanie BSON-ow w pliku
 		while (iterator2.hasNext()) {
-			BSONElement<?> searchElement = iterator2.next();
+			BSONElement<?> fileElement = iterator2.next();
 			// porownanie nazwy z updateMessage i z pliku
-			if (updateElement.getName().equals(searchElement.getName())) {
-				System.out.println("znaleziono dokument z t¹ sam¹ nazw¹ "
-						+ searchElement.getName() + " w pliku " + file);
-				System.out.println("zawartoœæ: " + searchElement.getData());
-				// update pliku
-				int age = 31;
-//				FileOperations.updateFile(file, "mkyong", age);
+			if (updateElement.getName().equals(fileElement.getName())) {
+				System.out.println("znaleziono pole do aktualizacji"
+						+ updateElement.getName());
+				// aktualizacja elementu - "wiersza"
+				fileElement = updateElement;
 			}
-
-			// TODO:
-			// dodac inne opcje (aktualizacja nie tylko po nazwie)
-			// case double
-			// case String
-			// case BSONDocument
-			// case array
-			// case IbjectId
-			// case Boolean
-			// case Long
-			// case null
-			// case Integer
 		}
+		// TODO: save fileBsonDocument jako bajty do pliku
 	}
 }

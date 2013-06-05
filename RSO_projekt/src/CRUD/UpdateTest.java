@@ -1,6 +1,9 @@
 package CRUD;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import messages.UpdateMessage;
 
@@ -9,32 +12,37 @@ import org.junit.Test;
 
 import bson.BSON;
 import bson.BSONDocument;
+import bson.BSONElement;
+import bson.BSONtype;
 
 public class UpdateTest {
 	UpdateMessage updateMessage = new UpdateMessage();
 	String directory = "testoweBsony/";
+
 	@Before
 	public void setUp() {
+		File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
-		// przyk³adowy BSON
-		byte[] testData = new byte[] { 0x45, 0x00, 0x00, 0x00, 0x07, 0x5f,
-				0x69, 0x64, 0x00, 0x51, (byte)0x84, 0x03, (byte)0xa2, 0x58, 0x54, 0x2b,
-				(byte)0xcd, (byte)0xa4, (byte)0xf1, (byte)0xc1, 0x30, 0x02, 0x6e, 0x61, 0x6d, 0x65,
-				0x00, 0x07, 0x00, 0x00, 0x00, 0x6d, 0x6b, 0x79, 0x6f, 0x6e,
-				0x67, 0x00, 0x10, 0x61, 0x67, 0x65, 0x00, 0x1e, 0x00, 0x00,
-				0x00, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x44,
-				0x61, 0x74, 0x65, 0x00, 0x0e, 0x34, (byte)0xae, 0x6b, 0x3e, 0x01,
-				0x00, 0x00 };
-		BSON.parseBSON(testData, doc);
+		doc = FileOperations.readFromFile(files[0]);
 
-		updateMessage.fullCollectionName = directory;
+		BSONDocument updateDataforBsonDocument = new BSONDocument();
+		ArrayList<BSONElement<?>> elems = new ArrayList<BSONElement<?>>();
+		elems.add(new BSONElement<String>("name", "kowalski", BSONtype.STRING));
+		updateDataforBsonDocument.setElems(elems);
+
+		// byte[] bsonBytes = BSON.getBSON(updateDataforBsonDocument);
+
+		assertNotNull(updateMessage);
+
+		updateMessage.fullCollectionName = "Collection1";
 		updateMessage.selector = doc;
+		updateMessage.update = updateDataforBsonDocument;
 	}
 
 	@Test
 	public void test() {
-		Update uptadeObj = new Update();
-		uptadeObj.updateEntry(updateMessage);
+		Update update = new Update();
+		update.updateDocument(updateMessage);
 	}
 
 }
