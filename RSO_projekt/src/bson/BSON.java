@@ -22,7 +22,7 @@ public abstract class BSON
 			totalSize += byteList.get(i).length;
 		}
 		
-		byte[] res = new byte[totalSize];
+		byte[] res = new byte[totalSize + 1];
 		byte[] length = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(totalSize).array();
 		
 		System.arraycopy(length, 0, res, 0, 4);		
@@ -33,6 +33,8 @@ public abstract class BSON
 			offset += byteList.get(i).length;
 		}
 		
+		res[res.length - 1] = 0;
+		
 		return res;
 	}
 	
@@ -42,6 +44,19 @@ public abstract class BSON
 		
 		switch(elem.getType())
 		{
+			case DOUBLE:
+			{
+				int offset = 0;
+				Double data = (Double)elem.data;
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 8];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				System.arraycopy(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putDouble(data).array(), 0, temp, offset, 8);
+				
+				return temp;
+			}
 			case STRING:
 			{
 				int offset = 0;
@@ -78,6 +93,43 @@ public abstract class BSON
 				
 				return temp;
 			}
+			case ARRAY:
+			{
+				int offset = 0;
+				ArrayList<BSONElement<?>> data = (ArrayList<BSONElement<?>>)elem.data;
+				ArrayList<byte[]> dataBytesArr = new ArrayList<byte[]>();
+				
+				int length = 4;
+				for (int i = 0; i < data.size(); i++)
+				{
+					dataBytesArr.add(getBytes(data.get(i)));
+					length += dataBytesArr.get(i).length;
+				}
+				
+				int offset2 = 0;
+				//dodatkowy bajt na zero na koñcu
+				byte[] dataBytes = new byte[length + 1];
+				
+				System.arraycopy(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(length).array(), 0, dataBytes, offset2, 4);
+				offset2 += 4;
+				
+				for (int i = 0; i < dataBytesArr.size(); i++)
+				{
+					System.arraycopy(dataBytesArr.get(i), 0, dataBytes, offset2, dataBytesArr.get(i).length);
+					offset2 += dataBytesArr.get(i).length;
+				}
+				
+				dataBytes[dataBytes.length - 1] = 0;
+				
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + dataBytes.length + 1 + dataBytes.length];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				System.arraycopy(dataBytes, 0, temp, offset, dataBytes.length);
+				
+				return temp;
+			}
 			case OBJECTID:
 			{
 				int offset = 0;
@@ -99,6 +151,22 @@ public abstract class BSON
 					*/
 				return temp;
 			}
+			case BOOL:
+			{
+				int offset = 0;
+				Boolean data = (Boolean)elem.data;
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 1];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				if (data)
+					temp[offset] = 1; 
+				else
+					temp[offset] = 0;
+				
+				return temp;
+			}
 			case DATE:
 			case TIMESTAMP:
 			case LONG:
@@ -113,6 +181,15 @@ public abstract class BSON
 				System.arraycopy(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(data).array(), 0, temp, offset, 8);
 				
 				return temp;
+			}
+			case NULL:
+			{
+				//bajty na: typ, nazwê, zerowy
+				byte[] temp = new byte[1 + nameBytes.length + 1];
+				
+				insertNameType(temp, elem.getType(), nameBytes);
+				
+				return temp;	
 			}
 			case INT:
 			{
@@ -243,13 +320,15 @@ public abstract class BSON
 					index2++;
 
 					//czytanie indeksu w tablicy zapisanego w postaci stringa (indeks nie jest nigdzie u¿ywany)
+					String n = ""; 
 					while (data[index2] != 0)
 					{
+						n += (char)data[index2]; 
 						index2++;
 					}
 					index2++;
 					
-					index2 = parse(curType, data, index2, temp.data, "elem");
+					index2 = parse(curType, data, index2, temp.data, n);
 				}
 				index2++;
 				
