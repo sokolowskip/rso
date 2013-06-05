@@ -1,10 +1,10 @@
 package CRUD;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import bson.BSON;
@@ -86,24 +86,16 @@ public class FileOperations {
 	}
 
 	public static void createFile(BSONDocument bsonDocument, String name) {
-		File newRecord = new File(name);
+		byte[] bsonBytes = BSON.getBSON(bsonDocument);
 		try {
-			if (newRecord.createNewFile()) {
-				FileWriter fw = new FileWriter(newRecord.getAbsoluteFile());
-				BufferedWriter bw = new BufferedWriter(fw);
-				// TODO: poprawic jak Marek doda parsowanie bsona do bajtów
-				byte[] bsonBytes = BSON.getBSON(bsonDocument);
-				bw.write(bsonBytes.toString());
-				bw.close();
-
-			} else {
-				System.out.println("File already exists.");
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			FileOutputStream fos = new FileOutputStream(name);
+			fos.write(bsonBytes);
+			fos.close();
+		} catch (FileNotFoundException ex) {
+			System.out.println("FileNotFoundException : " + ex);
+		} catch (IOException ioe) {
+			System.out.println("IOException : " + ioe);
 		}
-
 	}
 
 	// sprawdzenie czy nie istnieje folder
@@ -118,8 +110,8 @@ public class FileOperations {
 		}
 		return false;
 	}
-	
-	//wyszukiwanie pliku
+
+	// wyszukiwanie pliku
 	public static File findFile(String fileName, String collectionName) {
 		File[] listOfFiles = openCollection(dbDirectory + "/" + collectionName);
 		for (int i = 0; i < listOfFiles.length; i++) {
