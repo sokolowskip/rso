@@ -42,19 +42,50 @@ public abstract class BSON
 		
 		switch(elem.getType())
 		{
+			case STRING:
+			{
+				int offset = 0;
+				String data = (String)elem.getData();
+				byte[] dataBytes = data.getBytes();
+				
+				//bajty na: typ, nazwê, zerowy, d³ugoœæ stringa, string, zerowy
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 4 + dataBytes.length + 1];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				//dodajemy +1 na zerowy bajt
+				byte[] length = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(dataBytes.length + 1).array();				
+				System.arraycopy(length, 0, temp, offset, 4);	
+				offset += 4;
+				
+				System.arraycopy(dataBytes, 0, temp, offset, dataBytes.length);
+				offset += dataBytes.length;
+				temp[offset] = 0;
+				
+				return temp;
+			}
+			case EMBEDDED:
+			{
+				int offset = 0;
+				BSONDocument data = (BSONDocument)elem.data;
+				byte[] dataBytes = getBSON(data);
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + dataBytes.length + 1 + dataBytes.length];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				System.arraycopy(dataBytes, 0, temp, offset, dataBytes.length);
+				
+				return temp;
+			}
 			case OBJECTID:
 			{
 				int offset = 0;
-				byte[] temp = new byte[1 + nameBytes.length + 1 + 12];
 				ObjectID data = (ObjectID)elem.data;
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 12];
 				
-				temp[0] = 0x07;
-				offset++;
-				
-				System.arraycopy(nameBytes, 0, temp, offset, nameBytes.length);
-				offset += nameBytes.length;
-				temp[offset] = 0;
-				offset++;
+				offset += insertNameType(temp, elem.getType(), nameBytes);
 				
 				System.arraycopy(ByteBuffer.allocate(4).putInt(data.time).array(), 0, temp, offset, 4);
 				offset += 4;
@@ -68,7 +99,34 @@ public abstract class BSON
 					*/
 				return temp;
 			}
-			
+			case DATE:
+			case TIMESTAMP:
+			case LONG:
+			{
+				int offset = 0;
+				Long data = (Long)elem.data;
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 8];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				System.arraycopy(ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(data).array(), 0, temp, offset, 8);
+				
+				return temp;
+			}
+			case INT:
+			{
+				int offset = 0;
+				Integer data = (Integer)elem.data;
+				//bajty na: typ, nazwê, zerowy, dane
+				byte[] temp = new byte[1 + nameBytes.length + 1 + 4];
+				
+				offset += insertNameType(temp, elem.getType(), nameBytes);
+				
+				System.arraycopy(ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(data).array(), 0, temp, offset, 4);
+				
+				return temp;
+			}
 			default:
 				return new byte[0];
 		}
@@ -287,5 +345,19 @@ public abstract class BSON
 		}
 		
 		return index;
+	}
+	
+	private static int insertNameType(byte[] arr, BSONtype type,  byte[] nameBytes)
+	{
+		int offset = 0;
+		arr[0] = (byte)type.type;
+		offset = 1;
+		
+		System.arraycopy(nameBytes, 0, arr, offset, nameBytes.length);
+		offset += nameBytes.length;
+		arr[offset] = 0;
+		offset++;
+		
+		return offset;
 	}
 }

@@ -62,9 +62,16 @@ public class BSONtest {
 		BSON.parseBSON(testData2, doc2);
 		BSON.parseBSON(testData3, doc3);
 		
-		byte[] bson = BSON.getBSON(doc1);
+		byte[] bson1 = BSON.getBSON(doc1);
+		byte[] bson2 = BSON.getBSON(doc2);
+		byte[] bson3 = BSON.getBSON(doc3);
 		
 		BSONDocument doc1b = new BSONDocument();
-		BSON.parseBSON(bson, doc1b);
+		BSONDocument doc2b = new BSONDocument();
+		BSONDocument doc3b = new BSONDocument();
+		
+		BSON.parseBSON(bson1, doc1b);
+		BSON.parseBSON(bson2, doc2b);
+		BSON.parseBSON(bson3, doc3b);
 	}
 }
