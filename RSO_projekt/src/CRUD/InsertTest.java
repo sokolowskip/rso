@@ -18,7 +18,8 @@ public class InsertTest {
 		doc = FileOperations.readFromFile(files[0]);
 
 		Insert insert = new Insert();
-		insert.insertDocument("Collection3", doc);
+		//TODO: przetestowaæ dla insert Message
+		// insert.insertDocumentList(insertMessage);
 	}
 
 }
