@@ -15,6 +15,12 @@ public class ShardInfo
     //port na ktorym dziala balancer
     int balancerPort;
     
+    public ShardInfo(InetAddress _shardIP)
+    {
+    	shardIP = _shardIP;
+    }
+    
+    
 	Boolean isSizeMaxed() 
 	{
 		if (maxSize == currSize) return true;
