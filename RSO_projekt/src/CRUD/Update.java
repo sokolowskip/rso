@@ -44,7 +44,7 @@ public class Update {
 				System.out.println("zawartoœæ: " + searchElement.getData());
 				// update pliku
 				int age = 31;
-				FileOperations.updateFile(file, "mkyong", age);
+//				FileOperations.updateFile(file, "mkyong", age);
 			}
 
 			// TODO:

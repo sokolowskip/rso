@@ -14,13 +14,13 @@ import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
 import bson.BSONtype;
+import bson.ObjectID;
 
 public class FileOperations {
+	static String dbDirectory = "exampleDB/";
 
 	// zwraca listê plików nale¿¹cych do danej kolekcji
 	public static File[] openCollection(String collectionName) {
-		// zak³adam ¿e pliki le¿¹ p³asko w kolekcji, je¿eli oka¿e siê to ma³o
-		// wydajne trzeba bêdzie to skomplikowaæ
 		File folder = new File(collectionName);
 		File[] listOfFiles = folder.listFiles();
 
@@ -62,7 +62,7 @@ public class FileOperations {
 			// konwersja dziesietnej na znak
 			sb.append((char) decimal);
 			tablica[i] = sb.toString();
-			array[i] = (byte)tablica[i].charAt(0);
+			array[i] = (byte) tablica[i].charAt(0);
 		}
 
 		BSONDocument bsonDocument = new BSONDocument();
@@ -70,49 +70,69 @@ public class FileOperations {
 		return bsonDocument;
 	}
 
-	public static void insertFile(File file) {
-
-	}
-
-	public static void deleteFile(File file) {
-		file.delete();
-	}
-
-	public static <T> void updateFile(File file, String updateName, T updateData) {
-		BSONDocument bsonDocument = new BSONDocument();
-		bsonDocument = readFromFile(file);
-		
-		Iterator<BSONElement<?>> iterator = bsonDocument.getElems().iterator();
-		while (iterator.hasNext()) {
-			BSONElement<?> documentElement = iterator.next();
-			if (documentElement.getName().equals(updateName))
-				;
-			{
-				System.out.println("Typy: ");
-				System.out.println(documentElement.getData().getClass());
-				
-				// if (documentElement.getData() instanceof String){
-				// System.out.println("Znaleziono stringa");
-				// }
-				
-				// switch (documentElement.getData().getClass().getName()) {
-				// case "java.lang.String":
-				// System.out.println("Znaleziono stringa");
-				// break;
-				// case "java.lang.Integer":
-				// System.out.println("Znaleziono inta");
-				// break;
-				// case "java.lang.Long":
-				// System.out.println("Znaleziono longa");
-				// break;
-				// }
-				
-//				BSONtype.fromInt(documentElement.getData());
-				
-				
-				// delete file
-				// insert file
+	// wyszukiwanie elementu zawieraj¹cego pole "_id"
+	public static String findIdElement(BSONDocument bsonDocument) {
+		String fileName = null;
+		for (int i = 0; i < bsonDocument.getElems().size(); i++) {
+			if (bsonDocument.getElems().get(i).getName().equals("_id")) {
+				ObjectID objectID = (ObjectID) bsonDocument.getElems().get(i)
+						.getData();
+				if (objectID != null) {
+					fileName = Integer.toString(objectID.getCounter())
+							+ Integer.toString(objectID.getMachine())
+							+ Integer.toString(objectID.getProcID())
+							+ Integer.toString(objectID.getTime());
+					// System.out.println(fileName);
+				}
+				return fileName;
 			}
 		}
+		return fileName;
+	}
+
+	public static void createFile(BSONDocument bsonDocument, String name) {
+		File newRecord = new File(name);
+		try {
+			if (newRecord.createNewFile()) {
+				FileWriter fw = new FileWriter(newRecord.getAbsoluteFile());
+				BufferedWriter bw = new BufferedWriter(fw);
+				// TODO: poprawic jak Marek doda parsowanie bsona do bajtów
+				bw.write(bsonDocument.toString());
+				bw.close();
+
+			} else {
+				System.out.println("File already exists.");
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	// sprawdzenie czy nie istnieje folder
+	public static boolean checkIfCollection(String collectionName) {
+		File[] listOfFiles = openCollection(dbDirectory);
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isDirectory()) {
+				if (listOfFiles[i].getName().equals(collectionName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	//wyszukiwanie pliku
+	public static File findFile(String fileName, String collectionName) {
+		File[] listOfFiles = openCollection(dbDirectory + "/" + collectionName);
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				if (listOfFiles[i].getName().equals(fileName)) {
+					return listOfFiles[i];
+				}
+			}
+		}
+		return null;
 	}
 }
