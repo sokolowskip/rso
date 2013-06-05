@@ -20,8 +20,6 @@ import bson.BSONDocument;
  * Klasa przyjmujaca wiadomosci od pojedynczego klienta.
  * Instancje tej klasy umieszczane sa w nowych watkach.
  * 
- * @author Piotr Cebulski
- *
  */
 public class ClientHandler extends Thread
 {

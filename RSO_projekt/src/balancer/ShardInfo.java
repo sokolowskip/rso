@@ -1,23 +1,37 @@
 package balancer;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
-public class ShardInfo 
+/**
+ * Klasa przechowujaca informacje o shardzie.
+ * Implementuje java.io.Serializable, poniewaz
+ * jest argumentem w wywolaniach RMI.
+ * 
+ * @author Piotr Cebulski
+ *
+ */
+public class ShardInfo implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2781342700477736396L;
 	//maksymalny rozmiar sharda
 	//jak to bedzie okreslane??
-    private static long maxSize;
+    private long maxSize;
     //aktualne obciazenie sharda
-    private static long currSize;
+    private long currSize;
 	
     //adres sharda
-    InetAddress shardIP;
-    //port na ktorym dziala balancer
+    private InetAddress shardIP;
+
+	//port na ktorym dziala balancer
     int balancerPort;
     
-    public ShardInfo(InetAddress _shardIP)
+    public ShardInfo(InetAddress shardIP)
     {
-    	shardIP = _shardIP;
+    	this.shardIP = shardIP;
     }
     
     
@@ -35,5 +49,9 @@ public class ShardInfo
 	long getCurrSize() 
 	{ 
 		return currSize; 
+	}
+
+	public InetAddress getShardIP() {
+		return shardIP;
 	}
 }
