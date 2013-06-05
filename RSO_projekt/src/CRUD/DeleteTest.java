@@ -1,11 +1,12 @@
 package CRUD;
 
+import java.io.File;
+
 import messages.DeleteMessage;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import bson.BSON;
 import bson.BSONDocument;
 
 public class DeleteTest {
@@ -14,25 +15,16 @@ public class DeleteTest {
 
 	@Before
 	public void setUp() {
+		File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
-		// przyk³adowy BSON
-		byte[] testData = new byte[] { 0x45, 0x00, 0x00, 0x00, 0x07, 0x5f,
-				0x69, 0x64, 0x00, 0x51, (byte)0x84, 0x03, (byte)0xa2, 0x58, 0x54, 0x2b,
-				(byte)0xcd, (byte)0xa4, (byte)0xf1, (byte)0xc1, 0x30, 0x02, 0x6e, 0x61, 0x6d, 0x65,
-				0x00, 0x07, 0x00, 0x00, 0x00, 0x6d, 0x6b, 0x79, 0x6f, 0x6e,
-				0x67, 0x00, 0x10, 0x61, 0x67, 0x65, 0x00, 0x1e, 0x00, 0x00,
-				0x00, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x44,
-				0x61, 0x74, 0x65, 0x00, 0x0e, 0x34, (byte)0xae, 0x6b, 0x3e, 0x01,
-				0x00, 0x00 };
-		BSON.parseBSON(testData, doc);
-		
-		deleteMessage.fullCollectionName = directory;
+		doc = FileOperations.readFromFile(files[0]);
+		deleteMessage.fullCollectionName = "Collection1";
 		deleteMessage.selector = doc; 
 	}
 
 	@Test
 	public void test() {
-		Delete deleteObj = new Delete();
-		deleteObj.deteleEntry(deleteMessage);
+		Delete delete = new Delete();
+		delete.deleteDocument(deleteMessage);
 	}
 }
