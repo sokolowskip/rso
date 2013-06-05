@@ -22,7 +22,10 @@ public abstract class BSON
 			totalSize += byteList.get(i).length;
 		}
 		
-		byte[] res = new byte[totalSize + 1];
+		//na zerowy bajt na koncu
+		totalSize += 1;
+		
+		byte[] res = new byte[totalSize];
 		byte[] length = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(totalSize).array();
 		
 		System.arraycopy(length, 0, res, 0, 4);		
@@ -139,16 +142,27 @@ public abstract class BSON
 				
 				offset += insertNameType(temp, elem.getType(), nameBytes);
 				
-				System.arraycopy(ByteBuffer.allocate(4).putInt(data.time).array(), 0, temp, offset, 4);
+				//te wartoœci nie s¹ de facto intami wiêc nie mo¿na u¿yæ ByeBuffera
+				temp[offset] = (byte)((data.time >> 24) & 0xFF);
+				temp[offset + 1] = (byte)((data.time >> 16) & 0xFF);
+				temp[offset + 2] = (byte)((data.time >> 8) & 0xFF);
+				temp[offset + 3] = (byte)((data.time >> 0) & 0xFF);
 				offset += 4;
-				/*
-				temp.data.machine = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+
+				temp[offset] = (byte)((data.machine >> 16) & 0xFF);
+				temp[offset + 1] = (byte)((data.machine >> 8) & 0xFF);
+				temp[offset + 2] = (byte)((data.machine >> 0) & 0xFF);
 				offset += 3;
-				temp.data.procID = (data[index] << 8) + data[index + 1];
+				
+				temp[offset + 1] = (byte)((data.procID >> 8) & 0xFF);
+				temp[offset + 2] = (byte)((data.procID >> 0) & 0xFF);
 				offset += 2;	
-				temp.data.counter = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+				
+				temp[offset] = (byte)((data.counter >> 16) & 0xFF);
+				temp[offset + 1] = (byte)((data.counter >> 8) & 0xFF);
+				temp[offset + 2] = (byte)((data.counter >> 0) & 0xFF);
 				offset += 3;
-					*/
+
 				return temp;
 			}
 			case BOOL:
@@ -345,13 +359,13 @@ public abstract class BSON
 				temp.name = name;
 				
 				//nie u¿ywam bytebuffera poniewa¿ niektóre pola maj¹ po 3 bajty i nie odpowiadaj¹ ¿adnemu typowi z bytebuffera
-				temp.data.time = (data[index] << 24) + (data[index + 1] << 16) + (data[index + 2] << 8) + data[index + 3];
+				temp.data.time = ((data[index] & 0xFF) << 24) + ((data[index + 1] & 0xFF) << 16) + ((data[index + 2] & 0xFF) << 8) + (data[index + 3] & 0xFF);//ByteBuffer.wrap(data).getInt(index);
 				index += 4;
-				temp.data.machine = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+				temp.data.machine = ((data[index] & 0xFF) << 16) + ((data[index + 1] & 0xFF) << 8) + (data[index + 2] & 0xFF);
 				index += 3;
-				temp.data.procID = (data[index] << 8) + data[index + 1];
+				temp.data.procID = ((data[index] & 0xFF) << 8) + (data[index + 1] & 0xFF);
 				index += 2;	
-				temp.data.counter = (data[index] << 16) + (data[index + 1] << 8) + data[index + 2];
+				temp.data.counter = ((data[index] & 0xFF) << 16) + ((data[index + 1] & 0xFF) << 8) + (data[index + 2] & 0xFF);
 				index += 3;
 				
 				docs.add(temp);
