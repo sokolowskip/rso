@@ -1,11 +1,15 @@
 package configserver;
+
 /**
-* Klasa implementujaca serwer konfiguracyjny 
-* Korzysta z Remote Method Invocation
+* Klasa tworzy watek serwera konfiguracyjnego.
+* Tworzy objekt RemServer korzystajacy z RMI.
+* 
+* @author Piotr Cebulski
 */
 public class ConfigServer implements Runnable
 {
 
+	@SuppressWarnings("unused")
 	private int port;
 
 	public ConfigServer(int _port) 

@@ -1,6 +1,5 @@
 package configserver;
 
-import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -8,26 +7,29 @@ import java.util.ArrayList;
 import balancer.ShardInfo;
 
 /**
- * This is the actual implementation of Rem that the RMI server uses. The server
- * builds an instance of this then registers it with a URL. The client accesses
- * the URL and binds the result to a Rem (not a RemImpl; it doesn't have this).
+ * Klasa implementujace funkcje serwera konfiguracyjnego.
+ * Zawiera metody wywolywane zarowno przez shardy, jak i balancer.
+ * 
+ * @author Piotr Cebulski
  */
 
 public class RemImpl extends UnicastRemoteObject implements Rem {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
-	private static ArrayList<ShardInfo> shards;
+	private static final long serialVersionUID = 5370129700470960855L;
+	private ArrayList<ShardInfo> shards;
 	
 	public RemImpl() throws RemoteException {
+		shards = new ArrayList<ShardInfo>();
 	}
 
-	public String registerToConfigServer(InetAddress shardIP)
+	
+	public String registerToConfigServer(ShardInfo shard)
 			throws RemoteException {
-		shards.add(new ShardInfo(shardIP));
-		System.out.println("Registering new shard: " + shardIP.getHostAddress());
+		shards.add(shard);
+		System.out.println("Registered new shard: " + shard.getShardIP().getHostAddress());
 		return("Shard registered successfully");
 	}
 

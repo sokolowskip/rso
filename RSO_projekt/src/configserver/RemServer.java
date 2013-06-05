@@ -2,31 +2,26 @@ package configserver;
 
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
-import java.net.*;
+import java.rmi.registry.Registry;
 
 /**
- * The server creates a RemImpl (which implements the Rem interface), then
- * registers it with the URL Rem, where clients can access it.
+ * Klasa sluzy do uruchamiani rejestru RMI na domyslnym porcie.
+ * Tworzy obiekt RemImpl.
+ * 
+ * @author Piotr Cebulski
  */
 
 public class RemServer {
 
 	public RemServer() {
          try { //special exception handler for registry creation
-            
-        	LocateRegistry.createRegistry(1099); 
+            Registry r = LocateRegistry.createRegistry(1099);
+            //Tworzymy SKELTON
+            r.rebind("//192.168.0.13/Rem", new RemImpl());
             System.out.println("java RMI registry created.");
         } catch (RemoteException e) {
             //do nothing, error means registry already exists
             System.out.println("java RMI registry already exists.");
         }
-		try {
-			RemImpl localObject = new RemImpl();
-			Naming.rebind("//localhost/Rem", localObject);
-		} catch (RemoteException re) {
-			System.out.println("RemoteException: " + re);
-		} catch (MalformedURLException mfe) {
-			System.out.println("MalformedURLException: " + mfe);
-		}
 	}
 }

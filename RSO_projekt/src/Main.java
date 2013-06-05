@@ -1,10 +1,10 @@
 import java.io.IOException;
 import java.net.InetAddress;
 
+import listener.Listener;
+
 import configserver.ConfigServer;
 import configserver.RemClient;
-
-import listener.Listener;
 
 /**
  * Tutaj startujemy baze.
@@ -31,13 +31,14 @@ public class Main {
 		if (args[0].equals("-conf"))
 		{
 			InetAddress configServer = InetAddress.getByName(args[1]);
+			@SuppressWarnings("unused")
 			int port = 0;
 			if (args[2].equals("-port"))
 				port = Integer.parseInt(args[3]);
 			new RemClient(configServer);
 		}
 		}
-//		new Listener(27017);
+		new Listener(27017);
 		
 	}
 
