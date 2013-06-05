@@ -1,8 +1,8 @@
 package CRUD;
 
 import java.io.File;
+import java.util.List;
 
-import bson.BSONDocument;
 import messages.DeleteMessage;
 
 public class Delete {
@@ -10,19 +10,21 @@ public class Delete {
 
 	void deleteDocument(DeleteMessage deleteMessage) {
 		String collectionName = deleteMessage.fullCollectionName;
-		BSONDocument bsonDocument = deleteMessage.selector;
+		// BSONDocument bsonDocument = deleteMessage.selector;
 
-		//pobieranie nazwy pliku do usuniecia z deleteMessage
-		String fileNameToDelete = FileOperations.findIdElement(bsonDocument);
-		
-		System.out.println(fileNameToDelete);
-		System.out.println(collectionName);
-		
-		//wyszukiwanie pliku na dysku
-		File fileToDelete = FileOperations.findFile(fileNameToDelete, collectionName);
-		
-		if (fileToDelete!=null){
-			fileToDelete.delete();
+		// pobieranie nazwy pliku do usuniecia z deleteMessage
+		// String fileNameToDelete = FileOperations.findIdElement(bsonDocument);
+		List<String> fileNamesToDelete = Selector
+				.getFilesIDs(deleteMessage.selector, collectionName);
+
+		for (int i = 0; i < fileNamesToDelete.size(); i++) {
+			// wyszukiwanie pliku na dysku
+			File fileToDelete = FileOperations.findFile(fileNamesToDelete.get(i),
+					collectionName);
+
+			if (fileToDelete != null) {
+				fileToDelete.delete();
+			}
 		}
 	}
 }

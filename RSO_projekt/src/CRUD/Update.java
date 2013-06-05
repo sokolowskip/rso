@@ -1,7 +1,6 @@
 package CRUD;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,26 +13,27 @@ public class Update {
 
 	void updateDocument(UpdateMessage updateMessage) {
 		String collectionName = updateMessage.fullCollectionName;
-		BSONDocument bsonDocument = updateMessage.selector;
+		// BSONDocument bsonDocument = updateMessage.selector;
 		BSONDocument updateBsonDocument = updateMessage.update;
 
 		// pobieranie nazwy pliku do zmodyfikowania z updateMessage
-		String fileNameToUpdate = FileOperations.findIdElement(bsonDocument);
+		// String fileNameToUpdate = FileOperations.findIdElement(bsonDocument);
+		List<String> fileNamesToUpdate = Selector.getFilesIDs(
+				updateMessage.selector, collectionName);
 
-		// wyszukiwanie pliku na dysku
-		File fileToUpdate = FileOperations.findFile(fileNameToUpdate,
-				collectionName);
+		for (int i = 0; i < fileNamesToUpdate.size(); i++) {
+			// wyszukiwanie pliku na dysku
+			File fileToUpdate = FileOperations.findFile(
+					fileNamesToUpdate.get(i), collectionName);
 
-		if (fileToUpdate != null) {
-			// update
-			System.out.println(fileNameToUpdate);
-			System.out.println(collectionName);
-			updateElements(updateBsonDocument, fileToUpdate);
-
+			if (fileToUpdate != null) {
+				// update
+				updateElements(updateBsonDocument, fileToUpdate, collectionName);
+			}
 		}
 	}
 
-	public void updateElements(BSONDocument updateDocument, File fileToUpdate) {
+	public void updateElements(BSONDocument updateDocument, File fileToUpdate, String collectionName) {
 		// pobieranie danych z updateMessage
 		Iterator<BSONElement<?>> iterator = updateDocument.getElems()
 				.iterator();
@@ -42,12 +42,12 @@ public class Update {
 		while (iterator.hasNext()) {
 			BSONElement<?> updateElement = iterator.next();
 			if (updateElement.getName() != null) {
-				compareWithFile(updateElement, fileToUpdate);
+				compareWithFile(updateElement, fileToUpdate, collectionName);
 			}
 		}
 	}
 
-	public void compareWithFile(BSONElement<?> updateElement, File fileToUpdate) {
+	public void compareWithFile(BSONElement<?> updateElement, File fileToUpdate, String collectionName) {
 		// pobieranie danych z pliku
 		BSONDocument fileBsonDocument = FileOperations
 				.readFromFile(fileToUpdate);
@@ -65,5 +65,8 @@ public class Update {
 			}
 		}
 		// TODO: save fileBsonDocument jako bajty do pliku
+		String fileName = dbDirectory + collectionName + "/" + FileOperations.findIdElement(fileBsonDocument);
+		fileToUpdate.delete();
+		FileOperations.createFile(fileBsonDocument, fileName);
 	}
 }

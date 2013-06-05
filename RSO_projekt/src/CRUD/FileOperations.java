@@ -6,14 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Iterator;
-
-import com.sun.org.apache.bcel.internal.generic.Type;
 
 import bson.BSON;
 import bson.BSONDocument;
-import bson.BSONElement;
-import bson.BSONtype;
 import bson.ObjectID;
 
 public class FileOperations {
@@ -97,7 +92,8 @@ public class FileOperations {
 				FileWriter fw = new FileWriter(newRecord.getAbsoluteFile());
 				BufferedWriter bw = new BufferedWriter(fw);
 				// TODO: poprawic jak Marek doda parsowanie bsona do bajtów
-				bw.write(bsonDocument.toString());
+				byte[] bsonBytes = BSON.getBSON(bsonDocument);
+				bw.write(bsonBytes.toString());
 				bw.close();
 
 			} else {

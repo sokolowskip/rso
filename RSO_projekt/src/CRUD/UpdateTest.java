@@ -10,7 +10,6 @@ import messages.UpdateMessage;
 import org.junit.Before;
 import org.junit.Test;
 
-import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
 import bson.BSONtype;
