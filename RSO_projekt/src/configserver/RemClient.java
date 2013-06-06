@@ -32,7 +32,11 @@ public class RemClient implements Runnable {
 
 	public RemClient(InetAddress connServIP) {
 		this.connServIP = connServIP;
-		this.shard = new ShardInfo(connServIP);
+		try {
+			this.shard = new ShardInfo(InetAddress.getLocalHost());
+		} catch (UnknownHostException e) {
+			System.err.println("UnknownHostException: " + e);
+		}
 		Thread client = new Thread(this);
 		client.start();
 	}
@@ -58,9 +62,19 @@ public class RemClient implements Runnable {
 		}
 	}
 
+	//funkcja wysyla aktualne inforamcje o shadzie do serwera konfiguracyjnego
 	private synchronized void update() {
 		while(true)
 		{
+			//czekamy na zmiany w bazie danych
+			//kiedy objekt ShardMonitor wywola notify()
+			//to jedziemy dalej
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			try {
 				connServIP.isReachable(400);
 			} catch (IOException e) {
@@ -70,13 +84,6 @@ public class RemClient implements Runnable {
 				System.out.println(service.updateShardInfo(shard));
 			} catch (RemoteException e) {
 				System.err.println("Update unsuccessfull: " + e);
-				e.printStackTrace();
-			}
-			//czekamy na zmiany w bazie danych
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

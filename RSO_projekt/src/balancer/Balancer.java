@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import configserver.Rem;
 
@@ -58,10 +59,34 @@ public class Balancer implements Runnable
 	//runda balancera
 	void doBalanceRound() 
 	{
-		try {
-			shards = service.getShards(configServer);
-		} catch (RemoteException e) {
-			System.err.println("Unable to fetch shard info: " + e);
+		while(true)
+		{
+			try {
+				shards = service.getShards(configServer);
+				System.out.println("Shard info acquired");
+				try {
+					System.out.println(shards.values().iterator().next().documents.size());
+				} catch (NoSuchElementException n)
+				{
+					System.err.println("Empty shard info");
+				}
+				//jak dostaniemy info o shardach to sprawdzamy polityke balancera
+				BalancerPolicy balancer = new BalancerPolicy(shards);
+				//jesli jest nierowno to patrzymy co mozna przeniesc
+				if (balancer.getMigrate().getFrom() != null)
+				{
+					
+				}
+			} catch (RemoteException e) {
+				System.err.println("Unable to fetch shard info: " + e);
+			}
+			try {
+				//balansujemy co 5s
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	

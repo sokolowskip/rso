@@ -2,6 +2,8 @@ package balancer;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import CRUD.FileInfo;
 
 /**
  * Klasa przechowujaca informacje o shardzie.
@@ -22,6 +24,9 @@ public class ShardInfo implements Serializable
     private long maxSize;
     //aktualne obciazenie sharda
     private long currSize;
+
+
+	public ArrayList<FileInfo> documents;
 	
     //adres sharda
     private InetAddress shardIP;
@@ -32,6 +37,7 @@ public class ShardInfo implements Serializable
     public ShardInfo(InetAddress shardIP)
     {
     	this.shardIP = shardIP;
+    	documents = new ArrayList<FileInfo>();
     }
     
     
@@ -51,6 +57,11 @@ public class ShardInfo implements Serializable
 		return currSize; 
 	}
 
+    
+    public void setCurrSize(long currSize) {
+		this.currSize = currSize;
+	}
+    
 	public InetAddress getShardIP() {
 		return shardIP;
 	}

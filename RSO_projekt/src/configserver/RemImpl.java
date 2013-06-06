@@ -28,7 +28,7 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 	//zeby shardy nic nie nadpisywaly jak balancer pobiera
 	private final Lock lock = new ReentrantLock();
 	
-	private static InetAddress balancer;
+	private InetAddress balancer;
 
 	public RemImpl() throws RemoteException {
 		shards = new HashMap<InetAddress, ShardInfo>();
@@ -69,7 +69,7 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 		try{
 			this.lock.lock();
 		} finally {
-			if (balancer == _balancer)
+			if (balancer.getHostAddress().equals(balancer.getHostAddress()))
 			{
 				currentShards = shards;
 				this.lock.unlock();

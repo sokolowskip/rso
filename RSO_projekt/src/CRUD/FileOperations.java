@@ -17,7 +17,7 @@ import bson.ObjectID;
 public class FileOperations {
 	static String dbDirectory = "exampleDB/";
 
-	// zwraca listê plików nale¿¹cych do danej kolekcji
+	// zwraca listï¿½ plikï¿½w naleï¿½ï¿½cych do danej kolekcji
 	public static File[] openCollection(String collectionName) {
 		File folder = new File(collectionName);
 		File[] listOfFiles = folder.listFiles();
@@ -82,7 +82,7 @@ public class FileOperations {
 		return bsonDocument;
 	}
 
-	// wyszukiwanie elementu zawieraj¹cego pole "_id"
+	// wyszukiwanie elementu zawierajï¿½cego pole "_id"
 	public static String findIdElement(BSONDocument bsonDocument) {
 		String fileName = null;
 		for (int i = 0; i < bsonDocument.getElems().size(); i++) {
