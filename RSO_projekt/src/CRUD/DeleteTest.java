@@ -1,7 +1,6 @@
 package CRUD;
 
-import java.io.File;
-
+import static org.junit.Assert.assertNotNull;
 import messages.DeleteMessage;
 
 import org.junit.Before;
@@ -11,15 +10,18 @@ import bson.BSONDocument;
 
 public class DeleteTest {
 	DeleteMessage deleteMessage = new DeleteMessage();
-	String directory = "testoweBsony/";
+	// String directory = "testoweBsony/";
+	String dbDirectory = "exampleDB/Collection1";
 
 	@Before
 	public void setUp() {
-		File[] files = FileOperations.openCollection(directory);
+		// File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
-		doc = FileOperations.readFromFile(files[0]);
+		doc = FileOperations.readBytesFromFile(dbDirectory + "/"
+				+ "1584363257887151367606178");
+		assertNotNull(doc);
 		deleteMessage.fullCollectionName = "Collection1";
-		deleteMessage.selector = doc; 
+		deleteMessage.selector = doc;
 	}
 
 	@Test

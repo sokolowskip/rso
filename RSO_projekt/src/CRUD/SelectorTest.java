@@ -10,13 +10,13 @@ import org.junit.Test;
 import bson.BSONDocument;
 
 public class SelectorTest {
-	String directory = "testoweBsony/";
+	String dbDirectory = "exampleDB/Collection1";
 	BSONDocument doc = new BSONDocument();
 
 	@Before
 	public void setUp() {
-		File[] files = FileOperations.openCollection(directory);
-		doc = FileOperations.readFromFile(files[0]);
+		doc = FileOperations.readBytesFromFile(dbDirectory + "/"
+				+ "1584363257887151367606178");
 		assertNotNull(doc);
 	}
 

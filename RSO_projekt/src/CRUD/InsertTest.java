@@ -1,9 +1,6 @@
 package CRUD;
 
 import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-
 import messages.InsertMessage;
 
 import org.junit.Test;
@@ -16,12 +13,12 @@ public class InsertTest {
 
 	@Test
 	public void test() {
-		File[] files = FileOperations.openCollection(directory);
+		// File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
-		doc = FileOperations.readFromFile(files[0]);
-		
+		doc = FileOperations.readBytesFromFile(directory + "1");
+
 		assertNotNull(insertMessage);
-		
+
 		insertMessage.fullCollectionName = "Collection1";
 		BSONDocument[] bsonDocuments = new BSONDocument[1];
 		bsonDocuments[0] = doc;

@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import bson.BSON;
 import bson.BSONDocument;
@@ -22,7 +25,21 @@ public class FileOperations {
 		return listOfFiles;
 	}
 
-	public static BSONDocument readFromFile(File file) {
+	public static BSONDocument readBytesFromFile(String filePath) {
+		BSONDocument bsonDocument = new BSONDocument();
+		Path path = Paths.get(filePath);
+		byte[] data;
+		try {
+			data = Files.readAllBytes(path);
+			BSON.parseBSON(data, bsonDocument);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bsonDocument;
+	}
+
+	public static BSONDocument readFromFile2(File file) {
 		long longNumber = file.length();
 		byte[] array = new byte[(int) longNumber];
 		String[] tablica = new String[(int) longNumber];
@@ -75,7 +92,6 @@ public class FileOperations {
 				if (objectID != null) {
 					fileName = Integer.toString(objectID.getCounter())
 							+ Integer.toString(objectID.getMachine())
-							+ Integer.toString(objectID.getProcID())
 							+ Integer.toString(objectID.getTime());
 					// System.out.println(fileName);
 				}
@@ -116,6 +132,7 @@ public class FileOperations {
 		File[] listOfFiles = openCollection(dbDirectory + "/" + collectionName);
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				String name = listOfFiles[i].getName();
 				if (listOfFiles[i].getName().equals(fileName)) {
 					return listOfFiles[i];
 				}

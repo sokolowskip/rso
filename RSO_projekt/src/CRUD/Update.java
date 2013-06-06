@@ -1,6 +1,7 @@
 package CRUD;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +14,6 @@ public class Update {
 
 	void updateDocument(UpdateMessage updateMessage) {
 		String collectionName = updateMessage.fullCollectionName;
-		// BSONDocument bsonDocument = updateMessage.selector;
 		BSONDocument updateBsonDocument = updateMessage.update;
 
 		// pobieranie nazwy pliku do zmodyfikowania z updateMessage
@@ -25,35 +25,40 @@ public class Update {
 			// wyszukiwanie pliku na dysku
 			File fileToUpdate = FileOperations.findFile(
 					fileNamesToUpdate.get(i), collectionName);
-
 			if (fileToUpdate != null) {
 				// update
 				updateElements(updateBsonDocument, fileToUpdate, collectionName);
+			} else {
+				System.out.println("Nie znaleziono pliku");
 			}
 		}
 	}
 
-	public void updateElements(BSONDocument updateDocument, File fileToUpdate, String collectionName) {
+	public void updateElements(BSONDocument updateDocument, File fileToUpdate,
+			String collectionName) {
 		// pobieranie danych z updateMessage
 		Iterator<BSONElement<?>> iterator = updateDocument.getElems()
 				.iterator();
-
 		// przeszukiwanie updateMessage
 		while (iterator.hasNext()) {
 			BSONElement<?> updateElement = iterator.next();
 			if (updateElement.getName() != null) {
-				compareWithFile(updateElement, fileToUpdate, collectionName);
+				compareWithFile(updateElement, fileToUpdate, dbDirectory
+						+ collectionName + "/" + fileToUpdate.getName());
 			}
 		}
 	}
 
-	public void compareWithFile(BSONElement<?> updateElement, File fileToUpdate, String collectionName) {
+	public void compareWithFile(BSONElement<?> updateElement,
+			File fileToUpdate, String filePathToUpdate) {
 		// pobieranie danych z pliku
 		BSONDocument fileBsonDocument = FileOperations
-				.readFromFile(fileToUpdate);
+				.readBytesFromFile(filePathToUpdate);
 		Iterator<BSONElement<?>> iterator2 = fileBsonDocument.getElems()
 				.iterator();
 		// przeszukiwanie BSON-ow w pliku
+
+		List<BSONElement<?>> newBsonElementList = new ArrayList<BSONElement<?>>();
 		while (iterator2.hasNext()) {
 			BSONElement<?> fileElement = iterator2.next();
 			// porownanie nazwy z updateMessage i z pliku
@@ -61,12 +66,15 @@ public class Update {
 				System.out.println("znaleziono pole do aktualizacji"
 						+ updateElement.getName());
 				// aktualizacja elementu - "wiersza"
-				fileElement = updateElement;
+				newBsonElementList.add(updateElement);
+			}else{
+				newBsonElementList.add(fileElement);
 			}
 		}
-		// TODO: save fileBsonDocument jako bajty do pliku
-		String fileName = dbDirectory + collectionName + "/" + FileOperations.findIdElement(fileBsonDocument);
+		BSONDocument newBsonDocument = new BSONDocument();
+		newBsonDocument.setElems(newBsonElementList);
+
 		fileToUpdate.delete();
-		FileOperations.createFile(fileBsonDocument, fileName);
+		FileOperations.createFile(newBsonDocument, filePathToUpdate);
 	}
 }

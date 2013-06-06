@@ -16,26 +16,25 @@ import bson.BSONtype;
 
 public class UpdateTest {
 	UpdateMessage updateMessage = new UpdateMessage();
-	String directory = "testoweBsony/";
+	String dbDirectory = "exampleDB/Collection1";
 
 	@Before
 	public void setUp() {
-		File[] files = FileOperations.openCollection(directory);
-		BSONDocument doc = new BSONDocument();
-		doc = FileOperations.readFromFile(files[0]);
-
-		BSONDocument updateDataforBsonDocument = new BSONDocument();
+		BSONDocument updateSelectorDoc = new BSONDocument();
+		updateSelectorDoc = FileOperations.readBytesFromFile(dbDirectory + "/"
+				+ "1584363257887151367606178");
+		BSONDocument updateDataDoc = new BSONDocument();
 		ArrayList<BSONElement<?>> elems = new ArrayList<BSONElement<?>>();
 		elems.add(new BSONElement<String>("name", "kowalski", BSONtype.STRING));
-		updateDataforBsonDocument.setElems(elems);
+		updateDataDoc.setElems(elems);
 
 		// byte[] bsonBytes = BSON.getBSON(updateDataforBsonDocument);
 
 		assertNotNull(updateMessage);
 
 		updateMessage.fullCollectionName = "Collection1";
-		updateMessage.selector = doc;
-		updateMessage.update = updateDataforBsonDocument;
+		updateMessage.selector = updateSelectorDoc;
+		updateMessage.update = updateDataDoc;
 	}
 
 	@Test

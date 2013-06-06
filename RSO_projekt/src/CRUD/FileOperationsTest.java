@@ -2,8 +2,6 @@ package CRUD;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-
 import org.junit.Test;
 
 import bson.BSONDocument;
@@ -14,9 +12,11 @@ public class FileOperationsTest {
 
 	@Test
 	public void test() {
-		File[] files = FileOperations.openCollection(dbDirectory);
+		// File[] files = FileOperations.openCollection(dbDirectory);
 		BSONDocument doc = new BSONDocument();
-		doc = FileOperations.readFromFile(files[0]);
+		// doc = FileOperations.readFromFile(files[0]);
+		doc = FileOperations.readBytesFromFile(dbDirectory + "/"
+				+ "1584363257887151367606178");
 		assertNotNull(doc);
 
 		// wyswietlanie zawartosci BSON-a
