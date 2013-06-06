@@ -35,10 +35,19 @@ public class Main {
 			int port = 0;
 			if (args[2].equals("-port"))
 				port = Integer.parseInt(args[3]);
-			new RemClient(configServer);
+			//tworzymy objekt klienta, ktory rozpoczyna nowy watek
+			RemClient client = new RemClient(configServer);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			client.infoUpdated = true;
+			
 		}
 		}
-		new Listener(27017);
+//		new Listener(27017);
 		
 	}
 

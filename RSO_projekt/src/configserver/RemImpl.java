@@ -1,9 +1,9 @@
 package configserver;
 
+import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-
+import java.util.HashMap;
 import balancer.ShardInfo;
 
 /**
@@ -19,21 +19,27 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 	 * 
 	 */
 	private static final long serialVersionUID = 5370129700470960855L;
-	private ArrayList<ShardInfo> shards;
+	private HashMap<InetAddress, ShardInfo> shards;
 	
 	public RemImpl() throws RemoteException {
-		shards = new ArrayList<ShardInfo>();
+		shards = new HashMap<InetAddress, ShardInfo>();
 	}
 
 	
-	public String registerToConfigServer(ShardInfo shard)
+	public String registerToConfigServer(InetAddress shardIP)
 			throws RemoteException {
-		shards.add(shard);
-		System.out.println("Registered new shard: " + shard.getShardIP().getHostAddress());
+		shards.put(shardIP, new ShardInfo(shardIP));
+		System.out.println("Registered new shard: " + shardIP.getHostAddress());
 		return("Shard registered successfully");
 	}
 
-	public ArrayList<ShardInfo> getShards() {
+	public String updateShardInfo(ShardInfo shard)
+		throws RemoteException {
+		shards.put(shard.getShardIP(), shard);
+		return("ShardInfo updated");
+	}
+	
+	public HashMap<InetAddress, ShardInfo> getShards() {
 		return shards;
 	}
 }

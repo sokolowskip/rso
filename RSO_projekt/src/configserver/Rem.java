@@ -1,8 +1,8 @@
 package configserver;
 
+import java.net.InetAddress;
 import java.rmi.*;
-import java.util.ArrayList;
-
+import java.util.HashMap;
 import balancer.ShardInfo;
 
 /**
@@ -14,10 +14,13 @@ import balancer.ShardInfo;
 
 public interface Rem extends Remote {
 	
-	public String registerToConfigServer(ShardInfo shard)
+	public String registerToConfigServer(InetAddress shard)
 			throws RemoteException;
 	
-	public ArrayList<ShardInfo> getShards()
+	public String updateShardInfo(ShardInfo shard)
+			throws RemoteException;
+	
+	public HashMap<InetAddress, ShardInfo> getShards()
 			throws RemoteException;
 
 }
