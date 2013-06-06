@@ -9,13 +9,9 @@ package configserver;
 public class ConfigServer implements Runnable
 {
 
-	@SuppressWarnings("unused")
-	private int port;
-
-	public ConfigServer(int _port) 
+	public ConfigServer() 
 	{
 		System.out.println("Start config server...");
-		port = _port;
 		Thread conn = new Thread(this);
 		conn.start();
 	}
