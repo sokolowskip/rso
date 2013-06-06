@@ -20,7 +20,10 @@ public interface Rem extends Remote {
 	public String updateShardInfo(ShardInfo shard)
 			throws RemoteException;
 	
-	public HashMap<InetAddress, ShardInfo> getShards()
+	public HashMap<InetAddress, ShardInfo> getShards(InetAddress balancer)
+			throws RemoteException;
+
+	public String registerBalancer(InetAddress balancer)
 			throws RemoteException;
 
 }

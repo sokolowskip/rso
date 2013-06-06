@@ -21,7 +21,7 @@ public class RemServer {
             System.out.println("java RMI registry created.");
         } catch (RemoteException e) {
             //do nothing, error means registry already exists
-            System.out.println("java RMI registry already exists.");
+            System.err.println("java RMI registry already exists.");
         }
 	}
 }

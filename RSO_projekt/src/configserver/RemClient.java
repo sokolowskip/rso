@@ -22,13 +22,12 @@ public class RemClient implements Runnable {
 
 	//objekt ShardInfo przechowujacy inforamcje o tym shardzie
 	public ShardInfo shard;
-	
-	//flaga oznaczajaca aktualizacje stanu bazy
-	public boolean infoUpdated;
-	
+	//adres serwera konfiguracyjnego
 	private InetAddress connServIP;
-	@SuppressWarnings("unused")
-	private int port;
+
+
+	//interfejs serwera konfiguracyjnego
+	private Rem service;
 
 
 	public RemClient(InetAddress connServIP) {
@@ -38,40 +37,48 @@ public class RemClient implements Runnable {
 		client.start();
 	}
 
+	//inicjalizacja kilenta
+	//zarejestrowanie w serwerze konfiguracjnym
 	public void run() {
 		try {
 
 			Registry r = LocateRegistry.getRegistry(
 					connServIP.getHostAddress(), 1099);
 			//Tworzymy STUB
-			Rem service = (Rem) r.lookup("//" + connServIP.getHostName()
+			service = (Rem) r.lookup("//" + connServIP.getHostName()
 					+ "/Rem");
 			System.out.println(service.registerToConfigServer(InetAddress.getLocalHost()));
-			while(true)
-			{
-				try {
-					connServIP.isReachable(400);
-				} catch (IOException e) {
-					System.out.println("Config server unreachable: " + e);
-				}
-				if (infoUpdated)
-				{
-					System.out.println(service.updateShardInfo(shard));
-					infoUpdated = false;
-				}
-				//czekamy na zmiany w bazie danych
-				Thread.sleep(5000);
-			}
+			update();
 		} catch (RemoteException re) {
-			System.out.println("RemoteException: " + re);
+			System.err.println("RemoteException: " + re);
 		} catch (NotBoundException nbe) {
-			System.out.println("NotBoundException: " + nbe);
+			System.err.println("NotBoundException: " + nbe);
 		} catch (UnknownHostException e) {
-			System.out.println("UnknownHostException: " + e);
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("UnknownHostException: " + e);
+		}
+	}
+
+	private synchronized void update() {
+		while(true)
+		{
+			try {
+				connServIP.isReachable(400);
+			} catch (IOException e) {
+				System.err.println("Config server unreachable: " + e);
+			}
+			try {
+				System.out.println(service.updateShardInfo(shard));
+			} catch (RemoteException e) {
+				System.err.println("Update unsuccessfull: " + e);
+				e.printStackTrace();
+			}
+			//czekamy na zmiany w bazie danych
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

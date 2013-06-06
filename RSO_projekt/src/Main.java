@@ -1,6 +1,9 @@
 import java.io.IOException;
 import java.net.InetAddress;
 
+import balancer.Balancer;
+import balancer.ShardMonitor;
+
 import listener.Listener;
 
 import configserver.ConfigServer;
@@ -16,39 +19,30 @@ public class Main {
 	/**MAIN**/
 	public static void main(String[] args) throws IOException
 	{
-		if (args.length == 3) {
+		if (args.length == 1) {
 			//mozemy utworzyc serwer konfiguracyjny
-		if (args[0].equals("-start_conf"))
-		{
-			int port = 0;
-			if (args[1].equals("-port"))
-				port = Integer.parseInt(args[2]);
-			new ConfigServer(port);
+			if (args[0].equals("-start_conf"))
+				new ConfigServer();
 		}
-		}
-		if (args.length == 4) {
+		if (args.length == 2) {
 			//lub podlaczyc sie do istniejacego serwera
-		if (args[0].equals("-conf"))
-		{
-			InetAddress configServer = InetAddress.getByName(args[1]);
-			@SuppressWarnings("unused")
-			int port = 0;
-			if (args[2].equals("-port"))
-				port = Integer.parseInt(args[3]);
-			//tworzymy objekt klienta, ktory rozpoczyna nowy watek
-			RemClient client = new RemClient(configServer);
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (args[0].equals("-conf"))
+			{
+				InetAddress configServer = InetAddress.getByName(args[1]);
+				//tworzymy objekt klienta, ktory rozpoczyna nowy watek
+				RemClient client = new RemClient(configServer);
+				ShardMonitor monitor = new ShardMonitor(client);
 			}
-			client.infoUpdated = true;
-			
+			if (args[0].equals("-balancer_mode"))
+			{
+				InetAddress configServer = InetAddress.getByName(args[1]);
+				//tworzymy objekt balancera
+				new Balancer(configServer);
+			}
 		}
-		}
-//		new Listener(27017);
-		
+		else
+			new Listener(27017);
 	}
+
 
 }
