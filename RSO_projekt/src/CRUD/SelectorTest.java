@@ -1,8 +1,6 @@
 package CRUD;
 
-import static org.junit.Assert.*;
-
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
