@@ -2,6 +2,8 @@ package listener;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +19,7 @@ import messages.MessageParser;
 import messages.ReplyMessage;
 import messages.UpdateMessage;
 import CRUD.Delete;
+import CRUD.FileOperations;
 import CRUD.Insert;
 import CRUD.Update;
 import bson.BSON;
@@ -125,6 +128,15 @@ public class ClientHandler extends Thread {
 				break;
 			// OP_INSERT 2002 insert new document
 			case OP_INSERT:
+				try {
+					FileOutputStream fos = new FileOutputStream("C:/Users/Tomek/Desktop/rso proj/1");
+					fos.write(message);
+					fos.close();
+				} catch (FileNotFoundException ex) {
+					System.out.println("FileNotFoundException : " + ex);
+				} catch (IOException ioe) {
+					System.out.println("IOException : " + ioe);
+				}
 				InsertMessage insertMessage = MessageParser
 						.ParseInsertMessage(message);
 				Insert insert = new Insert();

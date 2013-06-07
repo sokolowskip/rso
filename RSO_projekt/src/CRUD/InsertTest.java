@@ -15,7 +15,7 @@ public class InsertTest {
 	public void test() {
 		BSONDocument doc = new BSONDocument();
 		//czytanie z przykladowego pliku
-		doc = FileOperations.readBytesFromFile(directory + "1");
+		doc = FileOperations.readBytesFromFile(directory + "2");
 
 		assertNotNull(insertMessage);
 
