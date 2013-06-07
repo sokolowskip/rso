@@ -144,6 +144,10 @@ public class ClientHandler extends Thread {
 				break;
 			// OP_QUERY 2004 query a collection
 			case OP_QUERY:
+				// teraz trzeba cos dopowiedziec
+				Response response = new Response(header);
+				if (response.createResponse())
+					transmit(response.getBytes(), clientSocket.getOutputStream());
 				break;
 			// OP_GET_MORE 2005 Get more data from a query. See Cursors
 			case OP_GET_MORE:
@@ -161,35 +165,30 @@ public class ClientHandler extends Thread {
 				break;
 			}
 
-			// reszta leci do obiektu bizona
-			BSONDocument bizon = new BSONDocument();
+//			// reszta leci do obiektu bizona
+//			BSONDocument bizon = new BSONDocument();
+//
+//			int strLen = 0;
+//			for (int j = 20; j < message.length; j++)
+//				if (message[j] == 0) {
+//					strLen = j - 20;
+//					break;
+//				}
+//
+//			String collectionName = "";
+//			try {
+//				collectionName = new String(message, 20, strLen, "UTF-8");
+//			} catch (UnsupportedEncodingException e) {
+//			}
+//			;
+//
+//			byte[] c = Arrays.copyOfRange(message, strLen + 21, message.length);
+//
+//			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak
+//			// dalej sprawdzac
+//			BSON.parseBSON(c, bizon);
 
-			int strLen = 0;
-			for (int j = 20; j < message.length; j++)
-				if (message[j] == 0) {
-					strLen = j - 20;
-					break;
-				}
 
-			String collectionName = "";
-			try {
-				collectionName = new String(message, 20, strLen, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-			}
-			;
-
-			byte[] c = Arrays.copyOfRange(message, strLen + 21, message.length);
-
-			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak
-			// dalej sprawdzac
-			BSON.parseBSON(c, bizon);
-
-			// teraz trzeba cos dopowiedziec
-			// konstruktor przyjmuje oryginalny naglowek i dokument
-			// o to co trzeba odpowiedziec martwimy sie gdzie indziej
-			Response response = new Response(header, bizon);
-			if (response.createResponse())
-				transmit(response.getBytes(), clientSocket.getOutputStream());
 		} catch (IOException e) {
 			return false;
 		}

@@ -3,7 +3,6 @@ package listener;
 import java.nio.ByteBuffer;
 
 import messages.MessageHeader;
-import bson.BSONDocument;
 
 /**
  * Ta klasa bedzie laczyla dokument z naglowkiem. Zmienna response przechowuje
@@ -17,14 +16,17 @@ import bson.BSONDocument;
  */
 public class Response {
 	private MessageHeader header;
-	@SuppressWarnings("unused")
-	private BSONDocument bizon;
+
 
 	private ByteBuffer response;
+	
+	//zawsze przy odpowiedzi trzeba
+	//wpisac nowy numer do pola RequestID
+	private int responseNumber;
 
-	public Response(MessageHeader _header, BSONDocument _bizon) {
-		header = _header;
-		bizon = _bizon;
+	public Response(MessageHeader header) {
+		this.header = header;
+		responseNumber = 0;
 	}
 
 	public boolean createResponse() {
@@ -40,8 +42,9 @@ public class Response {
 			return true;
 		default: 
 			response = ByteBuffer.wrap(fakeInsertResponse);
-			response.putInt(4, Integer.reverseBytes(header.getRequestID()));
-			response.putInt(8, Integer.reverseBytes(header.getRequestID() + 1));
+			response.putInt(4, Integer.reverseBytes(responseNumber));
+			response.putInt(8, Integer.reverseBytes(header.getRequestID()));
+			responseNumber++;
 			return true;
 		}
 	}
@@ -65,12 +68,15 @@ public class Response {
 			response.put(fakeResponse0b);
 			// jeszcze trezba poprawic dlugsc
 			response.putInt(0, Integer.reverseBytes(response.array().length));
+			responseNumber++;
 			break;
 		case 1:
 			response = ByteBuffer.wrap(fakeResponse1);
+			responseNumber++;
 			break;
 		case 2:
 			response = ByteBuffer.wrap(fakeResponse2);
+			responseNumber++;
 			break;
 		default:
 			break;

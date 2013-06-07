@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="RSO_projekt/src"/>
-	<classpathentry kind="lib" path="RSO_projekt/lib/gson-2.2.3.jar"/>
-	<classpathentry kind="lib" path="RSO_projekt/lib/guava-14.0.1.jar"/>
 	<classpathentry kind="lib" path="RSO_projekt/lib/querydsl-mongodb-2.3.0-apt-one-jar.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

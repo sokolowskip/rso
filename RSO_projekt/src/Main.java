@@ -29,10 +29,14 @@ public class Main {
 			if (args[0].equals("-conf"))
 			{
 				InetAddress configServer = InetAddress.getByName(args[1]);
-				//tworzymy objekt klienta, ktory rozpoczyna nowy watek
+				//odpalamy baze
+				new Listener(27017);
+				//tworzymy klienta serwera konfiguracyjnego, ktory rozpoczyna nowy watek
 				RemClient client = new RemClient(configServer);
-				ShardMonitor monitor = new ShardMonitor(client);
+				//monitorujemy zmiany w bazie
+				new ShardMonitor(client);
 			}
+			//host bedzie robil za balancer
 			if (args[0].equals("-balancer_mode"))
 			{
 				InetAddress configServer = InetAddress.getByName(args[1]);
