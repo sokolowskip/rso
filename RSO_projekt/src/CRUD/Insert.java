@@ -9,7 +9,7 @@ import CRUD.FileOperations;
 public class Insert {
 	String dbDirectory = "exampleDB/";
 
-	void insertDocumentList(InsertMessage insertMessage) {
+	public void insertDocumentList(InsertMessage insertMessage) {
 		String collectionName = insertMessage.fullCollectionName;
 		BSONDocument[] bsonDocumentList = insertMessage.documents;
 		for (int i = 0; i < bsonDocumentList.length; i++) {

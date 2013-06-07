@@ -33,13 +33,14 @@ public class FileOperations {
 			data = Files.readAllBytes(path);
 			BSON.parseBSON(data, bsonDocument);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("nie znaleziono pliku:" + path);
+			// e.printStackTrace();
 		}
 		return bsonDocument;
 	}
 
-	public static BSONDocument readFromFile2(File file) {
+	//do czytanie dokumentow tekstowych
+	public static BSONDocument readFromFile(File file) {
 		long longNumber = file.length();
 		byte[] array = new byte[(int) longNumber];
 		String[] tablica = new String[(int) longNumber];

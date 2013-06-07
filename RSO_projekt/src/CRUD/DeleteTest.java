@@ -15,7 +15,6 @@ public class DeleteTest {
 
 	@Before
 	public void setUp() {
-		// File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
 		doc = FileOperations.readBytesFromFile(dbDirectory + "/"
 				+ "1584363257887151367606178");

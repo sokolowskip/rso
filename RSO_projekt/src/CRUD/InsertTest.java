@@ -13,8 +13,8 @@ public class InsertTest {
 
 	@Test
 	public void test() {
-		// File[] files = FileOperations.openCollection(directory);
 		BSONDocument doc = new BSONDocument();
+		//czytanie z przykladowego pliku
 		doc = FileOperations.readBytesFromFile(directory + "1");
 
 		assertNotNull(insertMessage);

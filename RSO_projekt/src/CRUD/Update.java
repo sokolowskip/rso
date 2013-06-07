@@ -12,12 +12,11 @@ import bson.BSONElement;
 public class Update {
 	String dbDirectory = "exampleDB/";
 
-	void updateDocument(UpdateMessage updateMessage) {
+	public void updateDocument(UpdateMessage updateMessage) {
 		String collectionName = updateMessage.fullCollectionName;
 		BSONDocument updateBsonDocument = updateMessage.update;
 
 		// pobieranie nazwy pliku do zmodyfikowania z updateMessage
-		// String fileNameToUpdate = FileOperations.findIdElement(bsonDocument);
 		List<String> fileNamesToUpdate = Selector.getFilesIDs(
 				updateMessage.selector, collectionName);
 

@@ -7,14 +7,11 @@ import org.junit.Test;
 import bson.BSONDocument;
 
 public class FileOperationsTest {
-	// String directory = "testoweBsony/";
 	String dbDirectory = "exampleDB/Collection1";
 
 	@Test
 	public void test() {
-		// File[] files = FileOperations.openCollection(dbDirectory);
 		BSONDocument doc = new BSONDocument();
-		// doc = FileOperations.readFromFile(files[0]);
 		doc = FileOperations.readBytesFromFile(dbDirectory + "/"
 				+ "1584363257887151367606178");
 		assertNotNull(doc);

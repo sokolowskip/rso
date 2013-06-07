@@ -8,12 +8,10 @@ import messages.DeleteMessage;
 public class Delete {
 	String dbDirectory = "exampleDB/";
 
-	void deleteDocument(DeleteMessage deleteMessage) {
+	public void deleteDocument(DeleteMessage deleteMessage) {
 		String collectionName = deleteMessage.fullCollectionName;
-		// BSONDocument bsonDocument = deleteMessage.selector;
 
 		// pobieranie nazwy pliku do usuniecia z deleteMessage
-		// String fileNameToDelete = FileOperations.findIdElement(bsonDocument);
 		List<String> fileNamesToDelete = Selector
 				.getFilesIDs(deleteMessage.selector, collectionName);
 

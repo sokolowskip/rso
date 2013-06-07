@@ -27,8 +27,6 @@ public class UpdateTest {
 		elems.add(new BSONElement<String>("name", "kowalski", BSONtype.STRING));
 		updateDataDoc.setElems(elems);
 
-		// byte[] bsonBytes = BSON.getBSON(updateDataforBsonDocument);
-
 		assertNotNull(updateMessage);
 
 		updateMessage.fullCollectionName = "Collection1";
