@@ -23,7 +23,7 @@ public class Main {
 			//mozemy utworzyc serwer konfiguracyjny
 			if (args[0].equals("--start_conf"))
 				new ConfigServer();
-			if (args[0].equals("--info"))
+			else if (args[0].equals("--info"))
 			{
 				System.out.print(
 						"RsoDB\n" +
@@ -41,12 +41,12 @@ public class Main {
 			if (args[0].equals("--shard"))
 			{
 				InetAddress configServer = InetAddress.getByName(args[1]);
-				//odpalamy baze
-				new Listener(27017);
 				//tworzymy klienta serwera konfiguracyjnego, ktory rozpoczyna nowy watek
 				RemClient client = new RemClient(configServer);
 				//monitorujemy zmiany w bazie
 				new ShardMonitor(client);
+				//odpalamy baze
+				new Listener(27017);
 			}
 			//host bedzie robil za balancer
 			if (args[0].equals("--balancer_mode"))
