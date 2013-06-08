@@ -17,8 +17,7 @@ public class Update {
 		BSONDocument updateBsonDocument = updateMessage.update;
 
 		// pobieranie nazwy pliku do zmodyfikowania z updateMessage
-		List<String> fileNamesToUpdate = Selector.getFilesIDs(
-				updateMessage.selector, collectionName);
+		List<String> fileNamesToUpdate = Selector.searchFileNames(updateMessage.selector, collectionName);
 
 		for (int i = 0; i < fileNamesToUpdate.size(); i++) {
 			// wyszukiwanie pliku na dysku

@@ -3,55 +3,61 @@ package CRUD;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import messages.QueryMessage;
 import bson.BSON;
 import bson.BSONDocument;
+import bson.BSONElement;
 
 public class Read {
 	public static List<BSONDocument> ReadFromQuery(QueryMessage queryMessage)
-	{
-		File[] fileArray = FileOperations.openCollection(queryMessage.fullCollectionName);
-		List<BSONDocument> documentList = new LinkedList<BSONDocument>();
+	{	
+		List<BSONDocument> documentList = Selector.searchDocuments(queryMessage.query, queryMessage.fullCollectionName);
+		List<BSONDocument> returnQuery = new Vector<BSONDocument>();
 		
-		for(int i = 0; i<fileArray.length; i++)
+		BSONDocument fieldSelector = queryMessage.returnFieldSelector;
+		Iterator<BSONDocument> iterator = documentList.iterator();
+		while(iterator.hasNext())
 		{
-			BSONDocument bsonDocument = ReadFromFile(queryMessage, fileArray[i]);
-			if(bsonDocument.checkQuery(queryMessage.query))
+			returnQuery.add(selectFields(iterator.next(), fieldSelector));
+		}
+		
+		return returnQuery;
+	}
+
+	private static BSONDocument selectFields(BSONDocument document, BSONDocument fieldSelector)
+	{
+		BSONDocument newDocument = new BSONDocument();
+		
+		List<BSONElement<?>> fields = fieldSelector.getElems();
+		
+		while(!fields.isEmpty())
+		{
+			Iterator<BSONElement<?>> documentIterator = document.getElems().iterator();
+			while(documentIterator.hasNext())
 			{
-				documentList.add(bsonDocument);
+				BSONElement<?> documentField = documentIterator.next();
+				
+				Iterator<BSONElement<?>> fieldsIterator = document.getElems().iterator();
+				while(fieldsIterator.hasNext())
+				{
+					BSONElement<?> field = fieldsIterator.next();
+					
+					if(field.getName().equals(documentField.getName()));
+					{
+						newDocument.addElem(documentField);
+						fieldsIterator.remove();
+						break;
+					}
+				}
+				
 			}
 		}
 		
-		return documentList;
+		return newDocument;
 	}
-
-	public static BSONDocument ReadFromFile(QueryMessage message, File file)
-	{
-		long longNumber = file.length();
-		char[] array = new char[(int) longNumber];
-		
-		try 
-		{
-			FileReader fileReader = new FileReader(file);
-			fileReader.read(array);
-			fileReader.close();
-		} 
-		catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		byte[] array2 = new byte[(int) longNumber];
-		for (int i = 0; i < longNumber; i++)
-			array2[i] = (byte)array[i];
-		
-		BSONDocument bsonDocument = new BSONDocument();
-		BSON.parseBSON(array2, bsonDocument);
-		return bsonDocument;
-	}
-
 }

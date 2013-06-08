@@ -13,7 +13,7 @@ public class Delete {
 
 		// pobieranie nazwy pliku do usuniecia z deleteMessage
 		List<String> fileNamesToDelete = Selector
-				.getFilesIDs(deleteMessage.selector, collectionName);
+				.searchFileNames(deleteMessage.selector, collectionName);
 
 		for (int i = 0; i < fileNamesToDelete.size(); i++) {
 			// wyszukiwanie pliku na dysku

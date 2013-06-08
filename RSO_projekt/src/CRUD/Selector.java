@@ -73,6 +73,97 @@ public class Selector {
 		return stringList;
 	}
 
+	public static List<String> searchFileNames(BSONDocument selector,
+			String collectionName)
+	{
+		// pobranie listy plikow
+		List<String> fileList = new ArrayList<String>();
+		File[] fileArray = FileOperations.openCollection(dbDirectory
+				+ collectionName);
+		
+		if (fileArray != null) 
+		{
+			// przeszukiwanie message
+			for(int fileIndex = 0; fileIndex < fileArray.length; fileIndex++)
+			{
+				File file = fileArray[fileIndex];
+				
+				BSONDocument document = FileOperations.readBytesFromFile(file);
+				if(checkElement(selector, document))
+				{
+					fileList.add(file.getPath());
+				}
+			}
+		}
+		
+		return fileList;
+	}
+	
+
+	public static List<BSONDocument> searchDocuments(BSONDocument selector,
+			String collectionName)
+	{
+		// pobranie listy plikow
+		List<BSONDocument> documentList = new ArrayList<BSONDocument>();
+		File[] fileArray = FileOperations.openCollection(dbDirectory
+				+ collectionName);
+		
+		if (fileArray != null) 
+		{
+			// przeszukiwanie message
+			for(int fileIndex = 0; fileIndex < fileArray.length; fileIndex++)
+			{
+				File file = fileArray[fileIndex];
+				
+				BSONDocument document = FileOperations.readBytesFromFile(file);
+				if(checkElement(selector, document))
+				{
+					documentList.add(document);
+				}
+			}
+		}
+		
+		return documentList;
+	}
+	
+	public static boolean checkElement(BSONDocument selector, BSONDocument document) 
+	{
+		Iterator<BSONElement<?>> documentIterator = document.getElems().iterator();
+		while (documentIterator.hasNext()) 
+		{
+			BSONElement<?> documentElement = documentIterator.next();
+			
+			Iterator<BSONElement<?>> selectorIterator = selector.getElems().iterator();
+			while (selectorIterator.hasNext()) 
+			{
+				BSONElement<?> selectorElement = selectorIterator.next();
+				
+				if (selectorElement.getName() != null) 
+				{
+					if (selectorElement.getName().equals(documentElement.getName()))
+					{
+						if(selectorElement.getData().equals(documentElement.getData())) 
+						{
+							selectorIterator.remove(); // usuwam z selektora bo na pewno nam sie juz wiecej nie przyda
+							break;
+						}
+						else
+						{
+							return false;
+						}
+					}
+				}
+			}
+			
+			if(!selectorIterator.hasNext())
+			{
+				return false;
+			}
+		}	
+		
+		return true;
+	}
+	
 	public static String compareWithFile(BSONElement<?> selectorElement,
 			String filePathToSelect) {
 		// pobieranie danych z pliku

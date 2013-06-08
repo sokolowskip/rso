@@ -12,20 +12,9 @@ public class BSONDocument {
 		elems = new ArrayList<BSONElement<?>>();
 	}
 	
-	public Boolean checkQuery(BSONDocument query)
+	public boolean addElem(BSONElement<?> element)
 	{
-		Iterator<BSONElement<?>> iterator = query.elems.iterator();
-		
-		while(iterator.hasNext())
-		{
-			BSONElement<?> queryElement = iterator.next();
-			if(!checkCondition(queryElement))
-			{
-				return false;
-			}
-		}
-		
-		return true;
+		return elems.add(element);
 	}
 	
 	public List<BSONElement<?>> getElems() {
@@ -36,10 +25,5 @@ public class BSONDocument {
 		this.elems = elems;
 	}
 
-	private Boolean checkCondition(BSONElement<?> condition)
-	{
-		//TODO napisaæ
-		return true;
-	}
 	
 }

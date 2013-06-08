@@ -39,6 +39,10 @@ public class FileOperations {
 		return bsonDocument;
 	}
 
+	public static BSONDocument readBytesFromFile(File file) {
+		return readBytesFromFile(file.getPath());
+	}
+	
 	//do czytanie dokumentow tekstowych
 	public static BSONDocument readFromFile(File file) {
 		long longNumber = file.length();
