@@ -33,7 +33,7 @@ public class Main {
 						"options:\n" +
 						"--start_conf\t\t\t\trun configuration server\n" +
 						"--shard [host]\t\t\t\tcreate data base shard\n" +
-						"--balancer_mode\t\t\t\tstart balancer service\n"+
+						"--balancer_mode [host]\t\t\tstart balancer service\n"+
 						"--info\t\t\t\t\tshow this usage information\n"
 						);
 			}
