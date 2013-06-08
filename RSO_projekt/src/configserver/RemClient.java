@@ -3,6 +3,7 @@ package configserver;
 import java.rmi.*; 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Enumeration;
 import java.io.IOException;
 import java.net.*;
 import java.net.UnknownHostException;
@@ -28,7 +29,8 @@ public class RemClient implements Runnable {
 
 	//interfejs serwera konfiguracyjnego
 	private Rem service;
-
+	//adres z ktorego sie laczymy
+	private InetAddress clientIP;
 
 	public RemClient(InetAddress connServIP) {
 		this.connServIP = connServIP;
@@ -44,22 +46,39 @@ public class RemClient implements Runnable {
 	//inicjalizacja kilenta
 	//zarejestrowanie w serwerze konfiguracjnym
 	public void run() {
+		//trzeba ogarnac jakiego interfejsu uzyc
+	    try {
+	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+	        while (interfaces.hasMoreElements()) {
+	            NetworkInterface iface = interfaces.nextElement();
+	            //sprawdzamy ktory NIC jest uruchomiony
+	            if (iface.isLoopback() || !iface.isUp())
+	                continue;
+	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
+	            while(addresses.hasMoreElements()) {
+	                InetAddress addr = addresses.nextElement();
+	                //pomijamy adresy IPv6
+	                if (addr instanceof Inet6Address) continue;
+	                clientIP = addr;
+	                System.out.println(iface.getDisplayName() + " " + clientIP);
+	            }
+	        }
+	    } catch (SocketException e) {
+	        throw new RuntimeException(e);
+	    }
 		try {
-
 			Registry r = LocateRegistry.getRegistry(
 					connServIP.getHostAddress(), 1099);
 			//Tworzymy STUB
 			service = (Rem) r.lookup("//" + connServIP.getHostName()
 					+ "/Rem");
-			System.out.println(service.registerToConfigServer(InetAddress.getLocalHost()));
+			System.out.println(service.registerToConfigServer(clientIP));
 			update();
 		} catch (RemoteException re) {
 			System.err.println("RemoteException: " + re);
 		} catch (NotBoundException nbe) {
 			System.err.println("NotBoundException: " + nbe);
-		} catch (UnknownHostException e) {
-			System.err.println("UnknownHostException: " + e);
-		}
+		} 
 	}
 
 	//funkcja wysyla aktualne inforamcje o shadzie do serwera konfiguracyjnego

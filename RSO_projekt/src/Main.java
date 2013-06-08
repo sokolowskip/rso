@@ -1,6 +1,8 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import CRUD.FileOperations;
 import balancer.Balancer;
 import balancer.ShardMonitor;
 
@@ -46,6 +48,16 @@ public class Main {
 				//monitorujemy zmiany w bazie
 				new ShardMonitor(client);
 				//odpalamy baze
+				File theDir = new File(FileOperations.dbDirectory);
+				//tworzymy folder z baza w home directory
+				if (!theDir.exists())
+				{
+					System.out.println("creating directory: " + FileOperations.dbDirectory);
+					boolean result = theDir.mkdir();  
+					if(result){    
+						System.out.println("DIR created");  
+					}
+				}
 				new Listener(27017);
 			}
 			//host bedzie robil za balancer
@@ -57,7 +69,20 @@ public class Main {
 			}
 		}
 		else
+		{
+			//odpalamy baze
+			File theDir = new File(FileOperations.dbDirectory);
+			//tworzymy folder z baza w home directory
+			if (!theDir.exists())
+			{
+				System.out.println("creating directory: " + FileOperations.dbDirectory);
+				boolean result = theDir.mkdir();  
+				if(result){    
+					System.out.println("DIR created");  
+				}
+			}
 			new Listener(27017);
+		}
 	}
 
 

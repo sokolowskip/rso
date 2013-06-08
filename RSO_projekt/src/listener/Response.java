@@ -67,6 +67,8 @@ public class Response {
 			response.put(port);
 			response.put(fakeResponse0b);
 			// jeszcze trezba poprawic dlugsc
+			response.putInt(36, Integer.reverseBytes(45));
+			response.putInt(45, Integer.reverseBytes(18));
 			response.putInt(0, Integer.reverseBytes(response.array().length));
 			responseNumber++;
 			break;

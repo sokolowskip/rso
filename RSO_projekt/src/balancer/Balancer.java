@@ -2,11 +2,15 @@ package balancer;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -28,7 +32,6 @@ public class Balancer implements Runnable
 	//interfejs serwera konfiguracyjnego
 	private Rem service;
 
-
 	public Balancer(InetAddress configServer) {
 		shards = new HashMap<InetAddress, ShardInfo>();
 		this.configServer = configServer;
@@ -39,12 +42,10 @@ public class Balancer implements Runnable
 	
 	public void run() {
 		try {
-
 			Registry r = LocateRegistry.getRegistry(
 					configServer.getHostAddress(), 1099);
 			//Tworzymy STUB
-			service = (Rem) r.lookup("//" + configServer.getHostName()
-					+ "/Rem");
+			service = (Rem) r.lookup("//" + configServer.getHostName() + "/Rem");
 			System.out.println(service.registerBalancer(InetAddress.getLocalHost()));
 			doBalanceRound();
 		} catch (RemoteException re) {
