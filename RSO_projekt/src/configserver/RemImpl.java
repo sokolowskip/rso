@@ -50,7 +50,7 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 				return ("Shard already registered");
 			}
 		}
-		System.out.println("Registered new shard: " + shardIP.getHostAddress());
+		System.out.println("New shard registered: " + shardIP.getHostAddress());
 		return ("Shard registered successfully");
 	}
 

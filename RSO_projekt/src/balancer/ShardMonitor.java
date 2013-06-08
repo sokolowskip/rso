@@ -34,7 +34,7 @@ public class ShardMonitor implements Runnable {
 				ArrayList<FileInfo> documents = new ArrayList<FileInfo>();
 				long load = 0;
 				//to cos powinno zwrocic wszystkie kolekcje
-				File collections[] = FileOperations.openCollection("/home/gibbon/exampleDB/");
+				File collections[] = FileOperations.openCollection(FileOperations.dbDirectory);
 				//no dobra to tera lecimy po wszystkich kolekcjach
 				for (File file : collections) {
 					//pobieramy liste plikow

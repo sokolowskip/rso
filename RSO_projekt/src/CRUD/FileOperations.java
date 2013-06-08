@@ -15,7 +15,7 @@ import bson.BSONDocument;
 import bson.ObjectID;
 
 public class FileOperations {
-	static String dbDirectory = "exampleDB/";
+	public static String dbDirectory = System.getProperty("user.home") + "/exampleDB/";
 
 	// zwraca liste plikow nalezacych do danej kolekcji
 	public static File[] openCollection(String collectionName) {
