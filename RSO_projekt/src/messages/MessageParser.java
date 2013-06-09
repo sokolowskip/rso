@@ -86,7 +86,6 @@ public class MessageParser {
 		Index i = new Index();
 		insertMessage.header = getHeader(msg, i);
 		
-		
 		insertMessage.flags = getInt(msg, i);
 		
 		String fullCollectionName = getString(msg, i);
@@ -95,11 +94,10 @@ public class MessageParser {
 		
 		List<BSONDocument> documents = new LinkedList<BSONDocument>();
 		
-		//wywalam whilea poniewa¿ nigdy siê nie odpala (w klasie Index maxSize nie jest ustawiany) - Marek
-		//while(i.checkIt())
-		//{
+		while(i.checkIt())
+		{
 			documents.add(getDocument(msg, i));
-		//}
+		}
 		
 		insertMessage.documents = new BSONDocument[documents.size()];
 		
@@ -108,9 +106,6 @@ public class MessageParser {
 		{
 			insertMessage.documents[j] = iterator.next();
 		}
-		
-		
-		//tutaj powinienem obrobic jeszcze adres do dokumentu / dokumentow ale nie wiem jak to zrobic
 		
 		return insertMessage; 
 	}
@@ -206,7 +201,9 @@ public class MessageParser {
 		 int messageLength = getInt(msg, i);
 		 int requestID = getInt(msg, i);
 		 int responceTo = getInt(msg, i);
-		 int opCode = getInt(msg, i);	
+		 int opCode = getInt(msg, i);
+		 
+		 i.setMaxSize(messageLength);
 		
 		return new MessageHeader(messageLength, requestID, responceTo, opCode);
 	}

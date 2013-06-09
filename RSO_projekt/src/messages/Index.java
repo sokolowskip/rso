@@ -26,6 +26,11 @@ public class Index {
 		return this.number;
 	}
 	
+	public void setMaxSize(int maxSize)
+	{
+		this.maxSize = maxSize;
+	}
+	
 	public void move(int change)
 	{
 		number += change;
