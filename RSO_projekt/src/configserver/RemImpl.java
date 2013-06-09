@@ -64,14 +64,14 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 		return ("ShardInfo updated");
 	}
 
-	public HashMap<InetAddress, ShardInfo> getShards(InetAddress _balancer) {
+	public HashMap<InetAddress, ShardInfo> getShards(InetAddress balancer) {
 		HashMap<InetAddress, ShardInfo> currentShards = new HashMap<InetAddress, ShardInfo>();
 		try{
 			this.lock.lock();
 		} finally {
-			if (balancer.getHostAddress().equals(balancer.getHostAddress()))
+			if (this.balancer.getHostAddress().equals(balancer.getHostAddress()))
 			{
-				currentShards = shards;
+				currentShards.putAll(shards);
 				this.lock.unlock();
 			}
 			else
@@ -83,10 +83,10 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 		return currentShards;
 	}
 
-	public String registerBalancer(InetAddress _balancer)
+	public String registerBalancer(InetAddress balancer)
 			throws RemoteException {
-		balancer = _balancer; 
-		System.out.println("Balancer registered: " + _balancer.getHostAddress());
+		this.balancer = balancer; 
+		System.out.println("Balancer registered: " + balancer.getHostAddress());
 		return ("Balancer registered");
 	}
 }

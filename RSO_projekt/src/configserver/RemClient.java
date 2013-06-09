@@ -60,7 +60,7 @@ public class RemClient implements Runnable {
 	                //pomijamy adresy IPv6
 	                if (addr instanceof Inet6Address) continue;
 	                clientIP = addr;
-	                System.out.println(iface.getDisplayName() + " " + clientIP);
+	                System.out.println("ConfigServer client: " + iface.getDisplayName() + " " + clientIP);
 	            }
 	        }
 	    } catch (SocketException e) {
@@ -70,7 +70,7 @@ public class RemClient implements Runnable {
 			Registry r = LocateRegistry.getRegistry(
 					connServIP.getHostAddress(), 1099);
 			//Tworzymy STUB
-			service = (Rem) r.lookup("//" + connServIP.getHostName()
+			service = (Rem) r.lookup("//" + connServIP.getHostAddress()
 					+ "/Rem");
 			System.out.println(service.registerToConfigServer(clientIP));
 			update();

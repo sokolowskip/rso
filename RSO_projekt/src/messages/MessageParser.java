@@ -95,10 +95,11 @@ public class MessageParser {
 		
 		List<BSONDocument> documents = new LinkedList<BSONDocument>();
 		
-		while(i.checkIt())
-		{
+		//wywalam whilea poniewa¿ nigdy siê nie odpala (w klasie Index maxSize nie jest ustawiany) - Marek
+		//while(i.checkIt())
+		//{
 			documents.add(getDocument(msg, i));
-		}
+		//}
 		
 		insertMessage.documents = new BSONDocument[documents.size()];
 		

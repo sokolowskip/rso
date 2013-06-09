@@ -4,7 +4,6 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -36,12 +35,15 @@ public class RemServer {
 	                //pomijamy adresy IPv6
 	                if (addr instanceof Inet6Address) continue;
 	                serverIP = addr.getCanonicalHostName();
-	                System.out.println(iface.getDisplayName() + " " + serverIP);
+	                System.out.println("Config server interface: " + iface.getDisplayName() + " " + serverIP + ":1099");
 	            }
 	        }
 	    } catch (SocketException e) {
 	        throw new RuntimeException(e);
 	    }
+	    //ustawiamy cos tam
+	    System.setProperty("java.rmi.server.hostname", serverIP);
+//	    System.setProperty("java.rmi.server.codebase", System.getProperty("user.dir")) + ".jar");
 		try { // special exception handler for registry creation
 			Registry r = LocateRegistry.createRegistry(1099);
 			// Tworzymy SKELTON

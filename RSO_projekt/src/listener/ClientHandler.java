@@ -128,19 +128,21 @@ public class ClientHandler extends Thread {
 				break;
 			// OP_INSERT 2002 insert new document
 			case OP_INSERT:
+				InsertMessage insertMessage = MessageParser
+				.ParseInsertMessage(message);
+				Insert insert = new Insert();
+				insert.insertDocumentList(insertMessage);				
+				/*
 				try {
-					FileOutputStream fos = new FileOutputStream("testoweBsony/2");
-					fos.write(message);
+					FileOutputStream fos = new FileOutputStream(FileOperations.dbDirectory + "/1");
+					fos.write(BSON.getBSON(insertMessage.documents[0]));
 					fos.close();
 				} catch (FileNotFoundException ex) {
 					System.out.println("FileNotFoundException : " + ex);
 				} catch (IOException ioe) {
 					System.out.println("IOException : " + ioe);
 				}
-				InsertMessage insertMessage = MessageParser
-						.ParseInsertMessage(message);
-				Insert insert = new Insert();
-				insert.insertDocumentList(insertMessage);
+				*/
 				break;
 			// OP_QUERY 2004 query a collection
 			case OP_QUERY:
