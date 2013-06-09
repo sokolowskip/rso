@@ -2,16 +2,11 @@ package listener;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-
 import messages.DeleteMessage;
 import messages.InsertMessage;
 import messages.MessageHeader;
@@ -19,11 +14,8 @@ import messages.MessageParser;
 import messages.ReplyMessage;
 import messages.UpdateMessage;
 import CRUD.Delete;
-import CRUD.FileOperations;
 import CRUD.Insert;
 import CRUD.Update;
-import bson.BSON;
-import bson.BSONDocument;
 
 /**
  * Klasa przyjmujaca wiadomosci od pojedynczego klienta. Instancje tej klasy
@@ -132,17 +124,6 @@ public class ClientHandler extends Thread {
 				.ParseInsertMessage(message);
 				Insert insert = new Insert();
 				insert.insertDocumentList(insertMessage);				
-				/*
-				try {
-					FileOutputStream fos = new FileOutputStream(FileOperations.dbDirectory + "/1");
-					fos.write(BSON.getBSON(insertMessage.documents[0]));
-					fos.close();
-				} catch (FileNotFoundException ex) {
-					System.out.println("FileNotFoundException : " + ex);
-				} catch (IOException ioe) {
-					System.out.println("IOException : " + ioe);
-				}
-				*/
 				break;
 			// OP_QUERY 2004 query a collection
 			case OP_QUERY:
@@ -166,29 +147,6 @@ public class ClientHandler extends Thread {
 				// b��d, trzeba wyrzuci� wyj�tek
 				break;
 			}
-
-//			// reszta leci do obiektu bizona
-//			BSONDocument bizon = new BSONDocument();
-//
-//			int strLen = 0;
-//			for (int j = 20; j < message.length; j++)
-//				if (message[j] == 0) {
-//					strLen = j - 20;
-//					break;
-//				}
-//
-//			String collectionName = "";
-//			try {
-//				collectionName = new String(message, 20, strLen, "UTF-8");
-//			} catch (UnsupportedEncodingException e) {
-//			}
-//			;
-//
-//			byte[] c = Arrays.copyOfRange(message, strLen + 21, message.length);
-//
-//			// TODO ok, wyglada niezle. nie ma wiecej kodu wiec nie wiem jak
-//			// dalej sprawdzac
-//			BSON.parseBSON(c, bizon);
 
 
 		} catch (IOException e) {

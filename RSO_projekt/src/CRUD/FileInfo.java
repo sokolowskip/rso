@@ -21,6 +21,14 @@ public class FileInfo implements Serializable{
 	public FileInfo(File document)
 	{
 		name = document.getAbsolutePath();
+		//pomijamy nazwe katalogu domowego i exampleDB
+		String split[] = name.split(".*/exampleDB");
+		name = split[1];
 		size = document.length();
+	}
+
+	public FileInfo(FileInfo fileInfo) {
+		name = fileInfo.name;
+		size = fileInfo.size;
 	}
 }

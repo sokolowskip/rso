@@ -34,14 +34,14 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 		shards = new HashMap<InetAddress, ShardInfo>();
 	}
 
-	public String registerToConfigServer(InetAddress shardIP)
+	public String registerToConfigServer(ShardInfo shard)
 			throws RemoteException {
 		try {
 			this.lock.lock();
 		} finally {
-			if (!shards.containsKey(shardIP))
+			if (!shards.containsKey(shard.getShardIP()))
 			{
-				shards.put(shardIP, new ShardInfo(shardIP));
+				shards.put(shard.getShardIP(), shard);
 				this.lock.unlock();
 			}
 			else
@@ -50,11 +50,12 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 				return ("Shard already registered");
 			}
 		}
-		System.out.println("New shard registered: " + shardIP.getHostAddress());
+		System.out.println("New shard registered: " + shard.getShardIP().getHostAddress());
 		return ("Shard registered successfully");
 	}
 
-	public String updateShardInfo(ShardInfo shard) throws RemoteException {
+	public String updateShardInfo(ShardInfo shard) 
+			throws RemoteException {
 		try {
 			this.lock.lock();
 		} finally {
@@ -64,7 +65,8 @@ public class RemImpl extends UnicastRemoteObject implements Rem {
 		return ("ShardInfo updated");
 	}
 
-	public HashMap<InetAddress, ShardInfo> getShards(InetAddress balancer) {
+	public HashMap<InetAddress, ShardInfo> getShards(InetAddress balancer) 
+			throws RemoteException {
 		HashMap<InetAddress, ShardInfo> currentShards = new HashMap<InetAddress, ShardInfo>();
 		try{
 			this.lock.lock();

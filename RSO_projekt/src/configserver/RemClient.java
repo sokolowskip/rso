@@ -6,8 +6,6 @@ import java.rmi.registry.Registry;
 import java.util.Enumeration;
 import java.io.IOException;
 import java.net.*;
-import java.net.UnknownHostException;
-
 import balancer.ShardInfo;
 
 /**
@@ -34,18 +32,13 @@ public class RemClient implements Runnable {
 
 	public RemClient(InetAddress connServIP) {
 		this.connServIP = connServIP;
-		try {
-			this.shard = new ShardInfo(InetAddress.getLocalHost());
-		} catch (UnknownHostException e) {
-			System.err.println("UnknownHostException: " + e);
-		}
 		Thread client = new Thread(this);
 		client.start();
 	}
 
 	//inicjalizacja kilenta
 	//zarejestrowanie w serwerze konfiguracjnym
-	public void run() {
+	public synchronized void run() {
 		//trzeba ogarnac jakiego interfejsu uzyc
 	    try {
 	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -66,13 +59,21 @@ public class RemClient implements Runnable {
 	    } catch (SocketException e) {
 	        throw new RuntimeException(e);
 	    }
+	    shard = new ShardInfo(clientIP);
 		try {
 			Registry r = LocateRegistry.getRegistry(
 					connServIP.getHostAddress(), 1099);
 			//Tworzymy STUB
 			service = (Rem) r.lookup("//" + connServIP.getHostAddress()
 					+ "/Rem");
-			System.out.println(service.registerToConfigServer(clientIP));
+			synchronized (this) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					System.err.println("InterruptedException: " + e);
+				}				
+			}
+			System.out.println(service.registerToConfigServer(shard));
 			update();
 		} catch (RemoteException re) {
 			System.err.println("RemoteException: " + re);
@@ -91,8 +92,7 @@ public class RemClient implements Runnable {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("InterruptedException: " + e);
 			}
 			try {
 				connServIP.isReachable(400);

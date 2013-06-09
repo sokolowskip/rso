@@ -14,7 +14,7 @@ import balancer.ShardInfo;
 
 public interface Rem extends Remote {
 	
-	public String registerToConfigServer(InetAddress shard)
+	public String registerToConfigServer(ShardInfo shard)
 			throws RemoteException;
 	
 	public String updateShardInfo(ShardInfo shard)

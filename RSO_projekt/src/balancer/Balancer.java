@@ -1,18 +1,21 @@
 package balancer;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
+import CRUD.FileInfo;
 
 import configserver.Rem;
 
@@ -85,18 +88,19 @@ public class Balancer implements Runnable
 			try {
 				shards.putAll(service.getShards(balancerIP));
 				System.out.println("Shard info acquired");
-				try {
-					System.out.println(shards.values().iterator().next().documents.size());
-				} catch (NoSuchElementException n)
-				{
-					System.err.println("Empty shard info");
-				}
 				//jak dostaniemy info o shardach to sprawdzamy polityke balancera
-				BalancerPolicy balancer = new BalancerPolicy(shards);
+				policy = new BalancerPolicy(shards);
 				//jesli jest nierowno to patrzymy co mozna przeniesc
-				if (balancer.getMigrate().getFrom() != null)
+				if (policy.getMigrate().getFrom() != null)
 				{
-					
+					System.out.println("From: " + policy.getMigrate().getFrom());
+					System.out.println("To: " + policy.getMigrate().getTo());
+					System.out.println("Load diff: " + policy.getMigrate().getLoadDiff());
+					policy.findCandidates();
+					ArrayList<FileInfo> files = policy.getMigrate().documents;
+					for (FileInfo fileInfo : files) {
+						System.out.println(fileInfo.name +"\t\t"+ fileInfo.size);
+					}
 				}
 			} catch (RemoteException e) {
 				System.err.println("Unable to fetch shard info: " + e);
@@ -105,15 +109,31 @@ public class Balancer implements Runnable
 				//balansujemy co 5s
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				 System.err.println("InterruptedException: " + e);
 			}
 		}
 	}
 	
 	//przeniesienie danych
-	void moveData(MigrateInfo candidateChunks) 
+	//laczymy sie do odpowiedniego sharda na port mongo (27017)
+	//i wysylamy mu MigrateInfo
+	void moveData() throws IOException 
 	{
+		MigrateInfo migr = policy.getMigrate();
+		Socket  sock = null;
+		PrintWriter out = null;
+		//otwieramy socketa
+		try {
+			sock = new Socket(migr.getFrom(), 27017);
+			out = new PrintWriter(sock.getOutputStream(), true);
+			out.println(migr.getTo().getHostAddress());
+		} catch (UnknownHostException e) {
+            System.err.println("Cannot connect to shard: " + migr.getFrom().getHostAddress());
+        } catch (IOException e) {
+            System.err.println("IOExeption: " + e);
+        }
+		out.close();
+		sock.close();
 	}
 	
 	//sprawdza dostepnosc serwera
