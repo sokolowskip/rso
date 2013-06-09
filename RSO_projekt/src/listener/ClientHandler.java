@@ -129,7 +129,7 @@ public class ClientHandler extends Thread {
 			// OP_INSERT 2002 insert new document
 			case OP_INSERT:
 				try {
-					FileOutputStream fos = new FileOutputStream("testoweBsony/2");
+					FileOutputStream fos = new FileOutputStream("/home/gibbon/testoweBsony/2");
 					fos.write(message);
 					fos.close();
 				} catch (FileNotFoundException ex) {

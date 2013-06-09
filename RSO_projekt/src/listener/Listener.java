@@ -41,7 +41,7 @@ public class Listener
 	                //pomijamy adresy IPv6
 	                if (addr instanceof Inet6Address) continue;
 	                listenerIP = addr;
-	                System.out.println(iface.getDisplayName() + " " + listenerIP);
+	                System.out.println("Listening on: " + iface.getDisplayName() + " " + listenerIP + ":27017");
 	            }
 	        }
 	    } catch (SocketException e) {
