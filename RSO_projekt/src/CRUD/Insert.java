@@ -7,7 +7,7 @@ import bson.BSONDocument;
 import CRUD.FileOperations;
 
 public class Insert {
-	String dbDirectory = "exampleDB/";
+	static String dbDirectory = FileOperations.dbDirectory;
 
 	public void insertDocumentList(InsertMessage insertMessage) {
 		System.out.println("jestem w funkcji INSERT");
