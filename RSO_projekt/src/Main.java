@@ -7,6 +7,7 @@ import balancer.Balancer;
 import balancer.ShardMonitor;
 
 import listener.Listener;
+import listener.MigrationListener;
 
 import configserver.ConfigServer;
 import configserver.RemClient;
@@ -58,6 +59,7 @@ public class Main {
 						System.out.println("DIR created");  
 					}
 				}
+				new MigrationListener(28017);
 				new Listener(27017);
 			}
 			//host bedzie robil za balancer

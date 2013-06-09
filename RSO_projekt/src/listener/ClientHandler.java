@@ -22,7 +22,7 @@ import CRUD.Update;
  * umieszczane sa w nowych watkach.
  * 
  */
-public class ClientHandler extends Thread {
+public class ClientHandler implements Runnable {
 	public Socket clientSocket;
 
 	// tu bedzie umieszczana odebrana wiadomosc
@@ -38,7 +38,8 @@ public class ClientHandler extends Thread {
 		this.clientSocket = clientSocket;
 		remoteHostIP = clientSocket.getInetAddress();
 		remoteHostPort = clientSocket.getPort();
-		this.start();
+		Thread handler = new Thread(this);
+		handler.start();
 	}
 
 	// Odbiera wiadomosci

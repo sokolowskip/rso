@@ -101,6 +101,7 @@ public class Balancer implements Runnable
 					for (FileInfo fileInfo : files) {
 						System.out.println(fileInfo.name +"\t\t"+ fileInfo.size);
 					}
+					moveData();
 				}
 			} catch (RemoteException e) {
 				System.err.println("Unable to fetch shard info: " + e);
@@ -117,23 +118,38 @@ public class Balancer implements Runnable
 	//przeniesienie danych
 	//laczymy sie do odpowiedniego sharda na port mongo (27017)
 	//i wysylamy mu MigrateInfo
-	void moveData() throws IOException 
+	void moveData()  
 	{
 		MigrateInfo migr = policy.getMigrate();
 		Socket  sock = null;
 		PrintWriter out = null;
 		//otwieramy socketa
 		try {
-			sock = new Socket(migr.getFrom(), 27017);
+			sock = new Socket(migr.getFrom(), 28017);
 			out = new PrintWriter(sock.getOutputStream(), true);
-			out.println(migr.getTo().getHostAddress());
+
 		} catch (UnknownHostException e) {
             System.err.println("Cannot connect to shard: " + migr.getFrom().getHostAddress());
         } catch (IOException e) {
             System.err.println("IOExeption: " + e);
         }
+		
+		out.println(migr.getTo().getHostAddress());
+		int i = 0;
+		while(i  < migr.documents.size())
+		{
+			out.println(migr.documents.get(i).name);
+			i++;
+		}
+		out.println("Bye.");
+		
 		out.close();
-		sock.close();
+		try {
+			sock.close();
+		} catch (IOException e) {
+			System.err.println("IOExeption: " + e);
+			e.printStackTrace();
+		}
 	}
 	
 	//sprawdza dostepnosc serwera
