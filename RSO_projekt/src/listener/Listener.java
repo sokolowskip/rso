@@ -37,7 +37,7 @@ public class Listener {
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface iface = interfaces.nextElement();
 
-				if (!iface.isLoopback() && iface.isUp()) {
+				if (iface.isUp()) {
 					System.out.println(i + " : " + iface.getDisplayName());
 					interfaceList.add(iface);
 					i++;
@@ -57,26 +57,23 @@ public class Listener {
 			NetworkInterface iface = interfaceList.get(Integer
 					.parseInt(interfaceNumber));
 
-			// sprawdzamy ktory NIC jest uruchomiony
-			if (!iface.isLoopback() && iface.isUp()) {
-				Enumeration<InetAddress> addresses = iface.getInetAddresses();
-				while (addresses.hasMoreElements()) {
-					InetAddress addr = addresses.nextElement();
-					// pomijamy adresy IPv6
-					if (addr instanceof Inet6Address)
-						continue;
-					listenerIP = addr;
-					System.out.println("Listening on: "
-							+ iface.getDisplayName() + " " + listenerIP + ":"
-							+ port);
-					break;
-				}
-				if (listenerIP == null){
-					throw new SocketException("Wybrany interfejs nie posiada adresu Ipv4");
-				}
-				if (setupSocket()) {
-					initAndListen();
-				}
+			Enumeration<InetAddress> addresses = iface.getInetAddresses();
+			while (addresses.hasMoreElements()) {
+				InetAddress addr = addresses.nextElement();
+				// pomijamy adresy IPv6
+				if (addr instanceof Inet6Address)
+					continue;
+				listenerIP = addr;
+				System.out.println("Listening on: " + iface.getDisplayName()
+						+ " " + listenerIP + ":" + port);
+				break;
+			}
+			if (listenerIP == null) {
+				throw new SocketException(
+						"Wybrany interfejs nie posiada adresu Ipv4");
+			}
+			if (setupSocket()) {
+				initAndListen();
 			}
 		} catch (SocketException e) {
 			throw new RuntimeException(e);
