@@ -92,20 +92,7 @@ public class MessageParser {
 		
 		insertMessage.fullCollectionName = fullCollectionName;
 		
-		List<BSONDocument> documents = new LinkedList<BSONDocument>();
-		
-		while(i.checkIt())
-		{
-			documents.add(getDocument(msg, i));
-		}
-		
-		insertMessage.documents = new BSONDocument[documents.size()];
-		
-		Iterator<BSONDocument> iterator = documents.iterator();
-		for(int j = 0; iterator.hasNext(); j++)
-		{
-			insertMessage.documents[j] = iterator.next();
-		}
+		insertMessage.documents = getDocumentArray(msg, i);
 		
 		return insertMessage; 
 	}
@@ -187,14 +174,35 @@ public class MessageParser {
 		ReplyMessage replyMessage = new ReplyMessage();
 		Index i = new Index();
 		replyMessage.header = getHeader(msg, i);
-		replyMessage.flags = getInt(msg,i);
-		replyMessage.fullCollectionName = getString(msg, i);
-		replyMessage.numberToSkip = getInt(msg, i);          // number of documents to skip
-		replyMessage.numberToReturn = getInt(msg, i);        // number of documents to return
+		replyMessage.responseFlags = getInt(msg,i);
+		replyMessage.cursorID = getInt64(msg, i);
+		replyMessage.startingFrom = getInt(msg, i);     
+		replyMessage.numberReturned = getInt(msg, i);
+		replyMessage.documents = getDocumentArray(msg,i);
 		return new ReplyMessage();
 	}
 	
 	//prywatne funkcje poni�ej
+	
+	private static BSONDocument[] getDocumentArray(byte[] msg, Index i) {
+		List<BSONDocument> documentList = new LinkedList<BSONDocument>();
+		
+		while(i.checkIt())
+		{
+			documentList.add(getDocument(msg, i));
+		}
+		
+		BSONDocument[] documentArray = new BSONDocument[documentList.size()];
+		
+		Iterator<BSONDocument> iterator = documentList.iterator();
+		
+		for(int j = 0; iterator.hasNext(); j++)
+		{
+			documentArray[j] = iterator.next();
+		}
+		
+		return documentArray;
+	}
 	
 	private static MessageHeader getHeader(byte[] msg, Index i)
 	{

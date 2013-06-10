@@ -8,13 +8,18 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import messages.DeleteMessage;
+import messages.GetMoreMessage;
 import messages.InsertMessage;
 import messages.MessageHeader;
 import messages.MessageParser;
+import messages.QueryMessage;
 import messages.ReplyMessage;
 import messages.UpdateMessage;
+import CRUD.Cursor;
+import CRUD.CursorRegister;
 import CRUD.Delete;
 import CRUD.Insert;
+import CRUD.Read;
 import CRUD.Update;
 
 /**
@@ -105,10 +110,7 @@ public class ClientHandler implements Runnable {
 			switch (messageType) {
 			// OP_REPLY 1 Reply to a client request. responseTo is set
 			case OP_REPLY:
-				@SuppressWarnings("unused")
-				ReplyMessage replyMessage = MessageParser
-						.ParseReplyMessage(message);
-				// analogicznie ponizej
+				//todo?
 				break;
 			// OP_MSG 1000 generic msg command followed by a string
 			case OP_MSG:
@@ -130,14 +132,26 @@ public class ClientHandler implements Runnable {
 			case OP_QUERY:
 				// teraz trzeba cos dopowiedziec
 				Response response = new Response(header);
+				QueryMessage queryMessage = MessageParser
+						.ParseQueryMessage(message);
+				Long cursorId = CursorRegister.getNewCursorForQuery(queryMessage);
+				Cursor queryCursor = CursorRegister.getCursor(cursorId);
+				queryCursor.getMore(queryMessage.numberToSkip);
+				ReplyMessage queryReply = queryCursor.getMore(queryMessage.numberToReturn);
+				
 				if (response.createResponse())
 					transmit(response.getBytes(), clientSocket.getOutputStream());
 				break;
+				
 			// OP_GET_MORE 2005 Get more data from a query. See Cursors
 			case OP_GET_MORE:
-				break;
+				GetMoreMessage getMoreMessage= MessageParser
+				.ParseGetMoreMessage(message);
+				Cursor getMoreCursor = CursorRegister.getCursor(getMoreMessage.cursorID);
+				ReplyMessage getMoreReply = getMoreCursor.getMore(getMoreMessage.numberToReturn);
+				
 			// OP_DELETE 2006 Delete documents
-			case OP_DELETE:
+ 			case OP_DELETE:
 				DeleteMessage deleteMessage = MessageParser.ParseDeleteMessage(message);
 				Delete delete = new Delete();
 				delete.deleteDocument(deleteMessage);

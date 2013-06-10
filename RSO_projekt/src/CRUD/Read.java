@@ -14,22 +14,28 @@ import bson.BSONDocument;
 import bson.BSONElement;
 
 public class Read {
-	public static List<BSONDocument> ReadFromQuery(QueryMessage queryMessage)
+	
+	//@unused
+	/*public static List<BSONDocument> ReadFromQuery(QueryMessage queryMessage)
 	{	
 		List<BSONDocument> documentList = Selector.searchDocuments(queryMessage.query, queryMessage.fullCollectionName);
-		List<BSONDocument> returnQuery = new Vector<BSONDocument>();
+		return selectFields(queryMessage.returnFieldSelector, documentList);
+	}*/
+
+	public static List<BSONDocument> selectFields(BSONDocument fieldSelector,
+			List<BSONDocument> documentList) {
+		List<BSONDocument> returnQuery = new LinkedList<BSONDocument>();
 		
-		BSONDocument fieldSelector = queryMessage.returnFieldSelector;
 		Iterator<BSONDocument> iterator = documentList.iterator();
 		while(iterator.hasNext())
 		{
-			returnQuery.add(selectFields(iterator.next(), fieldSelector));
+			returnQuery.add(selectFieldsHelper(iterator.next(), fieldSelector));
 		}
 		
 		return returnQuery;
 	}
 
-	private static BSONDocument selectFields(BSONDocument document, BSONDocument fieldSelector)
+	private static BSONDocument selectFieldsHelper(BSONDocument document, BSONDocument fieldSelector)
 	{
 		BSONDocument newDocument = new BSONDocument();
 		
