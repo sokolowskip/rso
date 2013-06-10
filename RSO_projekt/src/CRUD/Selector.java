@@ -1,11 +1,16 @@
 package CRUD;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
 
@@ -119,6 +124,43 @@ public class Selector {
 				if(checkElement(selector, document))
 				{
 					documentList.add(document);
+				}
+			}
+		}
+		
+		return documentList;
+	}
+	
+	public static List<byte[]> searchDocumentsBytes(BSONDocument selector,
+			String collectionName)
+	{
+		// pobranie listy plikow
+		List<byte[]> documentList = new ArrayList<byte[]>();
+		File[] fileArray = FileOperations.openCollection(dbDirectory
+				+ collectionName);
+		
+		if (fileArray != null) 
+		{
+			// przeszukiwanie message
+			for(int fileIndex = 0; fileIndex < fileArray.length; fileIndex++)
+			{
+				File file = fileArray[fileIndex];
+				
+				BSONDocument bsonDocument = new BSONDocument();
+				
+				Path path = Paths.get(file.getPath());
+				byte[] data = null;
+				try {
+					data = Files.readAllBytes(path);
+					BSON.parseBSON(data, bsonDocument);
+				} catch (IOException e) {
+					System.out.println("nie znaleziono pliku:" + path);
+					// e.printStackTrace();
+				}	
+				
+				if(checkElement(selector, bsonDocument))
+				{
+					documentList.add(data);
 				}
 			}
 		}
