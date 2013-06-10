@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import messages.DeleteMessage;
 import messages.GetMoreMessage;
 import messages.InsertMessage;
+import messages.KillCursorsMessage;
 import messages.MessageHeader;
 import messages.MessageParser;
 import messages.QueryMessage;
@@ -147,8 +148,17 @@ public class ClientHandler implements Runnable {
 			case OP_GET_MORE:
 				GetMoreMessage getMoreMessage= MessageParser
 				.ParseGetMoreMessage(message);
-				Cursor getMoreCursor = CursorRegister.getCursor(getMoreMessage.cursorID);
-				ReplyMessage getMoreReply = getMoreCursor.getMore(getMoreMessage.numberToReturn);
+				ReplyMessage getMoreReply;
+				if(CursorRegister.checkIfCursorExists(getMoreMessage.cursorID))
+				{
+					Cursor getMoreCursor = CursorRegister.getCursor(getMoreMessage.cursorID);
+					getMoreReply = getMoreCursor.getMore(getMoreMessage.numberToReturn);
+				}
+				else
+				{
+					getMoreReply = new ReplyMessage();
+					//getMoreReply.responseFlags <- ustawic flage 1?
+				}
 				
 			// OP_DELETE 2006 Delete documents
  			case OP_DELETE:
@@ -157,6 +167,16 @@ public class ClientHandler implements Runnable {
 				delete.deleteDocument(deleteMessage);
 				break;
 			case OP_KILL_CURSORS:
+				KillCursorsMessage killCursorsMessage = MessageParser.ParseKillCursorsMessage(message);
+				long[] killCursorIds = killCursorsMessage.cursorIDs;
+				for(int indexCursor = 0; indexCursor< killCursorIds.length; indexCursor++)
+				{
+					long killCursorId = killCursorIds[indexCursor];
+					if(CursorRegister.checkIfCursorExists(killCursorId))
+					{
+						CursorRegister.deleteCursor(killCursorId);
+					}
+				}
 				break;
 			default:
 				// b��d, trzeba wyrzuci� wyj�tek

@@ -26,6 +26,11 @@ public class CursorRegister {
 		return cursorMap.get(id);
 	}
 	
+	public static boolean checkIfCursorExists(Long id)
+	{
+		return cursorMap.containsKey(id);
+	}
+	
 	public static Long getNewCursorForQuery(QueryMessage queryMessage)
 	{
 		File[] fileArray = FileOperations.openCollection(queryMessage.fullCollectionName);
