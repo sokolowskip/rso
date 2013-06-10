@@ -41,7 +41,7 @@ public abstract class BSON
 		return res;
 	}
 	
-	private static byte[] getBytes(BSONElement elem)
+	private static byte[] getBytes(BSONElement<?> elem)
 	{
 		byte[] nameBytes = elem.getName().getBytes();
 		
@@ -99,6 +99,7 @@ public abstract class BSON
 			case ARRAY:
 			{
 				int offset = 0;
+				@SuppressWarnings("unchecked")
 				ArrayList<BSONElement<?>> data = (ArrayList<BSONElement<?>>)elem.data;
 				ArrayList<byte[]> dataBytesArr = new ArrayList<byte[]>();
 				
@@ -241,6 +242,7 @@ public abstract class BSON
 				while(data[index2] != 0)
 					index2++;
 				
+				//nazwa pola
 				String name = new String(data, index, index2 - index, "UTF-8");
 				index = index2 + 1;
 				
@@ -333,7 +335,7 @@ public abstract class BSON
 					int curType = data[index2]; 
 					index2++;
 
-					//czytanie indeksu w tablicy zapisanego w postaci stringa (indeks nie jest nigdzie u¿ywany)
+					//czytanie indeksu w tablicy zapisanego w postaci stringa
 					String n = ""; 
 					while (data[index2] != 0)
 					{
@@ -440,6 +442,7 @@ public abstract class BSON
 		return index;
 	}
 	
+	//dodaje nazwê i typ pola do tablicy bajtów
 	private static int insertNameType(byte[] arr, BSONtype type,  byte[] nameBytes)
 	{
 		int offset = 0;

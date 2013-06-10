@@ -1,15 +1,9 @@
 package CRUD;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Vector;
 
-import messages.QueryMessage;
-import bson.BSON;
 import bson.BSONDocument;
 import bson.BSONElement;
 
