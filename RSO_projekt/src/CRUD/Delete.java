@@ -6,7 +6,7 @@ import java.util.List;
 import messages.DeleteMessage;
 
 public class Delete {
-	String dbDirectory = "exampleDB/";
+	static String dbDirectory = FileOperations.dbDirectory;
 
 	public void deleteDocument(DeleteMessage deleteMessage) {
 		String collectionName = deleteMessage.fullCollectionName;
