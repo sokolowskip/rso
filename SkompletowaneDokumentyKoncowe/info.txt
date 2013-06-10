@@ -13,3 +13,4 @@ Archiwum zostało podzielone na katalogi reprezentujące kolejne etapy projektu 
 - Dokumenty - etap 3
 	- OpisOrganizacji.pdf 
 	- Uruchamianie i konfiguracja systemu.pdf.
+	- DokumentacjaKoncowa.pdf - dokumentacja końcowa oraz opis rozwiązania
