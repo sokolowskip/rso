@@ -1,7 +1,5 @@
 package listener;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +18,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 
 public class MigrationListener implements Runnable {
 
@@ -54,12 +53,14 @@ public class MigrationListener implements Runnable {
 	    } catch (SocketException e) {
 	        throw new RuntimeException(e);
 	    }
+	    //odpalamy nasluchiwacz
 		Thread t = new Thread(this);
 		t.start();
 	}
 	
 	public void run() 
 	{
+		//robimy server socketa
 		try {
 		    serverSocket = new ServerSocket(port, 0, listenerIP);
 		} 
@@ -70,6 +71,7 @@ public class MigrationListener implements Runnable {
 		while (true)
 		{
 			Socket clientSocket = null;
+			//czekamy az ktos sie podlaczy
 			try {
 			    clientSocket = serverSocket.accept();
 			} 
@@ -78,9 +80,12 @@ public class MigrationListener implements Runnable {
 			    System.exit(-1);
 			}
 			
+			//Tutaj odbieramy albo wiadomosc od serwera konfiguracyjnego
+			//albo plik od ktorego sharda
 			BufferedReader in;
 			try {
-				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				InputStream is = clientSocket.getInputStream();
+				in = new BufferedReader(new InputStreamReader(is));
 				String inputLine;
 				inputLine = in.readLine();
 				//dostajemy nowy plik
@@ -89,34 +94,35 @@ public class MigrationListener implements Runnable {
 					//nazwa pliku
 					inputLine = in.readLine();
 					//otwieramy nowy plik
-					File newFile = new File(System.getProperty("user.home") + "/exampleDB/" + inputLine);
-					newFile.mkdirs();
-				    FileOutputStream fos = new FileOutputStream(newFile);
-				    //dlugosc pliku
+					String collection[], document[];
+					collection = inputLine.split("[^\\/]*$");
+					document = inputLine.split("^.*\\/");
+					//robimy folder z nazwa kolekcji na wypadek gdyby wczesniej go nie bylo
+					File newDir = new File(System.getProperty("user.home") + "/exampleDB/" + collection[0]);
+					newDir.mkdir();
+					//robimy nowy dokument
+					File newFile = new File(newDir, document[1]);
+					newFile.createNewFile();
+					//dlugosc pliku
 					inputLine = in.readLine();
-					int length = Integer.parseInt(inputLine);
-					int bytesRead;
-					int current = 0;
-					byte [] mybytearray  = new byte[length];
-				    InputStream is = clientSocket.getInputStream();
-				    BufferedOutputStream bos = new BufferedOutputStream(fos);
-				    bytesRead = is.read(mybytearray, 0, length);
-				    current = bytesRead;
-				    //czytamy bajty
-				    do {
-				       bytesRead =
-				          is.read(mybytearray, current, (mybytearray.length-current));
-				       if(bytesRead >= 0) current += bytesRead;
-				    } while(bytesRead > -1);
-				    bos.write(mybytearray, 0 , current);
-				    //zrzucamy do pliku i go zamykamy
-				    bos.flush();
-				    bos.close();
+					int length = Integer.parseInt(inputLine);;
+					//lykamy dokumenta
+					byte []buffer = new byte[(int) length];
+					is.read(buffer, 0, length);
+					//i zapisujemy do pliku
+					FileOutputStream fos = new FileOutputStream(newFile);
+					fos.write(buffer);
+					fos.close();
+					
+					in.close();
 				}
-				//dostajemy MigrationInfo
-				else
+				//dostajemy MigrationInfo od ConfigServera
+				else if (inputLine.equals("CIGARETTES"))
 				{
+					//adres serwera do ktorego bedziemy wysylac
+					inputLine = in.readLine();
 					to = InetAddress.getByName(inputLine);
+					//wczytujemy kolejne nazwy plikow
 					migrate = new ArrayList<String>();
 					while ((inputLine = in.readLine()) != null) {
 						if (inputLine.equals("Bye."))
@@ -126,7 +132,7 @@ public class MigrationListener implements Runnable {
 					//to musimy teraz wysalac to co nam kazano
 					sendFiles();
 				}
-				in.close();
+				is.close();
 				clientSocket.close();
 			} catch (IOException e) {
 				System.err.println("IOException: " + e);
@@ -135,39 +141,58 @@ public class MigrationListener implements Runnable {
 		}
 	}
 
-	private void sendFiles() {
-		Socket  sock = null;
-		PrintWriter out = null;
-		//otwieramy socketa
-		try {
-			int i = 0;
-			while (i  < migrate.size())
-			{
+	private void sendFiles() throws IOException {
+	    Socket sock = null;
+	    
+		int i = 0;
+		while (i  < migrate.size())
+		{
+			OutputStream os = null;
+			PrintWriter out = null;
+			//otwieramy socketa
+			try {
 				sock = new Socket(to, 28017);
-				out = new PrintWriter(sock.getOutputStream(), true);
-				out.println("COFFEE");
-				out.println(migrate.get(i));
-				System.out.println(migrate.get(i));
-				File myFile = new File(System.getProperty("user.home") + "/exampleDB/" + migrate.get(i));
-				//usuwamy z kolejki plikow do wyslania
-				migrate.remove(i);
-				byte [] mybytearray  = new byte [(int)myFile.length()];
-				FileInputStream fis = new FileInputStream(myFile);
-				BufferedInputStream bis = new BufferedInputStream(fis);
-				bis.read(mybytearray,0,mybytearray.length);
-				OutputStream os = sock.getOutputStream();
-				os.write(mybytearray,0,mybytearray.length);
-				os.flush();
-				bis.close();
-				sock.close();
-				i++;
+				os = sock.getOutputStream();
+				out = new PrintWriter(os, true);
+			} catch (UnknownHostException e) {
+	            System.err.println("Cannot connect to shard: " + to);
+	        } catch (IOException e) {
+	            System.err.println("IOExeption: " + e);
+	        }
+
+			
+			
+			File file = new File(System.getProperty("user.home") + "/exampleDB/" + migrate.get(i));
+			//wyciagamy plik do bufora
+			byte []buffer = new byte[(int) file.length()];
+			InputStream ios = null;
+			try {
+				ios = new FileInputStream(file);
+				if ( ios.read(buffer) == -1 ) {
+				throw new IOException("EOF reached while trying to read the whole file");
+			}        
+			} finally { 
+			    try {
+			         if ( ios != null ) 
+			              ios.close();
+			    } catch ( IOException e) {
+			    }
 			}
-		} catch (UnknownHostException e) {
-            System.err.println("Cannot connect to shard: " + to.getHostAddress());
-        } catch (IOException e) {
-            System.err.println("IOExeption: " + e);
-        }
+  			
+			//wysylamy kawe
+			out.println("COFFEE");
+			//nazwe pliku
+			out.println(migrate.get(i));
+			//jego dlugosc
+			out.println(buffer.length);
+			//i jego zawartosc
+			os.write(buffer);
+			out.close();
 
-
-	}
+			//usuwamy plik z kolejki plikow do wyslania
+			migrate.remove(i);
+			//a na koncu wywalamy przeslany plik
+			file.delete();
+		}
+	}		
 }

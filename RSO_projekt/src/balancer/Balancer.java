@@ -133,6 +133,8 @@ public class Balancer implements Runnable
             System.err.println("IOExeption: " + e);
         }
 		
+		//pozyczamy papierosa
+		out.println("CIGARETTES");
 		out.println(migr.getTo().getHostAddress());
 		int i = 0;
 		while(i  < migr.documents.size())

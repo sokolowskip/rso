@@ -21,11 +21,12 @@ public class BalancerPolicy
 	
 	HashMap<InetAddress, ShardInfo> shards;
 	
-	//roznica MB od ktorej zaczynamy balansowac
+	//roznica bajtow od ktorej zaczynamy balansowac
 	private int threshold;
 	
 	public BalancerPolicy(HashMap<InetAddress, ShardInfo> shards) {
 		migrate = new MigrateInfo();
+		threshold = 100;
 		this.shards = shards;
 		calculatePolicy();
 	}
