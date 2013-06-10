@@ -140,10 +140,6 @@ public class ClientHandler implements Runnable {
 				queryCursor.getMore(queryMessage.numberToSkip);
 				ReplyMessage queryReply = queryCursor.getMore(queryMessage.numberToReturn);
 				
-				queryReply.header.responseTo = header.requestID;
-				queryReply.header.requestID = generateRequestId();
-				queryReply.getBuffer();
-				
 				if (response.createResponse())
 					transmit(response.getBytes(), clientSocket.getOutputStream());
 				break;
@@ -157,9 +153,6 @@ public class ClientHandler implements Runnable {
 				{
 					Cursor getMoreCursor = CursorRegister.getCursor(getMoreMessage.cursorID);
 					getMoreReply = getMoreCursor.getMore(getMoreMessage.numberToReturn);
-					getMoreReply.header.responseTo = header.requestID;
-					getMoreReply.header.requestID = generateRequestId();
-					getMoreReply.getBuffer();
 				}
 				else
 				{
@@ -195,12 +188,6 @@ public class ClientHandler implements Runnable {
 			return false;
 		}
 		return true;
-	}
-
-	private static int idNumber = 0;
-	private static int generateRequestId() {
-		// TODO Auto-generated method stub
-		return idNumber++;
 	}
 
 	/**
