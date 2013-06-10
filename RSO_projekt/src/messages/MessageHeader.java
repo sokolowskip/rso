@@ -1,11 +1,11 @@
 package messages;
 
 public class MessageHeader {
-	private int   messageLength; // total message size, including this
-    private int   requestID;     // identifier for this message
-    private int   responseTo;    // requestID from the original request
+	public int   messageLength; // total message size, including this
+    public int   requestID;     // identifier for this message
+    public int   responseTo;    // requestID from the original request
                            //   (used in reponses from db)
-    private int   opCode;        // request type - see table below 
+    public int   opCode;        // request type - see table below 
 	
 	public MessageHeader(int length, int id, int to, int op)
 	{
