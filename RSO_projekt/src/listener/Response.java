@@ -41,11 +41,12 @@ public class Response {
 			connectionInitiationResponse(2);
 			return true;
 		default: 
-			response = ByteBuffer.wrap(fakeInsertResponse);
+			return false;
+	/*		response = ByteBuffer.wrap(fakeInsertResponse);
 			response.putInt(4, Integer.reverseBytes(responseNumber));
 			response.putInt(8, Integer.reverseBytes(header.getRequestID()));
 			responseNumber++;
-			return true;
+			return true;*/
 		}
 	}
 

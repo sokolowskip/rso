@@ -131,18 +131,26 @@ public class ClientHandler implements Runnable {
 				break;
 			// OP_QUERY 2004 query a collection
 			case OP_QUERY:
-				// teraz trzeba cos dopowiedziec
-				QueryMessage queryMessage = MessageParser
-						.ParseQueryMessage(message);
-				Long cursorId = CursorRegister.getNewCursorForQuery(queryMessage);
-				Cursor queryCursor = CursorRegister.getCursor(cursorId);
-				queryCursor.getMore(queryMessage.numberToSkip);
-				ReplyMessage queryReply = queryCursor.getMore(queryMessage.numberToReturn);
+				Response response = new Response(header);
+				if (response.createResponse())
+				{
+					transmit(response.getBytes(), clientSocket.getOutputStream());
+				}
+				else//$admin.cm
+				{
+					QueryMessage queryMessage = MessageParser
+							.ParseQueryMessage(message);
+					Long cursorId = CursorRegister.getNewCursorForQuery(queryMessage);
+					Cursor queryCursor = CursorRegister.getCursor(cursorId);
+					queryCursor.getMore(queryMessage.numberToSkip);
+					ReplyMessage queryReply = queryCursor.getMore(queryMessage.numberToReturn);
+					
+					queryReply.header.responseTo = header.requestID;
+					queryReply.header.requestID = generateRequestId();
+					ByteBuffer queryBuffer = queryReply.getBuffer();
+					transmit(queryBuffer.array(), clientSocket.getOutputStream());
+				}
 				
-				queryReply.header.responseTo = header.requestID;
-				queryReply.header.requestID = generateRequestId();
-				ByteBuffer queryBuffer = queryReply.getBuffer();
-				transmit(queryBuffer.array(), clientSocket.getOutputStream());
 				break;
 				
 			// OP_GET_MORE 2005 Get more data from a query. See Cursors
