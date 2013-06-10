@@ -114,7 +114,7 @@ public class MessageParser {
 			queryMessage.returnFieldSelector = getDocument(msg, i);// Optional. Selector indicating the fields
 		}
 		
-		return new QueryMessage();
+		return queryMessage;
 	}
 	
 	public static GetMoreMessage ParseGetMoreMessage(byte[] msg)

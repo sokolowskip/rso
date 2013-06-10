@@ -77,10 +77,10 @@ public class ClientHandler implements Runnable {
 			// dlugosc to int (dzieki Mateusz)
 			int length = Integer.reverseBytes(in.readInt());
 			byte[] message = new byte[length];
-			message[0] = (byte) (length >>> 24);
-			message[1] = (byte) (length >>> 16);
-			message[2] = (byte) (length >>> 8);
-			message[3] = (byte) (length);
+			message[0] = (byte) (length);
+			message[1] = (byte) (length >>> 8);
+			message[2] = (byte) (length >>> 16);
+			message[3] = (byte) (length >>> 24);
 			// czyli lyknelismy juz 4 bajty
 			int i = 4;
 			// wczytujemy po kolei bajty z socketa
