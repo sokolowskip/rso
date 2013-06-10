@@ -247,7 +247,7 @@ public class MessageParser {
 			}
 		}
 		
-		to = to - 1;
+		//to = to - 1;
 		
 		String string = null;
 		try

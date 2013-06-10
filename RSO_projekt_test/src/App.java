@@ -1,4 +1,8 @@
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Random;
@@ -33,24 +37,52 @@ public class App {
  
 	/**** Insert ****/
 	Random generator = new Random();	
-	long start = System.currentTimeMillis();
-	for (int i = 0; i < 10000; i++)
-	{
-		BasicDBObject document = new BasicDBObject();
-		document.put("string", new Long(generator.nextLong()).toString());
-		document.put("number", generator.nextInt());
-		document.put("date", new Date(generator.nextLong()));
+	int[] inserts = {100, 1000, 10000, 20000};
+	int[] amounts = {1, 5, 10, 20};
+	int[][] results = new int[inserts.length][amounts.length];
 	
-		table.insert(document);
+	for (int k = 0; k < amounts.length; k++)
+	{
+		for (int j = 0; j < inserts.length; j++)
+		{
+			long start = System.currentTimeMillis();
+			for (int i = 0; i < inserts[j]; i++)
+			{
+				BasicDBObject document = new BasicDBObject();
+				for (int l = 0; l < amounts[k]; l++)
+				{
+					document.put("string", new Long(generator.nextLong()).toString());
+					document.put("number", generator.nextInt());
+					document.put("date", new Date(generator.nextLong()));
+				}
+				table.insert(document);
+			}
+		    long end = System.currentTimeMillis();
+		    System.out.println(inserts[j] + " insertow po " + 3 * amounts[k] + " wartosci zajelo " + (end - start) + " milisekund");
+		    results[j][k] = (int)(end - start);
+		}
 	}
-    long end = System.currentTimeMillis();
-    System.out.println("Inserty zajely " + (end - start) + " milisekund");
-    
+	
+	OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream("results.txt"));
+	for (int i = 0; i < inserts.length; i++)
+	{
+		for (int j = 0; j < amounts.length; j++)
+		{
+			writer.write(new Integer(results[i][j]).toString());
+			writer.write(" ");
+		}
+		writer.write("\n");
+	}
+	writer.close();
+	
     } catch (UnknownHostException e) {
 	e.printStackTrace();
     } catch (MongoException e) {
 	e.printStackTrace();
-    }
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
  
   }
 }

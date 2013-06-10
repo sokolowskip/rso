@@ -106,7 +106,7 @@ public class ClientHandler implements Runnable {
 
 			MessageParser.MessageType messageType = MessageParser
 					.getType(message);
-			System.out.println("Received: " + messageType.name());
+			//System.out.println("Received: " + messageType.name());
 
 			switch (messageType) {
 			// OP_REPLY 1 Reply to a client request. responseTo is set
