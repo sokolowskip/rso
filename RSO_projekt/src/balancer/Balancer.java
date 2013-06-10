@@ -127,7 +127,6 @@ public class Balancer implements Runnable
 		try {
 			sock = new Socket(migr.getFrom(), 28017);
 			out = new PrintWriter(sock.getOutputStream(), true);
-
 		} catch (UnknownHostException e) {
             System.err.println("Cannot connect to shard: " + migr.getFrom().getHostAddress());
         } catch (IOException e) {
