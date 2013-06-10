@@ -132,7 +132,6 @@ public class ClientHandler implements Runnable {
 			// OP_QUERY 2004 query a collection
 			case OP_QUERY:
 				// teraz trzeba cos dopowiedziec
-				Response response = new Response(header);
 				QueryMessage queryMessage = MessageParser
 						.ParseQueryMessage(message);
 				Long cursorId = CursorRegister.getNewCursorForQuery(queryMessage);
@@ -142,10 +141,8 @@ public class ClientHandler implements Runnable {
 				
 				queryReply.header.responseTo = header.requestID;
 				queryReply.header.requestID = generateRequestId();
-				queryReply.getBuffer();
-				
-				if (response.createResponse())
-					transmit(response.getBytes(), clientSocket.getOutputStream());
+				ByteBuffer queryBuffer = queryReply.getBuffer();
+				transmit(queryBuffer.array(), clientSocket.getOutputStream());
 				break;
 				
 			// OP_GET_MORE 2005 Get more data from a query. See Cursors
@@ -159,7 +156,8 @@ public class ClientHandler implements Runnable {
 					getMoreReply = getMoreCursor.getMore(getMoreMessage.numberToReturn);
 					getMoreReply.header.responseTo = header.requestID;
 					getMoreReply.header.requestID = generateRequestId();
-					getMoreReply.getBuffer();
+					ByteBuffer getMoreBuffer = getMoreReply.getBuffer();
+					transmit(getMoreBuffer.array(), clientSocket.getOutputStream());
 				}
 				else
 				{
