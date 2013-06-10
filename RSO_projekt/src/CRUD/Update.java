@@ -10,7 +10,7 @@ import bson.BSONDocument;
 import bson.BSONElement;
 
 public class Update {
-	String dbDirectory = "exampleDB/";
+	static String dbDirectory = FileOperations.dbDirectory;
 
 	public void updateDocument(UpdateMessage updateMessage) {
 		String collectionName = updateMessage.fullCollectionName;
