@@ -1,0 +1,15 @@
+W tym archiwum znajduje się kompletna dokumentacja opisująca przebieg procesu projektowania systemu.
+Archiwum zostało podzielone na katalogi reprezentujące kolejne etapy projektu i dokumenty z nimi związane.
+
+- Dokumenty - etap 1 
+	- Harmonogram.pdf
+	- MongoDb.pdf - szczegółowy opis implementowanego rozwiązania
+	- NoSQL.pdf - przegląd rozwiązań NoSQL
+	- Przygotowanie środowiska.pdf - opis przygotowania środowiska implementacyjnego
+- Dokumenty - etap 2
+	- Koncepcja_Prezentacji_Koncowej.pdf
+	- Koncepcja_Testow_Prownawczych.pdf
+	- Szczegolowa_Kocepcja_Rozwiazania.pdf
+- Dokumenty - etap 3
+	- OpisOrganizacji.pdf 
+	- Uruchamianie i konfiguracja systemu.pdf.
