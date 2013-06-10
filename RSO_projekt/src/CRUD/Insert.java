@@ -23,21 +23,19 @@ public class Insert {
 	// dodanie dokumentu - "wiersza"
 	void insertDocument(String collectionName, BSONDocument bsonDocument) {
 		System.out.println("robie INSERT-a w dokumencie");
-		// sprawdzenie czy kolekcja - "tabela" ju¿ nie istnieje
+		// sprawdzenie czy kolekcja - "tabela" juï¿½ nie istnieje
 		if (FileOperations.checkIfCollection(collectionName)) {
 			// dodaj dokument do kolekcji
-			dbDirectory = dbDirectory + collectionName;
 			String fileName = FileOperations.findIdElement(bsonDocument);
-			FileOperations.createFile(bsonDocument, dbDirectory + "/" + fileName);
+			FileOperations.createFile(bsonDocument, dbDirectory + collectionName + "/" + fileName);
 
 		} else {
-			// stwórz nowa kolekcje
+			// stwï¿½rz nowa kolekcje
 			System.out.println("nowa kolekcja");
 			File dir = new File(dbDirectory + collectionName);
 			dir.mkdir();
-			dbDirectory = dbDirectory + collectionName;
 			String fileName = FileOperations.findIdElement(bsonDocument);
-			FileOperations.createFile(bsonDocument, dbDirectory + "/" + fileName);
+			FileOperations.createFile(bsonDocument, dbDirectory + collectionName + "/" + fileName);
 		}
 	}
 }
